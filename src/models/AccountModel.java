@@ -51,6 +51,7 @@ public class AccountModel extends AbstractTableModel {
         return HEADER.length;
     }
     
+    @Override
     public String getColumnName(int column){
         return HEADER[column];
     }

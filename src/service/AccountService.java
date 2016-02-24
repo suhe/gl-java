@@ -95,7 +95,6 @@ public class AccountService {
     public List<AccountService> findAll(int page,int totalRow){
         List<AccountService> listAccount = new ArrayList<AccountService>();
         try{
-            //connection = dataSource.getConnection();
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("SELECT * FROM accounts order by no asc limit ?,?");

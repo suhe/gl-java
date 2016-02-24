@@ -47,11 +47,14 @@ public class Main extends javax.swing.JFrame {
         jButtonCoa = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabelStatusConnected = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu = new javax.swing.JMenu();
         JMenuItemConnect = new javax.swing.JMenuItem();
         JAccount = new javax.swing.JMenu();
         JMenuItemCoa = new javax.swing.JMenuItem();
+        jMenuJournal = new javax.swing.JMenu();
+        jMenuItemTransaction = new javax.swing.JMenuItem();
         jMenuReport = new javax.swing.JMenu();
         jMenuItemReportCoa = new javax.swing.JMenuItem();
 
@@ -109,13 +112,17 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelStatusConnected)
-                .addContainerGap(439, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 323, Short.MAX_VALUE)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabelStatusConnected)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelStatusConnected))
                 .addContainerGap())
         );
 
@@ -145,9 +152,22 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(JAccount);
 
+        jMenuJournal.setText("Journal");
+
+        jMenuItemTransaction.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemTransaction.setText("Transaction");
+        jMenuItemTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemTransactionActionPerformed(evt);
+            }
+        });
+        jMenuJournal.add(jMenuItemTransaction);
+
+        jMenuBar1.add(jMenuJournal);
+
         jMenuReport.setText("Report");
 
-        jMenuItemReportCoa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemReportCoa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemReportCoa.setText("Account");
         jMenuItemReportCoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,11 +271,10 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenuItemReportCoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReportCoaActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:  
-        if(Database.isConnect == false) {
-            JOptionPane.showMessageDialog(null, "Please Connect Database ! ","Connect DB",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        //if(Database.isConnect == false) {
+          //  JOptionPane.showMessageDialog(null, "Please Connect Database ! ","Connect DB",JOptionPane.ERROR_MESSAGE);
+            //return;
+        //}
         
         try {
             boolean status = false;
@@ -283,6 +302,39 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemReportCoaActionPerformed
 
+    private void jMenuItemTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemTransactionActionPerformed
+        // TODO add your handling code here:
+        if(Database.isConnect == false) {
+            JOptionPane.showMessageDialog(null, "Please Connect Database ! ","Connect DB",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Report COA")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                journal.Transaction frmTransaction = new journal.Transaction();
+                JP.add(frmTransaction);
+                frmTransaction.JP = JP;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = frmTransaction.getSize();
+                frmTransaction.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                frmTransaction.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemTransactionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -309,8 +361,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemReportCoa;
+    private javax.swing.JMenuItem jMenuItemTransaction;
+    private javax.swing.JMenu jMenuJournal;
     private javax.swing.JMenu jMenuReport;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

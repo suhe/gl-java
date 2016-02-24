@@ -5,9 +5,15 @@
  */
 package gl.accounts;
 
-import helpers.jTableHelper;
+import helpers.JTableHelper;
+import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import journal.Transaction;
 import models.AccountModel;
 import service.AccountService;
 
@@ -21,8 +27,12 @@ public class Coa extends javax.swing.JInternalFrame {
     Integer totalRowPerPage = 25;
     Integer totalPage = 1;
     Integer totalRow = 0;
-    
-    
+    public Integer rowTarget = 0;
+    public Integer colTarget = 0;
+    public String formName;
+    public JTable table = new JTable();
+    public Transaction frmTransaction;
+     
     AccountModel accountModel;
     AccountService accountService;
    
@@ -44,6 +54,14 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         });
         initTable();
+    }
+    
+    public void setFormName(String var) {
+        this.formName = var;
+    }
+    
+    public String getFormName() {
+        return this.formName;
     }
     
     /**
@@ -80,7 +98,7 @@ public class Coa extends javax.swing.JInternalFrame {
         accountModel = new AccountModel();
         accountModel.setList(accountService.findAll(pageNum, totalRowPerPage));
         jTableAccount.setModel(accountModel);
-        jTableHelper.setAutoWith(jTableAccount);
+        JTableHelper.setAutoWith(jTableAccount);
         jLabelSummary.setText("Page : " + pageNum + " from " + totalPage + " total Row : " + totalRow);
     }
    
@@ -200,6 +218,11 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         ));
         jTableAccount.setColumnSelectionAllowed(true);
+        jTableAccount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTableAccountMousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTableAccount);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -247,6 +270,29 @@ public class Coa extends javax.swing.JInternalFrame {
         this.pageNum = 1;
         initTable();
     }//GEN-LAST:event_jButtonFirstActionPerformed
+
+    private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
+        // TODO add your handling code here:
+        int row = jTableAccount.getSelectedRow();  
+        frmTransaction.AccountNo = jTableAccount.getValueAt(row, 1).toString();  
+        frmTransaction.itemTerpilih();  
+        this.dispose();  
+        //JTable target = (JTable)evt.getSource();
+       //int row = target.getSelectedRow();
+        //int column = target.getSelectedColumn();
+        //for (JInternalFrame frame : JInternalFrame) {
+       // Transaction transaction = (Transaction) JInternalFrame;
+        //Transaction transaction = new Transaction();
+        //transaction.getText().setText("120000");
+        //transaction.setVisible(true);
+        //transaction.AccountNo = jTableAccount.getValueAt(row,1).toString();
+        //transaction.setAccountLoad("100000",rowTarget,colTarget);
+        //new Transaction().table.setValueAt("AA", 1, 0);
+        //this.setVisible(false);
+        //}
+        //transaction.table.setValueAt(jTableAccount.getValueAt(row,1), rowTarget, colTarget);
+        //JOptionPane.showMessageDialog(null,jTableAccount.getValueAt(row,1),"Test Mouse",JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jTableAccountMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

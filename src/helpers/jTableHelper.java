@@ -14,7 +14,7 @@ import javax.swing.table.TableColumn;
  *
  * @author suhe
  */
-public class jTableHelper {
+public class JTableHelper {
     public static void setAutoWith(JTable table) {
         table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         for (int column = 0; column < table.getColumnCount(); column++)
@@ -36,5 +36,7 @@ public class jTableHelper {
             tableColumn.setPreferredWidth( preferredWidth );
         }
     }
+    
+    
     
 }

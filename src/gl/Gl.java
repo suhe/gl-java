@@ -22,7 +22,6 @@ public class Gl {
         // TODO code application logic here
         try {
             UIManager.setLookAndFeel("de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel");
-            //UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         }
         gl.layout.Main main =  new gl.layout.Main();
