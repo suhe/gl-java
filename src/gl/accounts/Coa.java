@@ -5,103 +5,139 @@
  */
 package gl.accounts;
 
-import helpers.JTableHelper;
-import java.awt.Cursor;
-import java.awt.Frame;
+import config.DatabaseUtil;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JTable;
-import journal.Transaction;
-import models.AccountModel;
-import service.AccountService;
-
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import services.Accounts;
 
 /**
  *
  * @author suhe
  */
 public class Coa extends javax.swing.JInternalFrame {
-    Integer pageNum = 1;
-    Integer totalRowPerPage = 25;
+    Integer pageNumber = 1;
+    Integer totalRowPerPage = 100;
     Integer totalPage = 1;
     Integer totalRow = 0;
-    public Integer rowTarget = 0;
-    public Integer colTarget = 0;
-    public String formName;
-    public JTable table = new JTable();
-    public Transaction frmTransaction;
-     
-    AccountModel accountModel;
-    AccountService accountService;
-   
+
     /**
-     * Creates new form COA Data
+     * Creates new form Balance
      */
     public Coa() {
         initComponents();
-        setTitle("Chart of account");
-        jTableAccount.getColumnModel().getColumn(0).setResizable(false);
+        initComboItem();
+        initList();
+        //initTable(0, 100);
+    }
+    
+    private void initComboItem() {
         jComboBoxTotalRows.removeAllItems();
-        jComboBoxTotalRows.addItem("25");
-        jComboBoxTotalRows.addItem("50");
-        jComboBoxTotalRows.addItem("75");
+        jComboBoxTotalRows.addItem("100");
+        jComboBoxTotalRows.addItem("200");
+        jComboBoxTotalRows.addItem("300");
         jComboBoxTotalRows.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                initTable();
+                initList();
             }
         });
-        initTable();
     }
     
-    public void setFormName(String var) {
-        this.formName = var;
-    }
-    
-    public String getFormName() {
-        return this.formName;
-    }
-    
-    /**
-     * Data Table Query
-     * Initial Pagination Table
-     */
-    private void initTable() {
-        accountService = new AccountService();
-        totalRow  = accountService.count();
+    private void initList() {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        
+        try {
+            tx = session.beginTransaction();
+            this.totalRow = ((Long) session.createQuery("select count(*) from Accounts").uniqueResult()).intValue();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        
         totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
         Double totalPageDouble = Math.ceil(totalRow.doubleValue()/totalRowPerPage.doubleValue());
         totalPage = totalPageDouble.intValue();
         
-        if(pageNum.equals(1)) {
+        if (pageNumber.equals(1)) {
             jButtonFirst.setEnabled(false);
             jButtonPrev.setEnabled(false);
-        }else{
+        } else {
             jButtonFirst.setEnabled(true);
             jButtonPrev.setEnabled(true);
         }
         
-        if(pageNum.equals(totalPage)){
-            jButtonLast.setEnabled(false);
-            jButtonNext.setEnabled(false);
-        }else{
-            jButtonLast.setEnabled(true);
-            jButtonNext.setEnabled(true);
-        }
-        
-        if(pageNum > totalPage){
-            pageNum = 1;
-        }
-        
-        accountModel = new AccountModel();
-        accountModel.setList(accountService.findAll(pageNum, totalRowPerPage));
-        jTableAccount.setModel(accountModel);
-        JTableHelper.setAutoWith(jTableAccount);
-        jLabelSummary.setText("Page : " + pageNum + " from " + totalPage + " total Row : " + totalRow);
+        initTable(pageNumber, totalRowPerPage);
+        jLabelSummary.setText("Page : " + pageNumber + " / " + totalPage + " Total : " + totalRow);
     }
-   
+
+    private void initTable(Integer offset, Integer limit) {
+        DefaultTableModel model = new DefaultTableModel() {
+            String[] HEADER = {"No", "Account No", "Account Name", "Type"};
+
+            @Override
+            public String getColumnName(int column) {
+                return HEADER[column];
+            }
+
+            @Override
+            public int getColumnCount() {
+                return HEADER.length;
+            }
+        };
+
+        //set to list all data
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            List list = session.createQuery("FROM Accounts")
+                    .setFirstResult(offset)
+                    .setMaxResults(limit).list();
+            long i = (limit * (offset - 1)) + 1;
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Accounts acc = (Accounts) iterator.next();
+                model.addRow(new Object[]{
+                    i,
+                    acc.getNo(),
+                    acc.getName(),
+                    acc.getType()
+                });
+                i++;
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        jTableAccount.setModel(model);
+        jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        TableColumnModel table = jTableAccount.getColumnModel();
+        table.getColumn(0).setPreferredWidth(80);
+        table.getColumn(1).setPreferredWidth(160);
+        table.getColumn(2).setPreferredWidth(260);
+        table.getColumn(3).setPreferredWidth(160);
+
+        
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -111,7 +147,12 @@ public class Coa extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableAccount = new javax.swing.JTable();
+        jButtonAddRow = new javax.swing.JButton();
+        jButtonDelRow = new javax.swing.JButton();
+        jButtonUpRow = new javax.swing.JButton();
+        jButtonBottomRow = new javax.swing.JButton();
         jButtonFirst = new javax.swing.JButton();
         jButtonPrev = new javax.swing.JButton();
         jButtonNext = new javax.swing.JButton();
@@ -119,92 +160,8 @@ public class Coa extends javax.swing.JInternalFrame {
         jButtonSearch = new javax.swing.JButton();
         jComboBoxTotalRows = new javax.swing.JComboBox<>();
         jLabelSummary = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableAccount = new javax.swing.JTable();
 
-        setClosable(true);
-        setResizable(true);
-        setName(""); // NOI18N
-
-        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_first_16x16.png"))); // NOI18N
-        jButtonFirst.setText("First");
-        jButtonFirst.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonFirstActionPerformed(evt);
-            }
-        });
-
-        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_prev_16x16.png"))); // NOI18N
-        jButtonPrev.setText("Prev");
-        jButtonPrev.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPrevActionPerformed(evt);
-            }
-        });
-
-        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_next_16x16.png"))); // NOI18N
-        jButtonNext.setText("Next");
-        jButtonNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonNextActionPerformed(evt);
-            }
-        });
-
-        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_last_16x16.png"))); // NOI18N
-        jButtonLast.setText("Last");
-        jButtonLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLastActionPerformed(evt);
-            }
-        });
-
-        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/search_16x16.png"))); // NOI18N
-        jButtonSearch.setText("Search");
-
-        jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabelSummary.setText("Total Rows");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelSummary)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonFirst)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonPrev)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jButtonNext)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonLast)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonSearch)
-                .addGap(7, 7, 7))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxTotalRows)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButtonSearch)
-                                .addComponent(jButtonLast)
-                                .addComponent(jButtonNext)
-                                .addComponent(jButtonPrev)
-                                .addComponent(jButtonFirst)))
-                        .addGap(81, 81, 81))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabelSummary)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
+        setTitle("Cart of account");
 
         jTableAccount.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -225,85 +182,211 @@ public class Coa extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTableAccount);
 
+        jButtonAddRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
+        jButtonAddRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddRowActionPerformed(evt);
+            }
+        });
+
+        jButtonDelRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/minus_16X16.png"))); // NOI18N
+        jButtonDelRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonDelRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDelRowActionPerformed(evt);
+            }
+        });
+
+        jButtonUpRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/up_16X16.png"))); // NOI18N
+        jButtonUpRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonUpRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpRowActionPerformed(evt);
+            }
+        });
+
+        jButtonBottomRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/bottom_16X16.png"))); // NOI18N
+        jButtonBottomRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonBottomRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBottomRowActionPerformed(evt);
+            }
+        });
+
+        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_first_16x16.png"))); // NOI18N
+        jButtonFirst.setText("First");
+        jButtonFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFirstActionPerformed(evt);
+            }
+        });
+
+        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_prev_16x16.png"))); // NOI18N
+        jButtonPrev.setText("Prev");
+        jButtonPrev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrevActionPerformed(evt);
+            }
+        });
+
+        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_next_16x16.png"))); // NOI18N
+        jButtonNext.setText("Next");
+        jButtonNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNextActionPerformed(evt);
+            }
+        });
+
+        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_last_16x16.png"))); // NOI18N
+        jButtonLast.setText("Last");
+        jButtonLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLastActionPerformed(evt);
+            }
+        });
+
+        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
+        jButtonSearch.setText("Search");
+
+        jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabelSummary.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButtonFirst)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonPrev)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonNext)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonLast)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jButtonAddRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDelRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonUpRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonBottomRow)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButtonFirst)
+                                .addComponent(jButtonNext)
+                                .addComponent(jButtonLast)
+                                .addComponent(jButtonSearch)
+                                .addComponent(jButtonPrev))
+                            .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelSummary)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
-        // TODO add your handling code here:
-        if(pageNum < totalPage){
-            this.pageNum++;
-            initTable();
-        }
-    }//GEN-LAST:event_jButtonNextActionPerformed
+    private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
 
-    private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
-        // TODO add your handling code here:
-         if(pageNum > 1){
-            this.pageNum--;
-            initTable();
-        }
-    }//GEN-LAST:event_jButtonPrevActionPerformed
+    }//GEN-LAST:event_jTableAccountMousePressed
 
-    private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
+    private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
+        // TODO add your handling code here
+
+    }//GEN-LAST:event_jButtonAddRowActionPerformed
+
+    private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
-        this.pageNum = totalPage;
-        initTable();
-    }//GEN-LAST:event_jButtonLastActionPerformed
+        //((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+    }//GEN-LAST:event_jButtonDelRowActionPerformed
+
+    private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jButtonUpRowActionPerformed
+
+    private void jButtonBottomRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBottomRowActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonBottomRowActionPerformed
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
         // TODO add your handling code here:
-        this.pageNum = 1;
-        initTable();
+        this.pageNumber = 1;
+        initList();
     }//GEN-LAST:event_jButtonFirstActionPerformed
 
-    private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
+    private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
         // TODO add your handling code here:
-        int row = jTableAccount.getSelectedRow();  
-        frmTransaction.AccountNo = jTableAccount.getValueAt(row, 1).toString();  
-        frmTransaction.itemTerpilih();  
-        this.dispose();  
-        //JTable target = (JTable)evt.getSource();
-       //int row = target.getSelectedRow();
-        //int column = target.getSelectedColumn();
-        //for (JInternalFrame frame : JInternalFrame) {
-       // Transaction transaction = (Transaction) JInternalFrame;
-        //Transaction transaction = new Transaction();
-        //transaction.getText().setText("120000");
-        //transaction.setVisible(true);
-        //transaction.AccountNo = jTableAccount.getValueAt(row,1).toString();
-        //transaction.setAccountLoad("100000",rowTarget,colTarget);
-        //new Transaction().table.setValueAt("AA", 1, 0);
-        //this.setVisible(false);
-        //}
-        //transaction.table.setValueAt(jTableAccount.getValueAt(row,1), rowTarget, colTarget);
-        //JOptionPane.showMessageDialog(null,jTableAccount.getValueAt(row,1),"Test Mouse",JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_jTableAccountMousePressed
+        if(pageNumber > 1){
+            this.pageNumber--;
+            initList();
+        }
+
+    }//GEN-LAST:event_jButtonPrevActionPerformed
+
+    private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
+        // TODO add your handling code here:
+        if(pageNumber < totalPage){
+            this.pageNumber++;
+            initList();
+        }
+
+    }//GEN-LAST:event_jButtonNextActionPerformed
+
+    private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
+        // TODO add your handling code here:
+        this.pageNumber = totalPage;
+        initList();
+
+    }//GEN-LAST:event_jButtonLastActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddRow;
+    private javax.swing.JButton jButtonBottomRow;
+    private javax.swing.JButton jButtonDelRow;
     private javax.swing.JButton jButtonFirst;
     private javax.swing.JButton jButtonLast;
     private javax.swing.JButton jButtonNext;
     private javax.swing.JButton jButtonPrev;
     private javax.swing.JButton jButtonSearch;
+    private javax.swing.JButton jButtonUpRow;
     private javax.swing.JComboBox<String> jComboBoxTotalRows;
     private javax.swing.JLabel jLabelSummary;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableAccount;
     // End of variables declaration//GEN-END:variables

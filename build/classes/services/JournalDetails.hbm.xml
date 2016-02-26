@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 25, 2016 9:15:54 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="services.JournalDetails" table="journal_details" catalog="gl" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="journalId" type="java.lang.Integer">
+            <column name="journal_id" />
+        </property>
+        <property name="order" type="java.lang.Integer">
+            <column name="order" />
+        </property>
+        <property name="accountId" type="java.lang.Integer">
+            <column name="account_id" />
+        </property>
+        <property name="accountNo" type="string">
+            <column name="account_no" length="45" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="45" />
+        </property>
+        <property name="debet" type="java.lang.Double">
+            <column name="debet" precision="22" scale="0" />
+        </property>
+        <property name="credit" type="java.lang.Double">
+            <column name="credit" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>
