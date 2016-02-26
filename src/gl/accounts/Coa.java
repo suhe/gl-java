@@ -5,25 +5,18 @@
  */
 package gl.accounts;
 
-import config.DatabaseUtil;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import services.Accounts;
+import models.Account;
 
 /**
  *
  * @author suhe
  */
 public class Coa extends javax.swing.JInternalFrame {
+
     Integer pageNumber = 1;
     Integer totalRowPerPage = 100;
     Integer totalPage = 1;
@@ -35,10 +28,9 @@ public class Coa extends javax.swing.JInternalFrame {
     public Coa() {
         initComponents();
         initComboItem();
-        initList();
-        //initTable(0, 100);
+        initTable();
     }
-    
+
     private void initComboItem() {
         jComboBoxTotalRows.removeAllItems();
         jComboBoxTotalRows.addItem("100");
@@ -47,30 +39,18 @@ public class Coa extends javax.swing.JInternalFrame {
         jComboBoxTotalRows.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                initList();
+                initTable();
             }
         });
     }
-    
-    private void initList() {
-        Session session = DatabaseUtil.getSessionFactory().openSession();
-        Transaction tx = null;
-        
-        try {
-            tx = session.beginTransaction();
-            this.totalRow = ((Long) session.createQuery("select count(*) from Accounts").uniqueResult()).intValue();
-        } catch (HibernateException e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-        } finally {
-            session.close();
-        }
-        
+
+    private void initTable() {
+        Account model = new Account();
+        totalRow = model.getCount();
         totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
-        Double totalPageDouble = Math.ceil(totalRow.doubleValue()/totalRowPerPage.doubleValue());
+        Double totalPageDouble = Math.ceil(totalRow.doubleValue() / totalRowPerPage.doubleValue());
         totalPage = totalPageDouble.intValue();
-        
+
         if (pageNumber.equals(1)) {
             jButtonFirst.setEnabled(false);
             jButtonPrev.setEnabled(false);
@@ -78,64 +58,14 @@ public class Coa extends javax.swing.JInternalFrame {
             jButtonFirst.setEnabled(true);
             jButtonPrev.setEnabled(true);
         }
-        
-        initTable(pageNumber, totalRowPerPage);
-        jLabelSummary.setText("Page : " + pageNumber + " / " + totalPage + " Total : " + totalRow);
-    }
-
-    private void initTable(Integer offset, Integer limit) {
-        DefaultTableModel model = new DefaultTableModel() {
-            String[] HEADER = {"No", "Account No", "Account Name", "Type"};
-
-            @Override
-            public String getColumnName(int column) {
-                return HEADER[column];
-            }
-
-            @Override
-            public int getColumnCount() {
-                return HEADER.length;
-            }
-        };
-
-        //set to list all data
-        Session session = DatabaseUtil.getSessionFactory().openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            List list = session.createQuery("FROM Accounts")
-                    .setFirstResult(offset)
-                    .setMaxResults(limit).list();
-            long i = (limit * (offset - 1)) + 1;
-            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                Accounts acc = (Accounts) iterator.next();
-                model.addRow(new Object[]{
-                    i,
-                    acc.getNo(),
-                    acc.getName(),
-                    acc.getType()
-                });
-                i++;
-            }
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-        } finally {
-            session.close();
-        }
-
-        jTableAccount.setModel(model);
+        jTableAccount.setModel(model.getList(pageNumber, totalRowPerPage));
         jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumnModel table = jTableAccount.getColumnModel();
         table.getColumn(0).setPreferredWidth(80);
         table.getColumn(1).setPreferredWidth(160);
         table.getColumn(2).setPreferredWidth(260);
         table.getColumn(3).setPreferredWidth(160);
-
-        
-
+        jLabelSummary.setText("Page : " + pageNumber + " / " + totalPage + " Total : " + totalRow);
     }
 
     /**
@@ -346,23 +276,23 @@ public class Coa extends javax.swing.JInternalFrame {
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
         // TODO add your handling code here:
         this.pageNumber = 1;
-        initList();
+        initTable();
     }//GEN-LAST:event_jButtonFirstActionPerformed
 
     private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
         // TODO add your handling code here:
-        if(pageNumber > 1){
+        if (pageNumber > 1) {
             this.pageNumber--;
-            initList();
+            initTable();
         }
 
     }//GEN-LAST:event_jButtonPrevActionPerformed
 
     private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
         // TODO add your handling code here:
-        if(pageNumber < totalPage){
+        if (pageNumber < totalPage) {
             this.pageNumber++;
-            initList();
+            initTable();
         }
 
     }//GEN-LAST:event_jButtonNextActionPerformed
@@ -370,7 +300,7 @@ public class Coa extends javax.swing.JInternalFrame {
     private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
         // TODO add your handling code here:
         this.pageNumber = totalPage;
-        initList();
+        initTable();
 
     }//GEN-LAST:event_jButtonLastActionPerformed
 
