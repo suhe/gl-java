@@ -7,8 +7,10 @@ package gl.layout;
 
 import config.Database;
 import database.Connect;
+import gl.accounts.Balance;
 import gl.accounts.Coa;
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
@@ -25,11 +27,33 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        initLayout();
+        defaultScreen();
+    }
+    
+    private void initLayout() {
         setTitle("General Ledger Accounting");
+        setEnabledMenuBar(false);
         JP.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         JP.setOpaque(false);
         add(JP,BorderLayout.CENTER);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+    
+    private void defaultScreen() {
+        Login dialog = new Login(this,false);
+        dialog.setLocationRelativeTo(this);
+        dialog.pack();
+        dialog.setVisible(true);
+        
+        //register menuitem
+        dialog.JMenuItemCoa = JMenuItemCoa;        
+    }
+    
+    public void setEnabledMenuBar(boolean status) {
+        JMenuItemConnect.setEnabled(status);
+        JMenuItemCoa.setEnabled(status);
+        jMenuItemTransaction.setEnabled(status);
     }
 
     /**
@@ -53,6 +77,7 @@ public class Main extends javax.swing.JFrame {
         JMenuItemConnect = new javax.swing.JMenuItem();
         JAccount = new javax.swing.JMenu();
         JMenuItemCoa = new javax.swing.JMenuItem();
+        jMenuItemBalance = new javax.swing.JMenuItem();
         jMenuJournal = new javax.swing.JMenu();
         jMenuItemTransaction = new javax.swing.JMenuItem();
         jMenuReport = new javax.swing.JMenu();
@@ -64,7 +89,7 @@ public class Main extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
-        jButtonDatabaseConnect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/database_28X28.png"))); // NOI18N
+        jButtonDatabaseConnect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/database_28X28.png"))); // NOI18N
         jButtonDatabaseConnect.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonDatabaseConnect.setFocusable(false);
         jButtonDatabaseConnect.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -76,7 +101,7 @@ public class Main extends javax.swing.JFrame {
         });
         jToolBar1.add(jButtonDatabaseConnect);
 
-        jButtonCoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/coa_28X28.png"))); // NOI18N
+        jButtonCoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/coa_28X28.png"))); // NOI18N
         jButtonCoa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonCoa.setFocusable(false);
         jButtonCoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -142,6 +167,7 @@ public class Main extends javax.swing.JFrame {
 
         JAccount.setText("Account");
 
+        JMenuItemCoa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         JMenuItemCoa.setText("Chart Of Account");
         JMenuItemCoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,6 +175,15 @@ public class Main extends javax.swing.JFrame {
             }
         });
         JAccount.add(JMenuItemCoa);
+
+        jMenuItemBalance.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemBalance.setText("Beginning Balance");
+        jMenuItemBalance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemBalanceActionPerformed(evt);
+            }
+        });
+        JAccount.add(jMenuItemBalance);
 
         jMenuBar1.add(JAccount);
 
@@ -321,7 +356,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
             if (status == false) {
-                journal.Transaction frmTransaction = new journal.Transaction();
+                gl.journal.Transaction frmTransaction = new gl.journal.Transaction();
                 JP.add(frmTransaction);
                 frmTransaction.JP = JP;
                 Dimension desktopSize = JP.getSize();
@@ -334,6 +369,34 @@ public class Main extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemTransactionActionPerformed
+
+    private void jMenuItemBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemBalanceActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Beginning Balance")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                Balance frmBalance = new Balance();
+                frmBalance.setTitle("Beginning Balance");
+                JP.add(frmBalance);
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = frmBalance.getSize();
+                frmBalance.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                frmBalance.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemBalanceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -360,6 +423,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelStatusConnected;
     private javax.swing.JMenu jMenu;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItemBalance;
     private javax.swing.JMenuItem jMenuItemReportCoa;
     private javax.swing.JMenuItem jMenuItemTransaction;
     private javax.swing.JMenu jMenuJournal;

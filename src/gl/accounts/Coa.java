@@ -6,16 +6,12 @@
 package gl.accounts;
 
 import helpers.JTableHelper;
-import java.awt.Cursor;
-import java.awt.Frame;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import journal.Transaction;
+import gl.journal.Transaction;
 import models.AccountModel;
-import service.AccountService;
+import services.AccountService;
 
 
 /**
@@ -115,18 +111,22 @@ public class Coa extends javax.swing.JInternalFrame {
         jButtonFirst = new javax.swing.JButton();
         jButtonPrev = new javax.swing.JButton();
         jButtonNext = new javax.swing.JButton();
-        jButtonLast = new javax.swing.JButton();
-        jButtonSearch = new javax.swing.JButton();
         jComboBoxTotalRows = new javax.swing.JComboBox<>();
         jLabelSummary = new javax.swing.JLabel();
+        jButtonLast = new javax.swing.JButton();
+        jButtonSearch = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableAccount = new javax.swing.JTable();
+        jButtonAddRow = new javax.swing.JButton();
+        jButtonDelRow = new javax.swing.JButton();
+        jButtonUpRow = new javax.swing.JButton();
+        jButtonBottomRow = new javax.swing.JButton();
 
         setClosable(true);
         setResizable(true);
         setName(""); // NOI18N
 
-        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_first_16x16.png"))); // NOI18N
+        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_first_16x16.png"))); // NOI18N
         jButtonFirst.setText("First");
         jButtonFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -134,7 +134,7 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_prev_16x16.png"))); // NOI18N
+        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_prev_16x16.png"))); // NOI18N
         jButtonPrev.setText("Prev");
         jButtonPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,7 +142,7 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_next_16x16.png"))); // NOI18N
+        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_next_16x16.png"))); // NOI18N
         jButtonNext.setText("Next");
         jButtonNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,7 +150,11 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_last_16x16.png"))); // NOI18N
+        jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabelSummary.setText("Total Rows");
+
+        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_last_16x16.png"))); // NOI18N
         jButtonLast.setText("Last");
         jButtonLast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,12 +162,8 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/search_16x16.png"))); // NOI18N
+        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
         jButtonSearch.setText("Search");
-
-        jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabelSummary.setText("Total Rows");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -172,38 +172,34 @@ public class Coa extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelSummary)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 357, Short.MAX_VALUE)
+                .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonFirst)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonPrev)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
                 .addComponent(jButtonNext)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonLast)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonSearch)
-                .addGap(7, 7, 7))
+                .addComponent(jButtonSearch))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxTotalRows)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButtonSearch)
-                                .addComponent(jButtonLast)
-                                .addComponent(jButtonNext)
-                                .addComponent(jButtonPrev)
-                                .addComponent(jButtonFirst)))
-                        .addGap(81, 81, 81))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabelSummary)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(jLabelSummary)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonFirst)
+                    .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonNext)
+                    .addComponent(jButtonLast)
+                    .addComponent(jButtonSearch)
+                    .addComponent(jButtonPrev))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         jTableAccount.setModel(new javax.swing.table.DefaultTableModel(
@@ -225,19 +221,72 @@ public class Coa extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTableAccount);
 
+        jButtonAddRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
+        jButtonAddRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddRowActionPerformed(evt);
+            }
+        });
+
+        jButtonDelRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/minus_16X16.png"))); // NOI18N
+        jButtonDelRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonDelRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDelRowActionPerformed(evt);
+            }
+        });
+
+        jButtonUpRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/up_16X16.png"))); // NOI18N
+        jButtonUpRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonUpRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpRowActionPerformed(evt);
+            }
+        });
+
+        jButtonBottomRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/bottom_16X16.png"))); // NOI18N
+        jButtonBottomRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonBottomRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBottomRowActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jButtonAddRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDelRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonUpRow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonBottomRow)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -277,30 +326,54 @@ public class Coa extends javax.swing.JInternalFrame {
         frmTransaction.AccountNo = jTableAccount.getValueAt(row, 1).toString();  
         frmTransaction.itemTerpilih();  
         this.dispose();  
-        //JTable target = (JTable)evt.getSource();
-       //int row = target.getSelectedRow();
-        //int column = target.getSelectedColumn();
-        //for (JInternalFrame frame : JInternalFrame) {
-       // Transaction transaction = (Transaction) JInternalFrame;
-        //Transaction transaction = new Transaction();
-        //transaction.getText().setText("120000");
-        //transaction.setVisible(true);
-        //transaction.AccountNo = jTableAccount.getValueAt(row,1).toString();
-        //transaction.setAccountLoad("100000",rowTarget,colTarget);
-        //new Transaction().table.setValueAt("AA", 1, 0);
-        //this.setVisible(false);
-        //}
-        //transaction.table.setValueAt(jTableAccount.getValueAt(row,1), rowTarget, colTarget);
-        //JOptionPane.showMessageDialog(null,jTableAccount.getValueAt(row,1),"Test Mouse",JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jTableAccountMousePressed
+
+    private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
+        // TODO add your handling code here
+        //JournalDetailModel  model = new JournalDetailModel();
+        //DefaultTableModel model =   (DefaultTableModel)  jTable1.getModel();
+        //String[] arendt = {"Hannah", "Arendt","1000","10000"};
+        //model.addRow(arendt);
+        //jTable1.setModel(model);
+        //jTable1.setCellSelectionEnabled(true);
+        //jTable1.requestFocus();
+        //jTable1.changeSelection(jTable1.getRowCount(), column, false, false);
+        //jTable1.editCellAt(jTable1.getRowCount(),0);
+        //this.initCalculation();
+    }//GEN-LAST:event_jButtonAddRowActionPerformed
+
+    private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
+        // TODO add your handling code here:
+        //((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+    }//GEN-LAST:event_jButtonDelRowActionPerformed
+
+    private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
+        // TODO add your handling code here:
+        //DefaultTableModel model =  (DefaultTableModel)jTable1.getModel();
+        //int[] rows = jTable1.getSelectedRows();
+        //model.moveRow(rows[0],rows[rows.length-1],rows[0]-1);
+        //jTable1.setRowSelectionInterval(rows[0]-1, rows[rows.length-1]-1);
+    }//GEN-LAST:event_jButtonUpRowActionPerformed
+
+    private void jButtonBottomRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBottomRowActionPerformed
+        // TODO add your handling code here:
+        //DefaultTableModel model =  (DefaultTableModel)jTable1.getModel();
+        //int[] rows = jTable1.getSelectedRows();
+        //model.moveRow(rows[0],rows[rows.length-1],rows[0]+1);
+        //jTable1.setRowSelectionInterval(rows[0]+1, rows[rows.length-1]+1);
+    }//GEN-LAST:event_jButtonBottomRowActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddRow;
+    private javax.swing.JButton jButtonBottomRow;
+    private javax.swing.JButton jButtonDelRow;
     private javax.swing.JButton jButtonFirst;
     private javax.swing.JButton jButtonLast;
     private javax.swing.JButton jButtonNext;
     private javax.swing.JButton jButtonPrev;
     private javax.swing.JButton jButtonSearch;
+    private javax.swing.JButton jButtonUpRow;
     private javax.swing.JComboBox<String> jComboBoxTotalRows;
     private javax.swing.JLabel jLabelSummary;
     private javax.swing.JPanel jPanel1;
