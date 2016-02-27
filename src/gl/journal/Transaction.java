@@ -44,10 +44,10 @@ public class Transaction extends javax.swing.JInternalFrame {
     }  
     
     public void itemTerpilih(){  
-        CoaForm frmCoa = new CoaForm();
-        JP.add(frmCoa);
-        frmCoa.frmTransaction = this;  
-        jTextFieldTBalanced.setText(AccountNo);  
+        //CoaForm frmCoa = new CoaForm();
+        //JP.add(frmCoa);
+        //frmCoa.frmTransaction = this;  
+        //jTextFieldTBalanced.setText(AccountNo);  
          
 }  
 
@@ -459,14 +459,14 @@ public class Transaction extends javax.swing.JInternalFrame {
         
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER && col == 0) {
             //JOptionPane.showMessageDialog(null, "Enter Row ","Test Enter",JOptionPane.INFORMATION_MESSAGE);
-            CoaForm frmCoa = new CoaForm();
-            JP.add(frmCoa);
-            frmCoa.frmTransaction = this;
-            frmCoa.setFormName("Transaction");
-            frmCoa.rowTarget = row;
-            frmCoa.colTarget = col;
-            this.table = jTable1;
-            frmCoa.setVisible(true);
+            //CoaForm frmCoa = new CoaForm();
+            //JP.add(frmCoa);
+            //frmCoa.frmTransaction = this;
+            //frmCoa.setFormName("Transaction");
+            //frmCoa.rowTarget = row;
+            //frmCoa.colTarget = col;
+            //this.table = jTable1;
+           // frmCoa.setVisible(true);
         }
         
         

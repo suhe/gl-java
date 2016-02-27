@@ -5,7 +5,7 @@
             <url>src/gl/accounts/Coa.java</url>
             <bookmark id="1">
                 <name/>
-                <line>320</line>
+                <line>250</line>
                 <key/>
             </bookmark>
         </file>
@@ -18,8 +18,10 @@
             <file>file:/E:/wampp/Generalledger/Gl/src/services/Accounts.hbm.xml</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/journal/Transaction.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/accounts/Coa.java</file>
+            <file>file:/E:/wampp/Generalledger/Gl/src/models/Account.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/layout/Main.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/layout/Login.java</file>
+            <file>file:/E:/wampp/Generalledger/Gl/src/models/User.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/services/Accounts.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/services/AccountService.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/config/DatabaseUtil.java</file>

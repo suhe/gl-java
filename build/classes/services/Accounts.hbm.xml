@@ -9,13 +9,13 @@
             <generator class="identity" />
         </id>
         <property name="no" type="string">
-            <column name="no" length="30" not-null="true" />
+            <column name="no" length="30" not-null="false" />
         </property>
         <property name="name" type="string">
-            <column name="name" length="100" not-null="true" />
+            <column name="name" length="100" not-null="false" />
         </property>
         <property name="type" type="string">
-            <column name="type" length="30" not-null="true" />
+            <column name="type" length="30" not-null="false" />
         </property>
     </class>
 </hibernate-mapping>

@@ -21,6 +21,11 @@ import services.Accounts;
 public class Account {
     String[] TABLE_COLUMN_NAME = {"No", "Account No", "Account Name", "Type"};
     
+    public String AccountNo;
+    public String AccountName;
+    public String AccountType;
+    public Boolean isEdit;
+    
     public DefaultTableModel getList(Integer offset,Integer limit) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -38,11 +43,12 @@ public class Account {
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
+            Integer i = (limit * (offset - 1));
             tx = session.beginTransaction();
             List list = session.createQuery("FROM Accounts")
-                    .setFirstResult(offset)
-                    .setMaxResults(limit).list();
-            long i = (limit * (offset - 1)) + 1;
+                    .setFirstResult(i)
+                    .setMaxResults(limit + i).list();
+            i++;
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
                 Accounts acc = (Accounts) iterator.next();
                 model.addRow(new Object[]{
@@ -84,5 +90,27 @@ public class Account {
         }
         
         return count;
+    }
+    
+    public void save() {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Accounts acc = new Accounts();
+            acc.setName(AccountName);
+            acc.setNo(AccountNo);
+            acc.setType(AccountType);
+            session.save(acc);
+            session.flush();
+            tx.commit();
+        }catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
     }
 }

@@ -5,6 +5,7 @@
  */
 package gl.accounts;
 
+import gl.layout.Login;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JTable;
@@ -79,7 +80,7 @@ public class Coa extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableAccount = new javax.swing.JTable();
-        jButtonAddRow = new javax.swing.JButton();
+        jButtonAdd = new javax.swing.JButton();
         jButtonDelRow = new javax.swing.JButton();
         jButtonUpRow = new javax.swing.JButton();
         jButtonBottomRow = new javax.swing.JButton();
@@ -112,11 +113,11 @@ public class Coa extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTableAccount);
 
-        jButtonAddRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
-        jButtonAddRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
+        jButtonAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddRowActionPerformed(evt);
+                jButtonAddActionPerformed(evt);
             }
         });
 
@@ -207,7 +208,7 @@ public class Coa extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -222,7 +223,7 @@ public class Coa extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addComponent(jButtonAddRow)
+                        .addComponent(jButtonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonDelRow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -254,10 +255,14 @@ public class Coa extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jTableAccountMousePressed
 
-    private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here
+        CoaForm form = new CoaForm(this,false);
+        form.setLocationRelativeTo(this);
+        form.pack();
+        form.setVisible(true);
 
-    }//GEN-LAST:event_jButtonAddRowActionPerformed
+    }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
@@ -306,7 +311,7 @@ public class Coa extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAddRow;
+    private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonBottomRow;
     private javax.swing.JButton jButtonDelRow;
     private javax.swing.JButton jButtonFirst;

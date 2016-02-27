@@ -44,7 +44,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jButtonAddRow" alignment="0" min="-2" pref="33" max="-2" attributes="0"/>
+                  <Component id="jButtonAdd" alignment="0" min="-2" pref="33" max="-2" attributes="0"/>
                   <Component id="jButtonDelRow" alignment="0" min="-2" pref="33" max="-2" attributes="0"/>
                   <Component id="jButtonUpRow" alignment="0" min="-2" pref="33" max="-2" attributes="0"/>
                   <Component id="jButtonBottomRow" min="-2" pref="33" max="-2" attributes="0"/>
@@ -63,7 +63,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                      <Component id="jButtonAddRow" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAdd" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonDelRow" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -126,7 +126,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButtonAddRow">
+    <Component class="javax.swing.JButton" name="jButtonAdd">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/resources/icons/plus_16X16.png"/>
@@ -136,7 +136,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAddRowActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAddActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonDelRow">
