@@ -5,20 +5,20 @@
             <url>src/gl/accounts/Coa.java</url>
             <bookmark id="1">
                 <name/>
-                <line>250</line>
+                <line>282</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/E:/wampp/Generalledger/Gl/src/helpers/Validator/StatusValidator.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/accounts/CoaForm.java</file>
-            <file>file:/E:/wampp/Generalledger/Gl/src/services/Accounts.hbm.xml</file>
+            <file>file:/E:/wampp/Generalledger/Gl/src/helpers/Validator/BaseValidator.java</file>
+            <file>file:/E:/wampp/Generalledger/Gl/src/helpers/Validator/RequiredValidator.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/accounts/Coa.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/models/Account.java</file>
-            <file>file:/E:/wampp/Generalledger/Gl/src/gl/layout/Login.java</file>
             <file>file:/E:/wampp/Generalledger/Gl/src/gl/layout/Main.java</file>
-            <file>file:/E:/wampp/Generalledger/Gl/src/services/Accounts.java</file>
         </group>
     </open-files>
 </project-private>

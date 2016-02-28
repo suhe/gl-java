@@ -5,10 +5,13 @@
  */
 package gl.accounts;
 
-import gl.layout.Login;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
 
@@ -22,6 +25,8 @@ public class Coa extends javax.swing.JInternalFrame {
     Integer totalRowPerPage = 100;
     Integer totalPage = 1;
     Integer totalRow = 0;
+    Account model;
+    public JProgressBar jProgressBarStatus = new JProgressBar();
 
     /**
      * Creates new form Balance
@@ -29,6 +34,10 @@ public class Coa extends javax.swing.JInternalFrame {
     public Coa() {
         initComponents();
         initComboItem();
+        initTable();
+    }
+
+    public void coa() {
         initTable();
     }
 
@@ -40,13 +49,15 @@ public class Coa extends javax.swing.JInternalFrame {
         jComboBoxTotalRows.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
+                pageNumber = 1;
                 initTable();
             }
         });
     }
 
     private void initTable() {
-        Account model = new Account();
+        model = new Account();
+        model.jProgressBarStatus = jProgressBarStatus;
         totalRow = model.getCount();
         totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
         Double totalPageDouble = Math.ceil(totalRow.doubleValue() / totalRowPerPage.doubleValue());
@@ -61,12 +72,26 @@ public class Coa extends javax.swing.JInternalFrame {
         }
         jTableAccount.setModel(model.getList(pageNumber, totalRowPerPage));
         jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTableAccount.setCellSelectionEnabled(false);
+        jTableAccount.setRowSelectionAllowed(true);
         TableColumnModel table = jTableAccount.getColumnModel();
         table.getColumn(0).setPreferredWidth(80);
         table.getColumn(1).setPreferredWidth(160);
         table.getColumn(2).setPreferredWidth(260);
         table.getColumn(3).setPreferredWidth(160);
+        table.getColumn(4).setPreferredWidth(50);
         jLabelSummary.setText("Page : " + pageNumber + " / " + totalPage + " Total : " + totalRow);
+        //set to value 0 progress bar
+        Runnable doProgress;
+        doProgress = new Runnable() {
+            @Override
+            public void run() {
+                jProgressBarStatus.setMaximum(totalPage - 1);
+                jProgressBarStatus.setMinimum(0);
+                jProgressBarStatus.setValue(pageNumber);
+            }
+        };
+        SwingUtilities.invokeLater(doProgress);
     }
 
     /**
@@ -92,6 +117,7 @@ public class Coa extends javax.swing.JInternalFrame {
         jComboBoxTotalRows = new javax.swing.JComboBox<>();
         jLabelSummary = new javax.swing.JLabel();
 
+        setClosable(true);
         setTitle("Cart of account");
 
         jTableAccount.setModel(new javax.swing.table.DefaultTableModel(
@@ -107,8 +133,8 @@ public class Coa extends javax.swing.JInternalFrame {
         ));
         jTableAccount.setColumnSelectionAllowed(true);
         jTableAccount.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTableAccountMousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableAccountMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jTableAccount);
@@ -179,6 +205,11 @@ public class Coa extends javax.swing.JInternalFrame {
 
         jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
         jButtonSearch.setText("Search");
+        jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSearchActionPerformed(evt);
+            }
+        });
 
         jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -251,31 +282,51 @@ public class Coa extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
-
-    }//GEN-LAST:event_jTableAccountMousePressed
-
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here
-        CoaForm form = new CoaForm(this,false);
+        model = new Account();
+        model.setIsEdit(false);
+        CoaForm form = new CoaForm(this, false);
         form.setLocationRelativeTo(this);
         form.pack();
+        form.list = this;
         form.setVisible(true);
 
     }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
-        //((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+        int row = jTableAccount.getSelectedRow();
+        int _col = 1;
+        int col = 4;
+        if (row > 0) {
+            String accountNo;
+            Integer key = Integer.parseInt(jTableAccount.getValueAt(row, col).toString());
+            accountNo = jTableAccount.getValueAt(row, _col).toString();
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure want to delete account no : " + accountNo + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                model = new Account();
+                model.delete(key);
+                initTable();
+            }
+        }
     }//GEN-LAST:event_jButtonDelRowActionPerformed
 
     private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel tableModel = (DefaultTableModel) jTableAccount.getModel();
+        int[] rows = jTableAccount.getSelectedRows();
+        tableModel.moveRow(rows[0], rows[rows.length - 1], rows[0] - 1);
+        jTableAccount.setRowSelectionInterval(rows[0] - 1, rows[rows.length - 1] - 1);
 
     }//GEN-LAST:event_jButtonUpRowActionPerformed
 
     private void jButtonBottomRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBottomRowActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel tableModel = (DefaultTableModel) jTableAccount.getModel();
+        int[] rows = jTableAccount.getSelectedRows();
+        tableModel.moveRow(rows[0], rows[rows.length - 1], rows[0] + 1);
+        jTableAccount.setRowSelectionInterval(rows[0] + 1, rows[rows.length - 1] + 1);
     }//GEN-LAST:event_jButtonBottomRowActionPerformed
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
@@ -308,6 +359,32 @@ public class Coa extends javax.swing.JInternalFrame {
         initTable();
 
     }//GEN-LAST:event_jButtonLastActionPerformed
+
+    private void jTableAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            model = new Account();
+            int row = jTableAccount.getSelectedRow();
+            int col = 4;
+            Integer key = Integer.parseInt(jTableAccount.getValueAt(row, col).toString());
+            model.setIsEdit(true);
+            model.setId(key);
+            CoaForm form = new CoaForm(this, false);
+            form.setLocationRelativeTo(this);
+            form.pack();
+            form.list = this;
+            form.setVisible(true);
+        }
+    }//GEN-LAST:event_jTableAccountMouseClicked
+
+    private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
+        // TODO add your handling code here:
+        CoaFind form = new CoaFind(this, false);
+        form.setLocationRelativeTo(this);
+        form.pack();
+        form.list = this;
+        form.setVisible(true);
+    }//GEN-LAST:event_jButtonSearchActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

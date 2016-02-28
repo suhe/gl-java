@@ -67,14 +67,14 @@ public abstract class BaseValidator extends InputVerifier implements KeyListener
      * @param parent A JFrame that implements the ValidationCapable interface.
      * @param c The JComponent to be validated.
      * @param message A message to be displayed in the popup help tip if validation fails.
-     */
+     
 	
     public BaseValidator (JFrame parent, JComponent c, String message) {
         this(c, message);
         this.parent = parent;
         popup = new JDialog(parent);
         initComponents();
-    }
+    }*/
     
     /**
      * Implement the actual validation logic in this method. The method should

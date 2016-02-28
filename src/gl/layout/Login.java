@@ -60,6 +60,7 @@ public class Login extends javax.swing.JDialog {
 
         jLabel3.setText("Password");
 
+        jButtonLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/door_16X16.png"))); // NOI18N
         jButtonLogin.setText("Login");
         jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

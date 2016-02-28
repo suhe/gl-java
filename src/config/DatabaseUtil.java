@@ -5,6 +5,7 @@
  */
 package config;
 
+import javax.swing.JOptionPane;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 //import org.hibernate.cfg.Configuration;
@@ -31,12 +32,16 @@ public class DatabaseUtil {
             sessionFactory = new AnnotationConfiguration().configure("/config/Database.cfg.xml").buildSessionFactory();
         } catch (Throwable ex) {
             // Log the exception. 
-            System.err.println("Gagal Konek." + ex);
-            throw new ExceptionInInitializerError(ex);
+            JOptionPane.showMessageDialog(null, "Connection error,please advice administrator , error code" + ex, "Database Connection", JOptionPane.ERROR_MESSAGE);    
+            //System.err.println("Gagal Konek." + ex);
+            //throw new ExceptionInInitializerError(ex);
         }
     }
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
+    
+    
+    
 }

@@ -8,9 +8,7 @@ package gl.layout;
 import config.Database;
 import database.Connect;
 import gl.accounts.Coa;
-import gl.accounts.CoaForm;
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
@@ -29,6 +27,10 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         initLayout();
         defaultScreen();
+    }
+    
+    public JProgressBar getProgressBar() {
+        return this.jProgressBarStatus;
     }
     
     private void initLayout() {
@@ -71,7 +73,7 @@ public class Main extends javax.swing.JFrame {
         jButtonCoa = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabelStatusConnected = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        jProgressBarStatus = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu = new javax.swing.JMenu();
         JMenuItemConnect = new javax.swing.JMenuItem();
@@ -81,7 +83,17 @@ public class Main extends javax.swing.JFrame {
         jMenuJournal = new javax.swing.JMenu();
         jMenuItemTransaction = new javax.swing.JMenuItem();
         jMenuReport = new javax.swing.JMenu();
-        jMenuItemReportCoa = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuAccount = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Main Menu");
@@ -138,7 +150,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabelStatusConnected)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 323, Short.MAX_VALUE)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jProgressBarStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -146,7 +158,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jProgressBarStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelStatusConnected))
                 .addContainerGap())
         );
@@ -202,14 +214,42 @@ public class Main extends javax.swing.JFrame {
 
         jMenuReport.setText("Report");
 
-        jMenuItemReportCoa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemReportCoa.setText("Account");
-        jMenuItemReportCoa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemReportCoaActionPerformed(evt);
-            }
-        });
-        jMenuReport.add(jMenuItemReportCoa);
+        jMenu1.setText("Profit & Lost");
+
+        jMenuItem3.setText("Profit & Lost Summary");
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem4.setText("Profit & Lost Details");
+        jMenu1.add(jMenuItem4);
+
+        jMenuReport.add(jMenu1);
+
+        jMenuAccount.setText("Account");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setText("Account List");
+        jMenuAccount.add(jMenuItem1);
+
+        jMenuItem2.setText("Saldo Balanced");
+        jMenuAccount.add(jMenuItem2);
+
+        jMenuReport.add(jMenuAccount);
+
+        jMenu2.setText("Balance Sheet");
+
+        jMenuItem5.setText("Trial Balance");
+        jMenu2.add(jMenuItem5);
+
+        jMenuItem6.setText("Balance Sheet Summary");
+        jMenu2.add(jMenuItem6);
+
+        jMenuItem7.setText("Balance Sheet Details");
+        jMenu2.add(jMenuItem7);
+
+        jMenuReport.add(jMenu2);
+
+        jMenuItem8.setText("Ledger Transaction");
+        jMenuReport.add(jMenuItem8);
 
         jMenuBar1.add(jMenuReport);
 
@@ -278,9 +318,13 @@ public class Main extends javax.swing.JFrame {
             if (status == false) {
                 Coa list = new Coa();
                 JP.add(list);
+                //jProgressBarStatus.setMaximum(100);
+                //jProgressBarStatus.setMinimum(0);
+                //jProgressBarStatus.setValue(50);
                 Dimension desktopSize = JP.getSize();
                 Dimension jInternalFrameSize = list.getSize();
                 list.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                list.jProgressBarStatus = this.jProgressBarStatus;
                 list.setVisible(true);
             }
         } catch (PropertyVetoException e) {
@@ -298,39 +342,6 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.JMenuItemConnectActionPerformed(evt);
     }//GEN-LAST:event_jButtonDatabaseConnectActionPerformed
-
-    private void jMenuItemReportCoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReportCoaActionPerformed
-        // TODO add your handling code here:
-        //if(Database.isConnect == false) {
-          //  JOptionPane.showMessageDialog(null, "Please Connect Database ! ","Connect DB",JOptionPane.ERROR_MESSAGE);
-            //return;
-        //}
-        
-        try {
-            boolean status = false;
-            JInternalFrame[] children;
-            children = JP.getAllFrames();
-            for (JInternalFrame f : children) {
-                if (this.getTitle().equals("Report COA")) {
-                    f.setSelected(true);
-                    status = true;
-                    break;
-                }
-            }
-            if (status == false) {
-                reports.Coa frmCoa = new reports.Coa();
-                JP.add(frmCoa);
-                frmCoa.JP = JP;
-                Dimension desktopSize = JP.getSize();
-                Dimension jInternalFrameSize = frmCoa.getSize();
-                frmCoa.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
-                frmCoa.setVisible(true);
-            }
-        } catch (PropertyVetoException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jMenuItemReportCoaActionPerformed
 
     private void jMenuItemTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemTransactionActionPerformed
         // TODO add your handling code here:
@@ -417,14 +428,24 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButtonDatabaseConnect;
     private javax.swing.JLabel jLabelStatusConnected;
     private javax.swing.JMenu jMenu;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenuAccount;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemBalance;
-    private javax.swing.JMenuItem jMenuItemReportCoa;
     private javax.swing.JMenuItem jMenuItemTransaction;
     private javax.swing.JMenu jMenuJournal;
     private javax.swing.JMenu jMenuReport;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JProgressBar jProgressBarStatus;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
