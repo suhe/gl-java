@@ -10,6 +10,9 @@ package gl;
  * @author suhe
  */
 
+import helpers.Lang;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
