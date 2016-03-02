@@ -18,5 +18,8 @@
             <column name="type" length="30" not-null="false" />
         </property>
         
+        <one-to-one name="BeginningBalances" class="services.BeginningBalances"
+            cascade="save-update" />
+        
     </class>
 </hibernate-mapping>

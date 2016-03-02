@@ -130,6 +130,8 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         jLabelSummary = new javax.swing.JLabel();
         jComboBoxYear = new javax.swing.JComboBox<>();
 
+        setClosable(true);
+
         jTableAccount.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},

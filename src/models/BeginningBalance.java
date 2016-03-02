@@ -11,23 +11,22 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import services.Accounts;
-import services.BeginningBalances;
 
 /**
  *
  * @author suhe
  */
 public class BeginningBalance {
+
     String[] TABLE_COLUMN_NAME = {Lang.getString("App.no"),
         Lang.getString("App.account_no"), Lang.getString("App.account_name"),
-        Lang.getString("App.type"),Lang.getString("App.debet"),Lang.getString("App.credit"), "#"};
-    
+        Lang.getString("App.type"), Lang.getString("App.debet"), Lang.getString("App.credit"), "#"};
+
     public DefaultTableModel getList(Integer offset, final Integer limit) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -53,32 +52,25 @@ public class BeginningBalance {
         try {
             Integer i = (limit * (offset - 1));
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(BeginningBalances.class)
-                    .setFetchMode("accounts", FetchMode.JOIN);
-            //criteria.add
-
-            //search provider
-            //if (!getAccountNo().equals("")) {
-              //  criteria.add(Restrictions.like("no", "%" + getAccountNo() + "%"));
-            //}
-            //if (!getAccountName().equals("")) {
-              //  criteria.add(Restrictions.like("name", "%" + getAccountName() + "%"));
-            //}
-
+            Criteria criteria;
+            criteria = session.createCriteria(Accounts.class);
             List list = criteria.list();
-            i++;
-            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                Accounts acc = (Accounts) iterator.next();
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                i++;
+                Accounts acc;
+                acc = (Accounts) it.next();
                 model.addRow(new Object[]{
                     i,
                     acc.getNo(),
                     acc.getName(),
                     acc.getType(),
-                    acc.getId()
+                    acc.getBeginningBalances() == null ? 0.00 : acc.getBeginningBalances().getDebet() ,
+                    acc.getBeginningBalances() == null ? 0.00 : acc.getBeginningBalances().getCredit()
                 });
-                i++;
             }
             tx.commit();
+
         } catch (HibernateException e) {
             if (tx != null) {
                 tx.rollback();
@@ -89,7 +81,7 @@ public class BeginningBalance {
 
         return model;
     }
-    
+
     public Integer getCount() {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
@@ -98,17 +90,7 @@ public class BeginningBalance {
 
         try {
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(BeginningBalances.class);
-
-            //search provider
-            //if (!getAccountNo().equals("")) {
-              //  criteria.add(Restrictions.like("no", "%" + getAccountNo() + "%"));
-            //}
-
-            //if (!getAccountName().equals("")) {
-              //  criteria.add(Restrictions.like("name", "%" + getAccountName() + "%"));
-            //}
-
+            Criteria criteria = session.createCriteria(Account.class);
             count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             tx.commit();
         } catch (HibernateException ex) {
@@ -121,4 +103,6 @@ public class BeginningBalance {
 
         return count;
     }
+    
+    
 }

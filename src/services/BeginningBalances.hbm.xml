@@ -4,10 +4,14 @@
 <!-- Generated Feb 25, 2016 9:15:54 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="services.BeginningBalances" table="beginning_balances" catalog="gl" optimistic-lock="version">
-       <id name="account_id" type="java.lang.Integer">
+        <id name="accountId" type="java.lang.Integer">
             <column name="account_id" />
-            <generator class="identity" />
+            <generator class="foreign">
+                <param name="property">accounts</param>
+            </generator>
         </id>
+        <one-to-one name="Accounts" class="services.Accounts" constrained="false" />
+        
         <property name="year" type="string">
             <column name="year" length="4" not-null="false" />
         </property>
@@ -17,6 +21,12 @@
         <property name="credit" type="double">
             <column name="credit" length="18" not-null="false" />
         </property>
+        
+        <property name="accountId" type="java.lang.Integer" insert="false" update="false">
+            <column name="account_id" length="11" not-null="false" />
+        </property>
+        
+     
         
     </class>
 </hibernate-mapping>
