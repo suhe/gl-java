@@ -12,7 +12,7 @@ import java.text.NumberFormat;
  *
  * @author suhe
  */
-public class JFormatHelper {
+public class Format {
     public static String Currency(Double var,int digit) {
         String Format = "#,###.";
         for(int i=0; i<digit; i++) {

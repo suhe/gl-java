@@ -5,23 +5,29 @@
  */
 package gl.accounts;
 
+import helpers.Config;
 import helpers.Lang;
 import helpers.Validator.IsValidValidator;
 import helpers.Validator.RequiredValidator;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import models.Account;
+import models.BeginningBalance;
 import services.Accounts;
+import services.BeginningBalances;
 
 /**
  *
  * @author suhe
  */
-public class CoaForm extends javax.swing.JDialog {
+public class BeginBalanceForm extends javax.swing.JDialog {
 
-    public Coa list = new Coa();
+    public BeginBalance list = new BeginBalance();
     public String AccountNo;
-    Account model;
+    BeginningBalance balanceModel;
+    Account accountModel;
 
     /**
      * Creates new form CoaForm
@@ -29,43 +35,52 @@ public class CoaForm extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public CoaForm(JInternalFrame parent, boolean modal) {
+    public BeginBalanceForm(JInternalFrame parent, boolean modal) {
         //super(parent, modal);
         initComponents();
-        setParameterLanguage();
-        initType();
+        initComboItem();
         initForm();
+        setParameterLanguage();
     }
     
     private void setParameterLanguage() {
         jLabelAccountNo.setText(Lang.getString("App.account_no"));
         jLabelAccountName.setText(Lang.getString("App.account_name"));
-        jLabelType.setText(Lang.getString("App.type"));
+        jLabelYear.setText(Lang.getString("App.year"));
+        jLabelDebet.setText(Lang.getString("App.debet"));
+        jLabelCredit.setText(Lang.getString("App.credit"));
         jButtonSave.setText(Lang.getString("App.save"));
         jButtonCancel.setText(Lang.getString("App.cancel"));
     }
 
     private void initForm() {
-        model = new Account();
-        if (model.getIsEdit() != true) {
-            jTextFieldAccountNo.setText("");
-            jTextFieldAccountName.setText("");
-        } else {
-            //JOptionPane.showMessageDialog(null, "Data = " + AccountNo, "Store DB", JOptionPane.INFORMATION_MESSAGE);
-            model = new Account();
-            Accounts row = model.getRow(model.getId());
-            jTextFieldAccountNo.setText(row.getNo());
-            jTextFieldAccountName.setText(row.getName());
-            jComboBoxType.setSelectedItem(row.getType());
+        accountModel = new Account();
+        balanceModel = new BeginningBalance();
+        
+        if (balanceModel.getIsEdit() == true) {
+            Accounts account = accountModel.getRow(balanceModel.getAccountId());
+            BeginningBalances balance = balanceModel.getRowByIdAndYear(balanceModel.getAccountId(), balanceModel.getYear());
+            jTextFieldAccountNo.setText(account.getNo());
+            jTextFieldAccountName.setText(account.getName());
+            jComboBoxYear.setSelectedItem(balance!=null ? balance.getYear(): "" );
+            jTextFieldDebet.setText(balance!=null ? balance.getDebet().toString() : "0.00" );
+            jTextFieldCredit.setText(balance!=null ? balance.getCredit().toString() : "0.00" );
         }
+        
+        jTextFieldAccountNo.setEditable(false);
+        jTextFieldAccountName.setEditable(false);
     }
 
-    private void initType() {
-        jComboBoxType.removeAllItems();
-        jComboBoxType.addItem("ASSET");
-        jComboBoxType.addItem("LIABILITY");
-        jComboBoxType.addItem("EXPENSE");
-        jComboBoxType.addItem("REVENUE");
+    private void initComboItem() {
+        //page year list
+        jComboBoxYear.removeAllItems();
+        String[] yearList = Config.getArray("App.year_list");
+        if (0 > yearList.length) {
+        } else {
+            for (Short i = 0; i < yearList.length; i++) {
+                jComboBoxYear.addItem(yearList[i]);
+            }
+        }
     }
 
     /**
@@ -81,10 +96,14 @@ public class CoaForm extends javax.swing.JDialog {
         jTextFieldAccountNo = new javax.swing.JTextField();
         jLabelAccountName = new javax.swing.JLabel();
         jTextFieldAccountName = new javax.swing.JTextField();
-        jLabelType = new javax.swing.JLabel();
-        jComboBoxType = new javax.swing.JComboBox<>();
+        jLabelYear = new javax.swing.JLabel();
+        jComboBoxYear = new javax.swing.JComboBox<>();
         jButtonSave = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
+        jLabelDebet = new javax.swing.JLabel();
+        jTextFieldDebet = new javax.swing.JTextField();
+        jLabelCredit = new javax.swing.JLabel();
+        jTextFieldCredit = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,9 +111,9 @@ public class CoaForm extends javax.swing.JDialog {
 
         jLabelAccountName.setText("Account Name");
 
-        jLabelType.setText("Type");
+        jLabelYear.setText("Year");
 
-        jComboBoxType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonSave.setText("Save");
@@ -112,6 +131,10 @@ public class CoaForm extends javax.swing.JDialog {
             }
         });
 
+        jLabelDebet.setText("Debet");
+
+        jLabelCredit.setText("Credit");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,7 +144,9 @@ public class CoaForm extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabelAccountNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabelAccountName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelDebet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelCredit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
@@ -136,7 +161,9 @@ public class CoaForm extends javax.swing.JDialog {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jTextFieldAccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBoxType, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jTextFieldDebet, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextFieldCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBoxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -152,13 +179,21 @@ public class CoaForm extends javax.swing.JDialog {
                     .addComponent(jTextFieldAccountName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelType)
-                    .addComponent(jComboBoxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                    .addComponent(jLabelYear)
+                    .addComponent(jComboBoxYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelDebet)
+                    .addComponent(jTextFieldDebet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelCredit)
+                    .addComponent(jTextFieldCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSave)
                     .addComponent(jButtonCancel))
-                .addGap(14, 14, 14))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -170,19 +205,15 @@ public class CoaForm extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
-        // TODO add your handling code here:
-        model = new Account();
-        RequiredValidator noVal = new RequiredValidator(this, jTextFieldAccountNo, "The field account no is required !");
-        RequiredValidator nameVal = new RequiredValidator(this, jTextFieldAccountName, "The field account name is required !");
-        IsValidValidator isValid = new IsValidValidator(this, jTextFieldAccountNo, "The account no is already !", model.isValid(jTextFieldAccountNo.getText()));
-
-        if (noVal.verify(jTextFieldAccountNo) && nameVal.verify(jTextFieldAccountName) && isValid.verify(jTextFieldAccountNo)) {
-            model.AccountNo = jTextFieldAccountNo.getText();
-            model.AccountName = jTextFieldAccountName.getText();
-            model.AccountType = jComboBoxType.getSelectedItem().toString();
-            model.saveOrUpdate();
+        balanceModel = new BeginningBalance();
+        RequiredValidator debetVal = new RequiredValidator(this, jTextFieldDebet, "The field debet is required !");
+        RequiredValidator creditVal = new RequiredValidator(this, jTextFieldCredit, "The field credit name is required !");
+        if (debetVal.verify(jTextFieldDebet) && creditVal.verify(jTextFieldCredit)) {
+            balanceModel.setDebet(Double.parseDouble(jTextFieldDebet.getText()));
+            balanceModel.setCredit(Double.parseDouble(jTextFieldCredit.getText()));
+            balanceModel.saveOrUpdate();
             JOptionPane.showMessageDialog(null, "Successfully store to database !", "Store DB", JOptionPane.INFORMATION_MESSAGE);
-            list.coa();
+            list.beginBalance();
             this.dispose();
         }
     }//GEN-LAST:event_jButtonSaveActionPerformed
@@ -204,24 +235,22 @@ public class CoaForm extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CoaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BeginBalanceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CoaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BeginBalanceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CoaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BeginBalanceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CoaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BeginBalanceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
         
-        
-
-
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                CoaForm dialog = new CoaForm(new JInternalFrame(), true);
+                BeginBalanceForm dialog = new BeginBalanceForm(new JInternalFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -236,11 +265,15 @@ public class CoaForm extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
-    private javax.swing.JComboBox<String> jComboBoxType;
+    private javax.swing.JComboBox<String> jComboBoxYear;
     private javax.swing.JLabel jLabelAccountName;
     private javax.swing.JLabel jLabelAccountNo;
-    private javax.swing.JLabel jLabelType;
+    private javax.swing.JLabel jLabelCredit;
+    private javax.swing.JLabel jLabelDebet;
+    private javax.swing.JLabel jLabelYear;
     private javax.swing.JTextField jTextFieldAccountName;
     private javax.swing.JTextField jTextFieldAccountNo;
+    private javax.swing.JTextField jTextFieldCredit;
+    private javax.swing.JTextField jTextFieldDebet;
     // End of variables declaration//GEN-END:variables
 }

@@ -12,6 +12,7 @@ import java.awt.event.ItemListener;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.BeginningBalance;
 
@@ -20,6 +21,7 @@ import models.BeginningBalance;
  * @author suhe
  */
 public class BeginBalance extends javax.swing.JInternalFrame {
+
     Integer pageNumber = 1;
     Integer totalRowPerPage = 100;
     Integer totalPage = 1;
@@ -36,11 +38,11 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         initComboItem();
         initTable();
     }
-    
-    public void BeginningBalance() {
+
+    public void beginBalance() {
         initTable();
     }
-    
+
     private void setParameterLanguage() {
         jButtonFirst.setText(Lang.getString("App.first"));
         jButtonNext.setText(Lang.getString("App.next"));
@@ -48,18 +50,18 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         jButtonLast.setText(Lang.getString("App.last"));
         jButtonSearch.setText(Lang.getString("App.search"));
     }
-    
+
     private void initComboItem() {
         //page list
         jComboBoxTotalRows.removeAllItems();
         String[] pageList = Config.getArray("App.page_list");
-        if(0>pageList.length) {
+        if (0 > pageList.length) {
         } else {
-            for(Short i=0;i<pageList.length;i++) {
+            for (Short i = 0; i < pageList.length; i++) {
                 jComboBoxTotalRows.addItem(pageList[i]);
             }
         }
-        
+
         jComboBoxTotalRows.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -67,17 +69,17 @@ public class BeginBalance extends javax.swing.JInternalFrame {
                 initTable();
             }
         });
-        
+
         //page year list
         jComboBoxYear.removeAllItems();
         String[] yearList = Config.getArray("App.year_list");
-        if(0>yearList.length) {
+        if (0 > yearList.length) {
         } else {
-            for(Short i=0;i<yearList.length;i++) {
+            for (Short i = 0; i < yearList.length; i++) {
                 jComboBoxYear.addItem(yearList[i]);
             }
         }
-        
+
         jComboBoxYear.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -86,7 +88,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
             }
         });
     }
-    
+
     private void initTable() {
         model = new BeginningBalance();
         totalRow = model.getCount();
@@ -102,7 +104,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
             jButtonFirst.setEnabled(true);
             jButtonPrev.setEnabled(true);
         }
-        jTableAccount.setModel(model.getList(yearPage,pageNumber, totalRowPerPage));
+        jTableAccount.setModel(model.getList(yearPage, pageNumber, totalRowPerPage));
         jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jTableAccount.setCellSelectionEnabled(false);
         jTableAccount.setRowSelectionAllowed(true);
@@ -165,8 +167,8 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         ));
         jTableAccount.setColumnSelectionAllowed(true);
         jTableAccount.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTableAccountMousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableAccountMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jTableAccount);
@@ -234,7 +236,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonFirst)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -247,12 +249,12 @@ public class BeginBalance extends javax.swing.JInternalFrame {
                         .addComponent(jButtonSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                         .addComponent(jLabelSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -290,33 +292,61 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
-        
-    }//GEN-LAST:event_jTableAccountMousePressed
-
     private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
-       
+        DefaultTableModel tableModel = (DefaultTableModel) jTableAccount.getModel();
+        int[] rows = jTableAccount.getSelectedRows();
+        tableModel.moveRow(rows[0], rows[rows.length - 1], rows[0] - 1);
+        jTableAccount.setRowSelectionInterval(rows[0] - 1, rows[rows.length - 1] - 1);
     }//GEN-LAST:event_jButtonUpRowActionPerformed
 
     private void jButtonBottomRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBottomRowActionPerformed
-       
+        DefaultTableModel tableModel = (DefaultTableModel) jTableAccount.getModel();
+        int[] rows = jTableAccount.getSelectedRows();
+        tableModel.moveRow(rows[0], rows[rows.length - 1], rows[0] + 1);
+        jTableAccount.setRowSelectionInterval(rows[0] + 1, rows[rows.length - 1] + 1);
     }//GEN-LAST:event_jButtonBottomRowActionPerformed
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
-        
+        this.pageNumber = 1;
+        initTable();
     }//GEN-LAST:event_jButtonFirstActionPerformed
 
     private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
-        
+        if (pageNumber > 1) {
+            this.pageNumber--;
+            initTable();
+        }
     }//GEN-LAST:event_jButtonPrevActionPerformed
 
     private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
-        
+        if (pageNumber < totalPage) {
+            this.pageNumber++;
+            initTable();
+        }
     }//GEN-LAST:event_jButtonNextActionPerformed
 
     private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
-        
+        this.pageNumber = totalPage;
+        initTable();
     }//GEN-LAST:event_jButtonLastActionPerformed
+
+    private void jTableAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            model = new BeginningBalance();
+            int row = jTableAccount.getSelectedRow();
+            int col = 6;
+            Integer key = Integer.parseInt(jTableAccount.getValueAt(row, col).toString());
+            model.setIsEdit(true);
+            model.setAccountId(key);
+            model.setYear(jComboBoxYear.getSelectedItem().toString());
+            BeginBalanceForm form = new BeginBalanceForm(this, false);
+            form.setLocationRelativeTo(this);
+            form.pack();
+            form.list = this;
+            form.setVisible(true);
+        }
+    }//GEN-LAST:event_jTableAccountMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

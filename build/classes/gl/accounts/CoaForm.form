@@ -26,9 +26,9 @@
           <Group type="102" attributes="0">
               <EmptySpace min="23" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel1" max="32767" attributes="0"/>
-                  <Component id="jLabel2" max="32767" attributes="0"/>
-                  <Component id="jLabel3" max="32767" attributes="0"/>
+                  <Component id="jLabelAccountNo" max="32767" attributes="0"/>
+                  <Component id="jLabelAccountName" max="32767" attributes="0"/>
+                  <Component id="jLabelType" max="32767" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -60,17 +60,17 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelAccountNo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldAccountNo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelAccountName" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldAccountName" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelType" min="-2" max="-2" attributes="0"/>
                   <Component id="jComboBoxType" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="40" max="32767" attributes="0"/>
@@ -84,21 +84,21 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="jLabelAccountNo">
       <Properties>
         <Property name="text" type="java.lang.String" value="Account No"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldAccountNo">
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="jLabelAccountName">
       <Properties>
         <Property name="text" type="java.lang.String" value="Account Name"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldAccountName">
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="jLabelType">
       <Properties>
         <Property name="text" type="java.lang.String" value="Type"/>
       </Properties>

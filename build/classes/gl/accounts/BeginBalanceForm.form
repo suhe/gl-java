@@ -23,12 +23,14 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="23" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jLabelAccountNo" max="32767" attributes="0"/>
                   <Component id="jLabelAccountName" max="32767" attributes="0"/>
-                  <Component id="jLabelType" max="32767" attributes="0"/>
+                  <Component id="jLabelYear" max="32767" attributes="0"/>
+                  <Component id="jLabelDebet" max="32767" attributes="0"/>
+                  <Component id="jLabelCredit" max="32767" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -46,7 +48,9 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jTextFieldAccountName" min="-2" pref="380" max="-2" attributes="0"/>
-                              <Component id="jComboBoxType" min="-2" pref="148" max="-2" attributes="0"/>
+                              <Component id="jTextFieldDebet" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                              <Component id="jTextFieldCredit" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                              <Component id="jComboBoxYear" alignment="0" min="-2" pref="148" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -70,15 +74,25 @@
               </Group>
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabelType" min="-2" max="-2" attributes="0"/>
-                  <Component id="jComboBoxType" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelYear" min="-2" max="-2" attributes="0"/>
+                  <Component id="jComboBoxYear" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="40" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabelDebet" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldDebet" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabelCredit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldCredit" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonSave" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonCancel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+              <EmptySpace pref="24" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -98,12 +112,12 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldAccountName">
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabelType">
+    <Component class="javax.swing.JLabel" name="jLabelYear">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Type"/>
+        <Property name="text" type="java.lang.String" value="Year"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBoxType">
+    <Component class="javax.swing.JComboBox" name="jComboBoxYear">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -139,6 +153,20 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelDebet">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Debet"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTextFieldDebet">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelCredit">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Credit"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTextFieldCredit">
     </Component>
   </SubComponents>
 </Form>

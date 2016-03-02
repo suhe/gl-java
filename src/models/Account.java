@@ -80,7 +80,7 @@ public class Account {
         Accounts acc;
         Accounts rowId;
         acc = getRowByAccountNo(No);
-        rowId =  getRow();
+        rowId =  getRow(this.getId());
         if((!getIsEdit()) && (acc != null)) {
             status = false;
         } else if(getIsEdit() && rowId != null ) {
@@ -190,7 +190,7 @@ public class Account {
         return count;
     }
 
-    public Accounts getRow() {
+    public Accounts getRow(Integer Id) {
         Accounts acc = null;
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
@@ -198,7 +198,7 @@ public class Account {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Accounts.class)
-                    .add(Restrictions.eq("id", getId()));
+                    .add(Restrictions.eq("id", Id));
             acc = (Accounts) criteria.uniqueResult();
             tx.commit();
         } catch (HibernateException ex) {

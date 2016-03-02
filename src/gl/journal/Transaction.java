@@ -6,7 +6,7 @@
 package gl.journal;
 
 import gl.accounts.CoaForm;
-import helpers.JFormatHelper;
+import helpers.Format;
 import helpers.JTableFormatHelper;
 import javax.swing.JDesktopPane;
 import javax.swing.JTable;
@@ -81,9 +81,9 @@ public class Transaction extends javax.swing.JInternalFrame {
         }
         
         Double totalBalance = totalDebet - totalCredit;  
-        jTextFieldTDebet.setText(JFormatHelper.Currency(totalDebet,2));
-        jTextFieldTCredit.setText(JFormatHelper.Currency(totalCredit,2));
-        jTextFieldTBalanced.setText(JFormatHelper.Currency(totalBalance,2));
+        jTextFieldTDebet.setText(Format.Currency(totalDebet,2));
+        jTextFieldTCredit.setText(Format.Currency(totalCredit,2));
+        jTextFieldTBalanced.setText(Format.Currency(totalBalance,2));
     }
     
     public void setAccountLoad(String AccountNo,int Row,int Col) {
