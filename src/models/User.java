@@ -19,7 +19,7 @@ public class User {
 
     public boolean authenticateUser(String username, String password) {
         Users user = getUserByUserId(username);
-        if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
+        if ((user != null && user.getUsername().equals(username)) && (user.getPassword().equals(password))) {
             return true;
         } else {
             return false;

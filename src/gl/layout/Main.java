@@ -7,6 +7,7 @@ package gl.layout;
 
 import config.Database;
 import database.Connect;
+import gl.accounts.BeginBalance;
 import gl.accounts.Coa;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -390,7 +391,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
             if (status == false) {
-                Coa frmBalance = new Coa();
+                BeginBalance frmBalance = new BeginBalance();
                 frmBalance.setTitle("Beginning Balance");
                 JP.add(frmBalance);
                 Dimension desktopSize = JP.getSize();

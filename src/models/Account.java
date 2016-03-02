@@ -6,6 +6,7 @@
 package models;
 
 import config.DatabaseUtil;
+import helpers.Lang;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JProgressBar;
@@ -24,7 +25,9 @@ import services.Accounts;
  */
 public class Account {
 
-    String[] TABLE_COLUMN_NAME = {"No", "Account No", "Account Name", "Type", "#"};
+    String[] TABLE_COLUMN_NAME = {Lang.getString("App.no"),
+        Lang.getString("App.account_no"), Lang.getString("App.account_name"),
+        Lang.getString("App.type"), "#"};
 
     public String AccountNo;
     public String AccountName;

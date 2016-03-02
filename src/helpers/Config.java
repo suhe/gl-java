@@ -5,6 +5,7 @@
  */
 package helpers;
 
+import static helpers.Lang.getString;
 import java.util.ResourceBundle;
 
 /**
@@ -25,4 +26,8 @@ public class Config {
         return config.getString(var[1]);
     } 
     
+     public static String[] getArray(String Args) {
+        String [] var = getString(Args).split(",");
+        return var;
+    }
 }

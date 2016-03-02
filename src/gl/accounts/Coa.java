@@ -5,6 +5,8 @@
  */
 package gl.accounts;
 
+import helpers.Config;
+import helpers.Lang;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JOptionPane;
@@ -34,18 +36,32 @@ public class Coa extends javax.swing.JInternalFrame {
     public Coa() {
         initComponents();
         initComboItem();
+        setParameterLanguage();
         initTable();
     }
 
     public void coa() {
         initTable();
     }
+    
+    private void setParameterLanguage() {
+        jButtonFirst.setText(Lang.getString("App.first"));
+        jButtonNext.setText(Lang.getString("App.next"));
+        jButtonPrev.setText(Lang.getString("App.previous"));
+        jButtonLast.setText(Lang.getString("App.last"));
+        jButtonSearch.setText(Lang.getString("App.search"));
+    }
 
     private void initComboItem() {
         jComboBoxTotalRows.removeAllItems();
-        jComboBoxTotalRows.addItem("100");
-        jComboBoxTotalRows.addItem("200");
-        jComboBoxTotalRows.addItem("300");
+        String[] pageList = Config.getArray("App.page_list");
+        if(0>pageList.length) {
+        } else {
+            for(Short i=0;i<pageList.length;i++) {
+                jComboBoxTotalRows.addItem(pageList[i]);
+            }
+        }
+        
         jComboBoxTotalRows.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -80,7 +96,7 @@ public class Coa extends javax.swing.JInternalFrame {
         table.getColumn(2).setPreferredWidth(260);
         table.getColumn(3).setPreferredWidth(160);
         table.getColumn(4).setPreferredWidth(50);
-        jLabelSummary.setText("Page : " + pageNumber + " / " + totalPage + " Total : " + totalRow);
+        jLabelSummary.setText(Lang.getString("App.page") + " : " + pageNumber + " / " + totalPage + Lang.getString("App.total") + " : " + totalRow);
         //set to value 0 progress bar
         Runnable doProgress;
         doProgress = new Runnable() {

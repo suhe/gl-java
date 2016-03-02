@@ -26,19 +26,18 @@ public class Login extends javax.swing.JDialog {
     public Login(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setParameter();
+        setParameterLanguage();
     }
     
     public void setEnabledMenuBar(boolean status) {
         JMenuItemCoa.setEnabled(status);
     }
     
-    public void setParameter() {
+    public void setParameterLanguage() {
         jLabelUsername.setText(Lang.getString("App.username"));
         jLabelPassword.setText(Lang.getString("App.password"));
     }
     
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

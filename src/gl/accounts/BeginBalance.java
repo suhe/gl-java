@@ -5,17 +5,107 @@
  */
 package gl.accounts;
 
+import helpers.Config;
+import helpers.Lang;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumnModel;
+import models.BeginningBalance;
+
 /**
  *
  * @author suhe
  */
-public class Balance extends javax.swing.JInternalFrame {
+public class BeginBalance extends javax.swing.JInternalFrame {
+    Integer pageNumber = 1;
+    Integer totalRowPerPage = 100;
+    Integer totalPage = 1;
+    Integer totalRow = 0;
+    BeginningBalance model;
+    public JProgressBar jProgressBarStatus = new JProgressBar();
 
     /**
      * Creates new form Balance
      */
-    public Balance() {
+    public BeginBalance() {
         initComponents();
+        setParameterLanguage();
+        initComboItem();
+        initTable();
+    }
+    
+    public void BeginningBalance() {
+        initTable();
+    }
+    
+    private void setParameterLanguage() {
+        jButtonFirst.setText(Lang.getString("App.first"));
+        jButtonNext.setText(Lang.getString("App.next"));
+        jButtonPrev.setText(Lang.getString("App.previous"));
+        jButtonLast.setText(Lang.getString("App.last"));
+        jButtonSearch.setText(Lang.getString("App.search"));
+    }
+    
+    private void initComboItem() {
+        jComboBoxTotalRows.removeAllItems();
+        String[] pageList = Config.getArray("App.page_list");
+        if(0>pageList.length) {
+        } else {
+            for(Short i=0;i<pageList.length;i++) {
+                jComboBoxTotalRows.addItem(pageList[i]);
+            }
+        }
+        
+        jComboBoxTotalRows.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                pageNumber = 1;
+                initTable();
+            }
+        });
+    }
+    
+    private void initTable() {
+        model = new BeginningBalance();
+        totalRow = model.getCount();
+        totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
+        Double totalPageDouble = Math.ceil(totalRow.doubleValue() / totalRowPerPage.doubleValue());
+        totalPage = totalPageDouble.intValue();
+
+        if (pageNumber.equals(1)) {
+            jButtonFirst.setEnabled(false);
+            jButtonPrev.setEnabled(false);
+        } else {
+            jButtonFirst.setEnabled(true);
+            jButtonPrev.setEnabled(true);
+        }
+        jTableAccount.setModel(model.getList(pageNumber, totalRowPerPage));
+        jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTableAccount.setCellSelectionEnabled(false);
+        jTableAccount.setRowSelectionAllowed(true);
+        TableColumnModel table = jTableAccount.getColumnModel();
+        table.getColumn(0).setPreferredWidth(80);
+        table.getColumn(1).setPreferredWidth(160);
+        table.getColumn(2).setPreferredWidth(260);
+        table.getColumn(3).setPreferredWidth(160);
+        table.getColumn(4).setPreferredWidth(160);
+        table.getColumn(5).setPreferredWidth(160);
+        table.getColumn(6).setPreferredWidth(80);
+        jLabelSummary.setText(Lang.getString("App.page") + " : " + pageNumber + " / " + totalPage + Lang.getString("App.total") + " : " + totalRow);
+        //set to value 0 progress bar
+        Runnable doProgress;
+        doProgress = new Runnable() {
+            @Override
+            public void run() {
+                jProgressBarStatus.setMaximum(totalPage - 1);
+                jProgressBarStatus.setMinimum(0);
+                jProgressBarStatus.setValue(pageNumber);
+            }
+        };
+        SwingUtilities.invokeLater(doProgress);
     }
 
     /**
@@ -29,8 +119,6 @@ public class Balance extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableAccount = new javax.swing.JTable();
-        jButtonAddRow = new javax.swing.JButton();
-        jButtonDelRow = new javax.swing.JButton();
         jButtonUpRow = new javax.swing.JButton();
         jButtonBottomRow = new javax.swing.JButton();
         jButtonFirst = new javax.swing.JButton();
@@ -39,6 +127,8 @@ public class Balance extends javax.swing.JInternalFrame {
         jButtonLast = new javax.swing.JButton();
         jButtonSearch = new javax.swing.JButton();
         jComboBoxTotalRows = new javax.swing.JComboBox<>();
+        jLabelSummary = new javax.swing.JLabel();
+        jComboBoxYear = new javax.swing.JComboBox<>();
 
         jTableAccount.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -58,22 +148,6 @@ public class Balance extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(jTableAccount);
-
-        jButtonAddRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
-        jButtonAddRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddRowActionPerformed(evt);
-            }
-        });
-
-        jButtonDelRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/minus_16X16.png"))); // NOI18N
-        jButtonDelRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButtonDelRow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDelRowActionPerformed(evt);
-            }
-        });
 
         jButtonUpRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/up_16X16.png"))); // NOI18N
         jButtonUpRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -128,6 +202,10 @@ public class Balance extends javax.swing.JInternalFrame {
 
         jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jLabelSummary.setText("Summary");
+
+        jComboBoxYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,139 +223,82 @@ public class Balance extends javax.swing.JInternalFrame {
                         .addComponent(jButtonLast)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxTotalRows, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jButtonAddRow)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonDelRow)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonUpRow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonBottomRow)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonBottomRow))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButtonFirst)
-                        .addComponent(jButtonNext)
-                        .addComponent(jButtonLast)
-                        .addComponent(jButtonSearch)
-                        .addComponent(jButtonPrev))
-                    .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButtonFirst)
+                                .addComponent(jButtonNext)
+                                .addComponent(jButtonLast)
+                                .addComponent(jButtonSearch)
+                                .addComponent(jButtonPrev))
+                            .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxYear))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelSummary)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTableAccountMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAccountMousePressed
-        // TODO add your handling code here:
-        //int row = jTableAccount.getSelectedRow();
-        //frmTransaction.AccountNo = jTableAccount.getValueAt(row, 1).toString();
-        //frmTransaction.itemTerpilih();
-        this.dispose();
-        //JTable target = (JTable)evt.getSource();
-        //int row = target.getSelectedRow();
-        //int column = target.getSelectedColumn();
-        //for (JInternalFrame frame : JInternalFrame) {
-            // Transaction transaction = (Transaction) JInternalFrame;
-            //Transaction transaction = new Transaction();
-            //transaction.getText().setText("120000");
-            //transaction.setVisible(true);
-            //transaction.AccountNo = jTableAccount.getValueAt(row,1).toString();
-            //transaction.setAccountLoad("100000",rowTarget,colTarget);
-            //new Transaction().table.setValueAt("AA", 1, 0);
-            //this.setVisible(false);
-            //}
-        //transaction.table.setValueAt(jTableAccount.getValueAt(row,1), rowTarget, colTarget);
-        //JOptionPane.showMessageDialog(null,jTableAccount.getValueAt(row,1),"Test Mouse",JOptionPane.INFORMATION_MESSAGE);
+        
     }//GEN-LAST:event_jTableAccountMousePressed
 
-    private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
-        // TODO add your handling code here
-        //JournalDetailModel  model = new JournalDetailModel();
-        //DefaultTableModel model =   (DefaultTableModel)  jTable1.getModel();
-        //String[] arendt = {"Hannah", "Arendt","1000","10000"};
-        //model.addRow(arendt);
-        //jTable1.setModel(model);
-        //jTable1.setCellSelectionEnabled(true);
-        //jTable1.requestFocus();
-        //jTable1.changeSelection(jTable1.getRowCount(), column, false, false);
-        //jTable1.editCellAt(jTable1.getRowCount(),0);
-        //this.initCalculation();
-    }//GEN-LAST:event_jButtonAddRowActionPerformed
-
-    private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
-        // TODO add your handling code here:
-        //((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
-    }//GEN-LAST:event_jButtonDelRowActionPerformed
-
     private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
-        // TODO add your handling code here:
-        //DefaultTableModel model =  (DefaultTableModel)jTable1.getModel();
-        //int[] rows = jTable1.getSelectedRows();
-        //model.moveRow(rows[0],rows[rows.length-1],rows[0]-1);
-        //jTable1.setRowSelectionInterval(rows[0]-1, rows[rows.length-1]-1);
+       
     }//GEN-LAST:event_jButtonUpRowActionPerformed
 
     private void jButtonBottomRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBottomRowActionPerformed
-        // TODO add your handling code here:
-        //DefaultTableModel model =  (DefaultTableModel)jTable1.getModel();
-        //int[] rows = jTable1.getSelectedRows();
-        //model.moveRow(rows[0],rows[rows.length-1],rows[0]+1);
-        //jTable1.setRowSelectionInterval(rows[0]+1, rows[rows.length-1]+1);
+       
     }//GEN-LAST:event_jButtonBottomRowActionPerformed
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
-        // TODO add your handling code here:
-        //this.pageNum = 1;
-        //initTable();
+        
     }//GEN-LAST:event_jButtonFirstActionPerformed
 
     private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
-        // TODO add your handling code here:
-        //if(pageNum > 1){
-          //  this.pageNum--;
-            //initTable();
-        //}
+        
     }//GEN-LAST:event_jButtonPrevActionPerformed
 
     private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
-        // TODO add your handling code here:
-        //if(pageNum < totalPage){
-          //  this.pageNum++;
-            //initTable();
-        //}
+        
     }//GEN-LAST:event_jButtonNextActionPerformed
 
     private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
-        // TODO add your handling code here:
-        //this.pageNum = totalPage;
-        //initTable();
+        
     }//GEN-LAST:event_jButtonLastActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAddRow;
     private javax.swing.JButton jButtonBottomRow;
-    private javax.swing.JButton jButtonDelRow;
     private javax.swing.JButton jButtonFirst;
     private javax.swing.JButton jButtonLast;
     private javax.swing.JButton jButtonNext;
@@ -285,6 +306,8 @@ public class Balance extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonSearch;
     private javax.swing.JButton jButtonUpRow;
     private javax.swing.JComboBox<String> jComboBoxTotalRows;
+    private javax.swing.JComboBox<String> jComboBoxYear;
+    private javax.swing.JLabel jLabelSummary;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableAccount;
     // End of variables declaration//GEN-END:variables

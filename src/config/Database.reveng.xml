@@ -4,6 +4,7 @@
   <schema-selection match-catalog="gl"/>
   <table-filter match-name="journal_details"/>
   <table-filter match-name="accounts"/>
+  <table-filter match-name="beginning_balances"/>
   <table-filter match-name="journals"/>
   <table-filter match-name="users"/>
 </hibernate-reverse-engineering>

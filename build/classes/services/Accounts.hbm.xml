@@ -17,5 +17,6 @@
         <property name="type" type="string">
             <column name="type" length="30" not-null="false" />
         </property>
+        
     </class>
 </hibernate-mapping>
