@@ -11,10 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import services.Accounts;
 
 /**
@@ -27,7 +29,7 @@ public class BeginningBalance {
         Lang.getString("App.account_no"), Lang.getString("App.account_name"),
         Lang.getString("App.type"), Lang.getString("App.debet"), Lang.getString("App.credit"), "#"};
 
-    public DefaultTableModel getList(Integer offset, final Integer limit) {
+    public DefaultTableModel getList(String Year,Integer offset, final Integer limit) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public String getColumnName(int column) {
@@ -53,7 +55,10 @@ public class BeginningBalance {
             Integer i = (limit * (offset - 1));
             tx = session.beginTransaction();
             Criteria criteria;
-            criteria = session.createCriteria(Accounts.class);
+            criteria = session.createCriteria(Accounts.class,"Accounts");
+            criteria.setFetchMode("Accounts.BeginningBalances", FetchMode.JOIN);
+            criteria.createAlias("Accounts.BeginningBalances", "bb",Criteria.LEFT_JOIN); // inner join by default
+            criteria.add(Restrictions.eq("bb.year", Year));
             List list = criteria.list();
             Iterator it = list.iterator();
             while (it.hasNext()) {
@@ -90,11 +95,13 @@ public class BeginningBalance {
 
         try {
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(Account.class);
+            Criteria criteria;
+            criteria = session.createCriteria(Accounts.class);
             count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             tx.commit();
         } catch (HibernateException ex) {
             if (tx != null) {
+                count = 0;
                 tx.rollback();
             }
         } finally {

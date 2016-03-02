@@ -50,6 +50,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
     }
     
     private void initComboItem() {
+        //page list
         jComboBoxTotalRows.removeAllItems();
         String[] pageList = Config.getArray("App.page_list");
         if(0>pageList.length) {
@@ -66,6 +67,24 @@ public class BeginBalance extends javax.swing.JInternalFrame {
                 initTable();
             }
         });
+        
+        //page year list
+        jComboBoxYear.removeAllItems();
+        String[] yearList = Config.getArray("App.year_list");
+        if(0>yearList.length) {
+        } else {
+            for(Short i=0;i<yearList.length;i++) {
+                jComboBoxYear.addItem(yearList[i]);
+            }
+        }
+        
+        jComboBoxYear.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                pageNumber = 1;
+                initTable();
+            }
+        });
     }
     
     private void initTable() {
@@ -74,6 +93,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
         totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
         Double totalPageDouble = Math.ceil(totalRow.doubleValue() / totalRowPerPage.doubleValue());
         totalPage = totalPageDouble.intValue();
+        String yearPage = String.valueOf(jComboBoxYear.getSelectedItem());
 
         if (pageNumber.equals(1)) {
             jButtonFirst.setEnabled(false);
@@ -82,7 +102,7 @@ public class BeginBalance extends javax.swing.JInternalFrame {
             jButtonFirst.setEnabled(true);
             jButtonPrev.setEnabled(true);
         }
-        jTableAccount.setModel(model.getList(pageNumber, totalRowPerPage));
+        jTableAccount.setModel(model.getList(yearPage,pageNumber, totalRowPerPage));
         jTableAccount.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jTableAccount.setCellSelectionEnabled(false);
         jTableAccount.setRowSelectionAllowed(true);
