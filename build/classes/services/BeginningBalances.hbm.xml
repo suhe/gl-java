@@ -7,7 +7,8 @@
         <id name="accountId" type="java.lang.Integer">
             <column name="account_id" />
             <generator class="foreign">
-                <param name="property">accounts</param>
+                <param name="property">beginning_balances</param>
+                <!--<param name="property">accounts</param>-->
             </generator>
         </id>
         <one-to-one name="Accounts" class="services.Accounts" constrained="true" />

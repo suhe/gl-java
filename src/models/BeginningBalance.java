@@ -8,7 +8,6 @@ package models;
 import config.DatabaseUtil;
 import helpers.Format;
 import helpers.Lang;
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -206,11 +205,13 @@ public class BeginningBalance {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
+            //Accounts accounts = new Accounts();
             BeginningBalances acc = new BeginningBalances();
             acc.setAccountId(this.getAccountId());
             acc.setYear(this.getYear());
             acc.setDebet(this.getDebet() == null ? 0.00 : this.getDebet());
             acc.setCredit(this.getCredit() == null ? 0.00 : this.getCredit());
+            //acc.setAccounts(accounts);
             session.save(acc);
             session.flush();
             tx.commit();
