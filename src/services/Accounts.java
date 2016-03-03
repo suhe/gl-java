@@ -12,7 +12,6 @@ public class Accounts implements java.io.Serializable {
     private String name;
     private String type;
     private BeginningBalances beginningBalances;
-    //private Set AccountMap;
 
     public Accounts() {
     }
@@ -21,7 +20,6 @@ public class Accounts implements java.io.Serializable {
         this.no = no;
         this.name = name;
         this.type = type;
-        //this.AccountMap = AccountMap;
     }
 
     public Integer getId() {
@@ -63,11 +61,4 @@ public class Accounts implements java.io.Serializable {
     public void setBeginningBalances(BeginningBalances beginningBalances) {
         this.beginningBalances = beginningBalances;
     }
-
-    /*public Set getAccountMap() {
-        return AccountMap;
-    }
-    public void setAccountMap(Set AccountMap) {
-        this.AccountMap = AccountMap;
-    }*/
 }

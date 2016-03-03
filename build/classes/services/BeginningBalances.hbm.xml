@@ -11,7 +11,7 @@
                 <!--<param name="property">accounts</param>-->
             </generator>
         </id>
-        <one-to-one name="Accounts" class="services.Accounts" constrained="true" />
+        <one-to-one name="Accounts" class="services.Accounts" constrained="false" />
         
         <property name="year" type="string">
             <column name="year" length="8" not-null="false" />

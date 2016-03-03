@@ -21,7 +21,7 @@ public class BeginningBalances implements java.io.Serializable {
         this.debet = debet;
         this.credit = credit;
     }
-    
+
     public Integer getAccountId() {
         return this.accountId;
     }

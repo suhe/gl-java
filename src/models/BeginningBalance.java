@@ -17,8 +17,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import services.Accounts;
 import services.BeginningBalances;
 
@@ -55,27 +58,27 @@ public class BeginningBalance {
     }
 
     public String getYear() {
-        return this.Year;
+        return Year;
     }
 
     public void setYear(String var) {
-        this.Year = var;
+        Year = var;
     }
 
     public Double getDebet() {
-        return this.Debet;
+        return Debet;
     }
 
     public void setDebet(Double var) {
-        this.Debet = var;
+        Debet = var;
     }
 
     public Double getCredit() {
-        return this.Credit;
+        return Credit;
     }
 
     public void setCredit(Double var) {
-        this.Credit = var;
+        Credit = var;
     }
 
     public DefaultTableModel getList(String Year, Integer offset, final Integer limit) {
@@ -104,11 +107,17 @@ public class BeginningBalance {
             Integer i = (limit * (offset - 1));
             tx = session.beginTransaction();
             Criteria criteria;
-            criteria = session.createCriteria(Accounts.class, "Accounts");
-            criteria.setFetchMode("Accounts.BeginningBalances", FetchMode.JOIN);
-            criteria.createAlias("Accounts.BeginningBalances", "bb", Criteria.LEFT_JOIN);
+            criteria = session.createCriteria(Accounts.class);
+            ProjectionList projList = Projections.projectionList();
+            projList.add(Projections.property("id").as("id"));
+            projList.add(Projections.property("no").as("no"));
+            projList.add(Projections.property("name").as("name"));
+            projList.add(Projections.property("type").as("type"));
+            criteria.setProjection(projList);
+            criteria.addOrder(Order.asc("no"));
             criteria.setFirstResult(i);
             criteria.setMaxResults(i + limit);
+            criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
             List list = criteria.list();
             Iterator it = list.iterator();
             while (it.hasNext()) {
@@ -205,21 +214,14 @@ public class BeginningBalance {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            //Accounts accounts = new Accounts();
-            BeginningBalances acc = new BeginningBalances();
-            acc.setAccountId(this.getAccountId());
-            acc.setYear(this.getYear());
-            acc.setDebet(this.getDebet() == null ? 0.00 : this.getDebet());
-            acc.setCredit(this.getCredit() == null ? 0.00 : this.getCredit());
-            //acc.setAccounts(accounts);
-            session.save(acc);
+            Query query = session.createSQLQuery("INSERT INTO beginning_balances (account_id, year,debet,credit) VALUES (:id,:year,:debet,:credit)");
+            query.setParameter("id", getAccountId());
+            query.setParameter("year", getYear());
+            query.setParameter("debet", getDebet());
+            query.setParameter("credit", getCredit());
+            query.executeUpdate();
             session.flush();
             tx.commit();
-            System.out.println("Account ID :" + this.getAccountId());
-            System.out.println("Year :" + this.getYear());
-            System.out.println("Debet :" + this.getDebet().toString());
-            System.out.println("Credit :" + this.getCredit().toString());
-
         } catch (HibernateException ex) {
             if (tx != null) {
                 tx.rollback();
@@ -234,22 +236,16 @@ public class BeginningBalance {
         session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
-            System.out.println("Account ID :" + this.getAccountId());
-            System.out.println("Year :" + this.getYear());
-            System.out.println("Debet :" + this.getDebet().toString());
-            System.out.println("Credit :" + this.getCredit().toString());
-            
             tx = session.beginTransaction();
-            Query query = session.createQuery("from BeginningBalances where accountId = :accountId and year = :year ");
-            query.setParameter("accountId", this.getAccountId());
-            query.setParameter("year", this.getYear());
-            BeginningBalances acc = (BeginningBalances) query.list().get(0);
-            acc.setDebet(this.getDebet() == null ? 0.00 : this.getDebet());
-            acc.setCredit(this.getCredit() == null ? 0.00 : this.getCredit());
-            session.update(acc);
+            Query query = session.createSQLQuery("update beginning_balances set debet = :debet,credit = :credit WHERE account_id = :id and year = :year ");
+            query.setParameter("id", getAccountId());
+            query.setParameter("year", getYear());
+            query.setParameter("debet", getDebet());
+            query.setParameter("credit", getCredit());
+            query.executeUpdate();
             session.flush();
             tx.commit();
-            
+
         } catch (HibernateException ex) {
             if (tx != null) {
                 tx.rollback();
