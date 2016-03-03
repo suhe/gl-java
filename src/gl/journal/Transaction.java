@@ -12,6 +12,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import models.Account;
 import models.JournalDetailModel;
 import services.JournalDetailService;
 
@@ -238,7 +239,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_first_16x16.png"))); // NOI18N
+        jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_first_16x16.png"))); // NOI18N
         jButtonFirst.setText("First");
         jButtonFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,7 +247,7 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_prev_16x16.png"))); // NOI18N
+        jButtonPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_prev_16x16.png"))); // NOI18N
         jButtonPrev.setText("Prev");
         jButtonPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -254,7 +255,7 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_next_16x16.png"))); // NOI18N
+        jButtonNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_next_16x16.png"))); // NOI18N
         jButtonNext.setText("Next");
         jButtonNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -262,7 +263,7 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/pagination_last_16x16.png"))); // NOI18N
+        jButtonLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_next_16x16.png"))); // NOI18N
         jButtonLast.setText("Last");
         jButtonLast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -270,16 +271,16 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/plus_16X16.png"))); // NOI18N
+        jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
         jButtonAdd.setText("Add");
 
-        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/search_16x16.png"))); // NOI18N
+        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_last_16x16.png"))); // NOI18N
         jButtonSearch.setText("Search");
 
-        jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/cancel_16X16.png"))); // NOI18N
+        jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonCancel.setText("Cancel");
 
-        jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/save_16X16.png"))); // NOI18N
+        jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonSave.setText("Save");
 
         jLabel6.setText("Balanced");
@@ -346,21 +347,21 @@ public class Transaction extends javax.swing.JInternalFrame {
                                 .addComponent(jButtonSave)
                                 .addGap(3, 3, 3)
                                 .addComponent(jButtonCancel))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldTDebet, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldTCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldTDebet, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldTCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -386,7 +387,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                         .addComponent(jButtonUpRow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonBottomRow)))
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
@@ -394,7 +395,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7)
                     .addComponent(jTextFieldTDebet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addGap(18, 18, 18)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAdd)
                     .addComponent(jButtonLast)
@@ -404,7 +405,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                     .addComponent(jButtonSearch)
                     .addComponent(jButtonCancel)
                     .addComponent(jButtonSave))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -428,8 +429,15 @@ public class Transaction extends javax.swing.JInternalFrame {
 
     private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
         // TODO add your handling code here
+        //model = new Account();
+        //model.setIsEdit(false);
+        TransactionForm form = new TransactionForm(this,false);
+        form.setLocationRelativeTo(this);
+        form.pack();
+        form.list = this;
+        form.setVisible(true);
        //JournalDetailModel  model = new JournalDetailModel();
-        DefaultTableModel model =   (DefaultTableModel)  jTable1.getModel();
+        /*DefaultTableModel model =   (DefaultTableModel)  jTable1.getModel();
         String[] arendt = {"Hannah", "Arendt","1000","10000"};
         model.addRow(arendt);
         jTable1.setModel(model);
@@ -437,7 +445,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         jTable1.requestFocus();
         //jTable1.changeSelection(jTable1.getRowCount(), column, false, false);
         jTable1.editCellAt(jTable1.getRowCount(),0);
-        this.initCalculation();
+        this.initCalculation();*/
     }//GEN-LAST:event_jButtonAddRowActionPerformed
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed

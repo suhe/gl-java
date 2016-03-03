@@ -54,9 +54,9 @@ public class Main extends javax.swing.JFrame {
     }
     
     public void setEnabledMenuBar(boolean status) {
-        JMenuItemConnect.setEnabled(status);
-        JMenuItemCoa.setEnabled(status);
-        jMenuItemTransaction.setEnabled(status);
+        //JMenuItemConnect.setEnabled(status);
+        //JMenuItemCoa.setEnabled(status);
+        //jMenuItemTransaction.setEnabled(status);
     }
 
     /**
@@ -346,11 +346,6 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenuItemTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemTransactionActionPerformed
         // TODO add your handling code here:
-        if(Database.isConnect == false) {
-            JOptionPane.showMessageDialog(null, "Please Connect Database ! ","Connect DB",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
         try {
             boolean status = false;
             JInternalFrame[] children;

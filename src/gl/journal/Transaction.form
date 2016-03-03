@@ -45,22 +45,23 @@
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                               <Component id="jButtonCancel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextFieldTDebet" min="-2" pref="119" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextFieldTCredit" min="-2" pref="119" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabel6" min="-2" pref="55" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextFieldTBalanced" min="-2" pref="119" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="jScrollPane1" min="-2" pref="852" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldTDebet" min="-2" pref="119" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldTCredit" min="-2" pref="119" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jLabel6" min="-2" pref="55" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jTextFieldTBalanced" min="-2" pref="119" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPane1" min="-2" pref="852" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jButtonAddRow" min="-2" pref="33" max="-2" attributes="0"/>
@@ -95,7 +96,7 @@
                       <Component id="jButtonBottomRow" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jTextFieldTBalanced" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -104,7 +105,7 @@
                   <Component id="jTextFieldTDebet" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonAdd" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonLast" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -115,7 +116,7 @@
                   <Component id="jButtonCancel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonSave" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -268,7 +269,7 @@
     <Component class="javax.swing.JButton" name="jButtonFirst">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/pagination_first_16x16.png"/>
+          <Image iconType="3" name="/resources/icons/pagination_first_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="First"/>
       </Properties>
@@ -279,7 +280,7 @@
     <Component class="javax.swing.JButton" name="jButtonPrev">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/pagination_prev_16x16.png"/>
+          <Image iconType="3" name="/resources/icons/pagination_prev_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Prev"/>
       </Properties>
@@ -290,7 +291,7 @@
     <Component class="javax.swing.JButton" name="jButtonNext">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/pagination_next_16x16.png"/>
+          <Image iconType="3" name="/resources/icons/pagination_next_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Next"/>
       </Properties>
@@ -301,7 +302,7 @@
     <Component class="javax.swing.JButton" name="jButtonLast">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/pagination_last_16x16.png"/>
+          <Image iconType="3" name="/resources/icons/pagination_next_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Last"/>
       </Properties>
@@ -312,7 +313,7 @@
     <Component class="javax.swing.JButton" name="jButtonAdd">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/plus_16X16.png"/>
+          <Image iconType="3" name="/resources/icons/plus_16X16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Add"/>
       </Properties>
@@ -320,7 +321,7 @@
     <Component class="javax.swing.JButton" name="jButtonSearch">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/search_16x16.png"/>
+          <Image iconType="3" name="/resources/icons/pagination_last_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Search"/>
       </Properties>
@@ -328,7 +329,7 @@
     <Component class="javax.swing.JButton" name="jButtonCancel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/cancel_16X16.png"/>
+          <Image iconType="3" name="/resources/icons/save_16X16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
@@ -336,7 +337,7 @@
     <Component class="javax.swing.JButton" name="jButtonSave">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/assets/icons/save_16X16.png"/>
+          <Image iconType="3" name="/resources/icons/save_16X16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Save"/>
       </Properties>
