@@ -5,18 +5,26 @@
  */
 package gl.journal;
 
-import javax.swing.JFrame;
+import helpers.Format;
+import helpers.Validator.RequiredValidator;
+import java.awt.event.KeyEvent;
 import javax.swing.JInternalFrame;
+import javax.swing.JTable;
+import models.JournalDetail;
 
 /**
  *
  * @author BDO-IT
  */
 public class TransactionForm extends javax.swing.JDialog {
-    public JInternalFrame list;
+
+    public Transaction list;
+    public JTable table;
+    JournalDetail journalDetail;
 
     /**
      * Creates new form TransactionForm
+     *
      * @param parent
      * @param modal
      */
@@ -42,7 +50,7 @@ public class TransactionForm extends javax.swing.JDialog {
         jTextFieldDebet = new javax.swing.JTextField();
         jLabelCredit = new javax.swing.JLabel();
         jTextFieldCredit = new javax.swing.JTextField();
-        jButtonSave = new javax.swing.JButton();
+        jButtonAdd = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
         jButtonSearchAccount = new javax.swing.JButton();
 
@@ -54,13 +62,25 @@ public class TransactionForm extends javax.swing.JDialog {
 
         jLabelDebet.setText("Debet");
 
+        jTextFieldDebet.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldDebetKeyTyped(evt);
+            }
+        });
+
         jLabelCredit.setText("Credit");
 
-        jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
-        jButtonSave.setText("Add");
-        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldCredit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldCreditKeyTyped(evt);
+            }
+        });
+
+        jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
+        jButtonAdd.setText("Add");
+        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSaveActionPerformed(evt);
+                jButtonAddActionPerformed(evt);
             }
         });
 
@@ -108,7 +128,7 @@ public class TransactionForm extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonSave)
+                .addComponent(jButtonAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCancel)
                 .addContainerGap())
@@ -135,7 +155,7 @@ public class TransactionForm extends javax.swing.JDialog {
                     .addComponent(jTextFieldCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSave)
+                    .addComponent(jButtonAdd)
                     .addComponent(jButtonCancel))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -143,10 +163,31 @@ public class TransactionForm extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here:
+        RequiredValidator accountNoVal = new RequiredValidator(this, jTextFieldAccountNo, "The field account no is required !");
+        RequiredValidator descriptionVal = new RequiredValidator(this, jTextFieldDescription, "The field description is required !");
+        RequiredValidator debetVal = new RequiredValidator(this, jTextFieldDebet, "The field debet is required !");
+        RequiredValidator creditVal = new RequiredValidator(this, jTextFieldCredit, "The field credit name is required !");
         
-    }//GEN-LAST:event_jButtonSaveActionPerformed
+        if ((accountNoVal.verify(jTextFieldAccountNo)) && (descriptionVal.verify(jTextFieldDescription)) && (debetVal.verify(jTextFieldDebet)) && (creditVal.verify(jTextFieldCredit))){
+            String accountNo = jTextFieldAccountNo.getText();
+            String description = jTextFieldDescription.getText();
+            Double debet = Double.parseDouble(jTextFieldDebet.getText());
+            Double credit = Double.parseDouble(jTextFieldCredit.getText());
+            journalDetail = new JournalDetail();
+            journalDetail.setPos(table.getRowCount() + 1);
+            journalDetail.setAccountNo(accountNo);
+            journalDetail.setDescription(description);
+            journalDetail.setDebet(debet);
+            journalDetail.setCredit(credit);
+            journalDetail.addTableRow(table);
+            list.initCalculation();
+            this.dispose();
+        }
+        
+        
+    }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         // TODO add your handling code here:
@@ -156,6 +197,16 @@ public class TransactionForm extends javax.swing.JDialog {
     private void jButtonSearchAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchAccountActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSearchAccountActionPerformed
+
+    private void jTextFieldDebetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDebetKeyTyped
+        // TODO add your handling code here:
+        Format.isDecimal(evt);
+    }//GEN-LAST:event_jTextFieldDebetKeyTyped
+
+    private void jTextFieldCreditKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldCreditKeyTyped
+        // TODO add your handling code here:
+        Format.isDecimal(evt);
+    }//GEN-LAST:event_jTextFieldCreditKeyTyped
 
     /**
      * @param args the command line arguments
@@ -201,8 +252,8 @@ public class TransactionForm extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonCancel;
-    private javax.swing.JButton jButtonSave;
     private javax.swing.JButton jButtonSearchAccount;
     private javax.swing.JLabel jLabelAccountName;
     private javax.swing.JLabel jLabelAccountNo;
