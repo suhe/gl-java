@@ -13,7 +13,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
-import models.JournalDetailModel;
+import models.JournalDetail;
 import services.JournalDetailService;
 
 /**
@@ -22,7 +22,7 @@ import services.JournalDetailService;
  */
 public class Transaction extends javax.swing.JInternalFrame {
     
-    JournalDetailModel journalDetailModel;
+    JournalDetail journalDetailModel;
     JournalDetailService journalDetailService;
     public JTable table = new JTable();
     public JDesktopPane JP = new JDesktopPane();
@@ -54,26 +54,23 @@ public class Transaction extends javax.swing.JInternalFrame {
 
   
     private void initTable() {
-        journalDetailService = new JournalDetailService();
-        journalDetailModel = new JournalDetailModel();
-        //journalDetailModel.setList(journalDetailService.findAll());
-        jTable1.setModel(journalDetailModel);
-        TableColumnModel tbl = jTable1.getColumnModel();
-        tbl.getColumn(0).setPreferredWidth(100);
-        tbl.getColumn(1).setPreferredWidth(240);
-        tbl.getColumn(2).setPreferredWidth(80);
-        //tbl.getColumn(2).setCellRenderer(JTableFormatHelper.Accounting());
-        tbl.getColumn(3).setPreferredWidth(80);
-        //tbl.getColumn(3).setCellRenderer(JTableFormatHelper.Accounting());
+        journalDetailModel = new JournalDetail();
+        jTable1.setModel(journalDetailModel.getList(0, 0));
+        TableColumnModel table = jTable1.getColumnModel();
+        table.getColumn(0).setPreferredWidth(30);
+        table.getColumn(1).setPreferredWidth(160);
+        table.getColumn(2).setPreferredWidth(250);
+        table.getColumn(3).setPreferredWidth(150);
+        table.getColumn(4).setPreferredWidth(150);
     }
     
-    private void initCalculation() {
+    public void initCalculation() {
         Double totalDebet = 0.00,totalCredit =0.00;
         int totalRow = jTable1.getRowCount();
         if(totalRow > 0){
             for(int i=0;i<totalRow;i++){
-                String SDebet = jTable1.getValueAt(i, 2).toString();
-                String SCredit = jTable1.getValueAt(i, 3).toString();
+                String SDebet = jTable1.getValueAt(i, 3).toString();
+                String SCredit = jTable1.getValueAt(i, 4).toString();
                 Double debet = Double.parseDouble(SDebet);
                 Double credit = Double.parseDouble(SCredit);
                 totalDebet+=debet;
@@ -429,23 +426,12 @@ public class Transaction extends javax.swing.JInternalFrame {
 
     private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
         // TODO add your handling code here
-        //model = new Account();
-        //model.setIsEdit(false);
         TransactionForm form = new TransactionForm(this,false);
         form.setLocationRelativeTo(this);
         form.pack();
         form.list = this;
+        form.table = this.jTable1;
         form.setVisible(true);
-       //JournalDetailModel  model = new JournalDetailModel();
-        /*DefaultTableModel model =   (DefaultTableModel)  jTable1.getModel();
-        String[] arendt = {"Hannah", "Arendt","1000","10000"};
-        model.addRow(arendt);
-        jTable1.setModel(model);
-        jTable1.setCellSelectionEnabled(true);
-        jTable1.requestFocus();
-        //jTable1.changeSelection(jTable1.getRowCount(), column, false, false);
-        jTable1.editCellAt(jTable1.getRowCount(),0);
-        this.initCalculation();*/
     }//GEN-LAST:event_jButtonAddRowActionPerformed
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed

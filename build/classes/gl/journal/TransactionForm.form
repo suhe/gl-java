@@ -57,7 +57,7 @@
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="jButtonSave" min="-2" max="-2" attributes="0"/>
+              <Component id="jButtonAdd" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButtonCancel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -90,7 +90,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonSave" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonAdd" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonCancel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="20" max="32767" attributes="0"/>
@@ -119,6 +119,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldDebet">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldDebetKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelCredit">
       <Properties>
@@ -126,8 +129,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldCredit">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldCreditKeyTyped"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonSave">
+    <Component class="javax.swing.JButton" name="jButtonAdd">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/resources/icons/plus_16X16.png"/>
@@ -135,7 +141,7 @@
         <Property name="text" type="java.lang.String" value="Add"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSaveActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAddActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonCancel">
