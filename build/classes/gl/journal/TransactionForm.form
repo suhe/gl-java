@@ -105,6 +105,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldAccountNo">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldAccountNoKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelAccountName">
       <Properties>
@@ -120,6 +123,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldDebet">
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="jTextFieldDebetFocusLost"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldDebetKeyTyped"/>
       </Events>
     </Component>
@@ -130,6 +134,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldCredit">
       <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="jTextFieldCreditFocusLost"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldCreditKeyTyped"/>
       </Events>
     </Component>

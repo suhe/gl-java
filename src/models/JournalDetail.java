@@ -5,9 +5,16 @@
  */
 package models;
 
+import config.DatabaseUtil;
+import helpers.Format;
 import helpers.Lang;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import services.JournalDetails;
+
 
 /**
  *
@@ -18,12 +25,21 @@ public class JournalDetail {
         Lang.getString("App.account_no"), Lang.getString("App.description"),
         Lang.getString("App.debet"), Lang.getString("App.credit")};
     
+    private Integer journalId;
+    private Integer accountId;
     private Integer pos;
     private String accountNo;
     private String description;
     private Double debet;
     private Double credit;
     
+    public Integer getJournalId() {
+        return this.journalId;
+    }
+    
+    public void setJournalId(Integer var) {
+        this.journalId = var;
+    }
     
     public Integer getPos() {
         return this.pos;
@@ -33,6 +49,15 @@ public class JournalDetail {
         this.pos = var;
     }
     
+    public Integer getAccountId() {
+        return this.accountId;
+    }
+    
+    public void setAccountId(Integer var) {
+        this.accountId = var;
+    }
+    
+   
     public String getAccountNo(){
         return this.accountNo;
     }
@@ -92,9 +117,36 @@ public class JournalDetail {
             this.getPos(),
             this.getAccountNo(),
             this.getDescription(),
-            this.getDebet(),
-            this.getCredit()
+            Format.currency(this.getDebet(),2),
+            Format.currency(this.getCredit(),2),
         });
+    }
+    
+    public void save() {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            JournalDetails details = new JournalDetails();
+            details.setJournalId(this.getJournalId());
+            details.setAccountId(this.getAccountId());
+            details.setAccountNo(this.getAccountNo());
+            details.setDescription(this.getDescription());
+            details.setPosition(this.getPos());
+            details.setDebet(this.getDebet());
+            details.setCredit(this.getCredit());
+            session.save(details);
+            session.flush();
+            tx.commit();
+            
+        }catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
     }
     
 }

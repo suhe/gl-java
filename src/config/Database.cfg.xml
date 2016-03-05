@@ -14,5 +14,7 @@
     <mapping class="services.Users" package="gl" resource="services/Users.hbm.xml"/>
     <mapping class="services.Accounts" package="gl" resource="services/Accounts.hbm.xml"/>
     <mapping class="services.BeginningBalances" package="gl" resource="services/BeginningBalances.hbm.xml"/>
+    <mapping class="services.Journals" package="gl" resource="services/Journals.hbm.xml"/>
+    <mapping class="services.JournalDetails" package="gl" resource="services/JournalDetails.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

@@ -18,6 +18,8 @@
             <column name="type" length="30" not-null="false" />
         </property>
         
+        <property  name="accountName" formula="concat(no, ' ', name)"/>
+        
         <one-to-one name="BeginningBalances" class="services.BeginningBalances"
             cascade="save-update" />
         

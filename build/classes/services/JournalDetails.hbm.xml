@@ -9,10 +9,10 @@
             <generator class="identity" />
         </id>
         <property name="journalId" type="java.lang.Integer">
-            <column name="journal_id" />
+            <column name="journal_id" length="11" />
         </property>
-        <property name="order" type="java.lang.Integer">
-            <column name="order" />
+        <property name="position" type="java.lang.Integer">
+            <column name="position" />
         </property>
         <property name="accountId" type="java.lang.Integer">
             <column name="account_id" />
@@ -29,5 +29,9 @@
         <property name="credit" type="java.lang.Double">
             <column name="credit" precision="22" scale="0" />
         </property>
+        
+        <!--<many-to-one name="jh" class="services.Journals"
+            column="id" not-null="true"/>-->
+        
     </class>
 </hibernate-mapping>

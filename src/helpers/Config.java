@@ -27,7 +27,7 @@ public class Config {
     } 
     
      public static String[] getArray(String Args) {
-        String [] var = getString(Args).split(",");
+        String [] var = getString(Args).split(";");
         return var;
     }
 }

@@ -5,12 +5,18 @@
  */
 package gl.journal;
 
+import com.mxrck.autocompleter.TextAutoCompleter;
 import helpers.Format;
+import helpers.Validator.IsValidValidator;
 import helpers.Validator.RequiredValidator;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
+import models.Account;
 import models.JournalDetail;
+import services.Accounts;
 
 /**
  *
@@ -58,10 +64,21 @@ public class TransactionForm extends javax.swing.JDialog {
 
         jLabelAccountNo.setText("Account No");
 
+        jTextFieldAccountNo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldAccountNoKeyTyped(evt);
+            }
+        });
+
         jLabelAccountName.setText("Description");
 
         jLabelDebet.setText("Debet");
 
+        jTextFieldDebet.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldDebetFocusLost(evt);
+            }
+        });
         jTextFieldDebet.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldDebetKeyTyped(evt);
@@ -70,6 +87,11 @@ public class TransactionForm extends javax.swing.JDialog {
 
         jLabelCredit.setText("Credit");
 
+        jTextFieldCredit.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldCreditFocusLost(evt);
+            }
+        });
         jTextFieldCredit.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextFieldCreditKeyTyped(evt);
@@ -165,16 +187,18 @@ public class TransactionForm extends javax.swing.JDialog {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here:
+        Account model = new Account();
         RequiredValidator accountNoVal = new RequiredValidator(this, jTextFieldAccountNo, "The field account no is required !");
+        IsValidValidator isExists = new IsValidValidator(this, jTextFieldAccountNo, "The field account no is no exists !",model.isExists(jTextFieldAccountNo.getText()));
         RequiredValidator descriptionVal = new RequiredValidator(this, jTextFieldDescription, "The field description is required !");
         RequiredValidator debetVal = new RequiredValidator(this, jTextFieldDebet, "The field debet is required !");
         RequiredValidator creditVal = new RequiredValidator(this, jTextFieldCredit, "The field credit name is required !");
-        
-        if ((accountNoVal.verify(jTextFieldAccountNo)) && (descriptionVal.verify(jTextFieldDescription)) && (debetVal.verify(jTextFieldDebet)) && (creditVal.verify(jTextFieldCredit))){
+
+        if ((accountNoVal.verify(jTextFieldAccountNo)) && (isExists.verify(jTextFieldAccountNo) ) && (descriptionVal.verify(jTextFieldDescription)) && (debetVal.verify(jTextFieldDebet)) && (creditVal.verify(jTextFieldCredit))) {
             String accountNo = jTextFieldAccountNo.getText();
             String description = jTextFieldDescription.getText();
-            Double debet = Double.parseDouble(jTextFieldDebet.getText());
-            Double credit = Double.parseDouble(jTextFieldCredit.getText());
+            Double debet = Format.stringToDouble(jTextFieldDebet.getText());
+            Double credit = Format.stringToDouble(jTextFieldCredit.getText());
             journalDetail = new JournalDetail();
             journalDetail.setPos(table.getRowCount() + 1);
             journalDetail.setAccountNo(accountNo);
@@ -185,8 +209,8 @@ public class TransactionForm extends javax.swing.JDialog {
             list.initCalculation();
             this.dispose();
         }
-        
-        
+
+
     }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
@@ -201,12 +225,59 @@ public class TransactionForm extends javax.swing.JDialog {
     private void jTextFieldDebetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDebetKeyTyped
         // TODO add your handling code here:
         Format.isDecimal(evt);
+        
     }//GEN-LAST:event_jTextFieldDebetKeyTyped
 
     private void jTextFieldCreditKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldCreditKeyTyped
         // TODO add your handling code here:
         Format.isDecimal(evt);
     }//GEN-LAST:event_jTextFieldCreditKeyTyped
+
+    private void jTextFieldAccountNoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldAccountNoKeyTyped
+        // TODO add your handling code here:
+        TextAutoCompleter autoComplete;
+        autoComplete = new TextAutoCompleter(jTextFieldAccountNo) {
+            @Override
+            protected void acceptedListItem(Object o) {
+                if (o == null) {
+                    return;
+                }
+
+                String str;
+                Account model = new Account();
+                Accounts  acc = model.getRowByAccountName(o.toString());
+                if(acc != null) 
+                    str = acc.getNo();
+                else str = "x";
+                this.getTextComponent().setText(str);
+            }
+
+        };
+
+        String result = jTextFieldAccountNo.getText();
+        if (result.length() > 0) {
+            Account accountModel = new Account();
+            List listed = accountModel.getRowsByList(result);
+            for (Iterator iterator = listed.iterator(); iterator.hasNext();) {
+                Accounts acc = (Accounts) iterator.next();
+                autoComplete.addItem(acc.getNo() + " " + acc.getName() );
+            }
+        }
+    }//GEN-LAST:event_jTextFieldAccountNoKeyTyped
+
+    private void jTextFieldDebetFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldDebetFocusLost
+        // TODO add your handling code here:
+        if(jTextFieldDebet.getText().length() > 0 ){
+            jTextFieldDebet.setText(Format.currency(Format.stringToDouble(jTextFieldDebet.getText()),2));
+        }
+    }//GEN-LAST:event_jTextFieldDebetFocusLost
+
+    private void jTextFieldCreditFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCreditFocusLost
+        // TODO add your handling code here:
+        if(jTextFieldCredit.getText().length() > 0 ){
+            jTextFieldCredit.setText(Format.currency(Format.stringToDouble(jTextFieldCredit.getText()),2));
+        }
+    }//GEN-LAST:event_jTextFieldCreditFocusLost
 
     /**
      * @param args the command line arguments

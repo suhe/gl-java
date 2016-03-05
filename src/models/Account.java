@@ -15,8 +15,11 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import services.Accounts;
 
 /**
@@ -76,7 +79,7 @@ public class Account {
     }
 
     public Boolean isValid(String No) {
-        boolean status = true;
+        Boolean status = true;
         Accounts acc;
         Accounts rowId;
         acc = getRowByAccountNo(No);
@@ -88,6 +91,15 @@ public class Account {
                 status = false;
             }
         } 
+        return status;
+    }
+    
+    public Boolean isExists(String No) {
+        Boolean status = true;
+        Accounts acc;
+        Accounts rowId;
+        acc = getRowByAccountNo(No);
+        if(acc == null) status = false;
         return status;
     }
     
@@ -211,6 +223,41 @@ public class Account {
 
         return acc;
     }
+    
+    public List getRowsByList(String Query) {
+        //set to list all data
+        List list;
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+            ProjectionList projList = Projections.projectionList();
+            projList.add(Projections.property("id").as("id"));
+            projList.add(Projections.property("no").as("no"));
+            projList.add(Projections.property("name").as("name"));
+            projList.add(Projections.property("type").as("type"));
+            criteria.setProjection(projList);
+            criteria.addOrder(Order.asc("no"));
+            
+            if (!getAccountNo().equals("")) {
+                criteria.add(Restrictions.like("no", "%" + getAccountNo() + "%"));
+            }
+            
+            criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
+            
+            list = criteria.list(); 
+            tx.commit();
+        } catch (HibernateException e) {
+            list = null;
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return list;
+    }
 
     public Accounts getRowByAccountNo(String No) {
         Accounts acc = null;
@@ -221,6 +268,7 @@ public class Account {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Accounts.class)
                     .add(Restrictions.eq("no", No));
+            
             acc = (Accounts) criteria.uniqueResult();
             tx.commit();
         } catch (HibernateException ex) {
@@ -234,6 +282,34 @@ public class Account {
         return acc;
     }
     
+    public Accounts getRowByAccountName(String accountName) {
+        Accounts acc = null;
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+            ProjectionList projList = Projections.projectionList();
+            projList.add(Projections.property("id").as("id"));
+            projList.add(Projections.property("no").as("no"));
+            projList.add(Projections.property("accountName").as("accountName"));
+            criteria.setProjection(projList);
+            criteria.addOrder(Order.asc("no"));
+            criteria.add(Restrictions.ilike("accountName", accountName));
+            criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
+            acc = (Accounts) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return acc;
+    }
 
     public void saveOrUpdate() {
         if (getIsEdit() == true) {

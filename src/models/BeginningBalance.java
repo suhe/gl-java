@@ -133,8 +133,8 @@ public class BeginningBalance {
                     acc.getNo(),
                     acc.getName(),
                     acc.getType(),
-                    bb == null ? 0.00 : Format.Currency(bb.getDebet(), 2),
-                    bb == null ? 0.00 : Format.Currency(bb.getCredit(), 2),
+                    bb == null ? 0.00 : Format.currency(bb.getDebet(), 2),
+                    bb == null ? 0.00 : Format.currency(bb.getCredit(), 2),
                     acc.getId()
                 });
             }

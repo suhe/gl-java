@@ -5,28 +5,32 @@
  */
 package gl.journal;
 
-import gl.accounts.CoaForm;
 import helpers.Format;
-import helpers.JTableFormatHelper;
+import helpers.Lang;
+import helpers.Validator.IsValidValidator;
+import helpers.Validator.RequiredValidator;
+import helpers.Validator.ValueRequiredValidator;
+import java.text.SimpleDateFormat;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
+import models.Journal;
 import models.JournalDetail;
-import services.JournalDetailService;
+import services.Accounts;
 
 /**
  *
  * @author suhe
  */
 public class Transaction extends javax.swing.JInternalFrame {
-    
-    JournalDetail journalDetailModel;
-    JournalDetailService journalDetailService;
     public JTable table = new JTable();
     public JDesktopPane JP = new JDesktopPane();
     public String AccountNo;
+    Journal headModel; 
+    JournalDetail detailModel;
     
      
     /**
@@ -34,10 +38,33 @@ public class Transaction extends javax.swing.JInternalFrame {
      */
     public Transaction() {
         initComponents();
-        //jTable1.clearSelection();
+        initForm();
         initTable();
+        initComboType();
+        initDatePicker();
         
+    }
+    
+    private void initForm() {
+        jTextFieldTDebet.setEditable(false);
+        jTextFieldTCredit.setEditable(false);
+        jTextFieldTBalanced.setEditable(false);
+    }
+    
+    private void initComboType() {
+        jComboBoxType.removeAllItems();
+        String[] typeList = Lang.getArray("App.journal_type_list");
+        if(0 > typeList.length) {
+        } else {
+            for(Short i=0;i<typeList.length;i++) {
+                jComboBoxType.addItem(typeList[i]);
+            }
+        }
         
+    }
+    
+    private void initDatePicker() {
+        dateChooserComboDate.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
     }
     
     public String getAccountNo() {  
@@ -54,8 +81,8 @@ public class Transaction extends javax.swing.JInternalFrame {
 
   
     private void initTable() {
-        journalDetailModel = new JournalDetail();
-        jTable1.setModel(journalDetailModel.getList(0, 0));
+        detailModel = new JournalDetail();
+        jTable1.setModel(detailModel.getList(0, 0));
         TableColumnModel table = jTable1.getColumnModel();
         table.getColumn(0).setPreferredWidth(30);
         table.getColumn(1).setPreferredWidth(160);
@@ -71,17 +98,17 @@ public class Transaction extends javax.swing.JInternalFrame {
             for(int i=0;i<totalRow;i++){
                 String SDebet = jTable1.getValueAt(i, 3).toString();
                 String SCredit = jTable1.getValueAt(i, 4).toString();
-                Double debet = Double.parseDouble(SDebet);
-                Double credit = Double.parseDouble(SCredit);
+                Double debet = Format.stringToDouble(SDebet);
+                Double credit = Format.stringToDouble(SCredit);
                 totalDebet+=debet;
                 totalCredit+=credit;
             }
         }
         
         Double totalBalance = totalDebet - totalCredit;  
-        jTextFieldTDebet.setText(Format.Currency(totalDebet,2));
-        jTextFieldTCredit.setText(Format.Currency(totalCredit,2));
-        jTextFieldTBalanced.setText(Format.Currency(totalBalance,2));
+        jTextFieldTDebet.setText(Format.currency(totalDebet,2));
+        jTextFieldTCredit.setText(Format.currency(totalCredit,2));
+        jTextFieldTBalanced.setText(Format.currency(totalBalance,2));
     }
     
     public void setAccountLoad(String AccountNo,int Row,int Col) {
@@ -115,15 +142,15 @@ public class Transaction extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldGiroQc = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jFormattedTextField1 = new javax.swing.JFormattedTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxType = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jTextFieldDescription = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldVoucherNo = new javax.swing.JTextField();
+        dateChooserComboDate = new datechooser.beans.DateChooserCombo();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonFirst = new javax.swing.JButton();
@@ -151,13 +178,16 @@ public class Transaction extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Date");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setText("Type");
 
         jLabel4.setText("Giro/QC");
 
         jLabel5.setText("Description");
+
+        dateChooserComboDate.setFormat(1);
+        dateChooserComboDate.setWeekStyle(datechooser.view.WeekDaysStyle.FULL);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -173,18 +203,18 @@ public class Transaction extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                            .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addGap(44, 44, 44)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jTextField2))
+                            .addComponent(jComboBoxType, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldGiroQc, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jTextFieldDescription))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -195,17 +225,18 @@ public class Transaction extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(jLabel3)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                        .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jTextFieldGiroQc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -279,6 +310,11 @@ public class Transaction extends javax.swing.JInternalFrame {
 
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonSave.setText("Save");
+        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Balanced");
 
@@ -337,15 +373,10 @@ public class Transaction extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLast)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonSearch)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButtonAdd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonSave)
-                                .addGap(3, 3, 3)
-                                .addComponent(jButtonCancel))
+                                .addComponent(jButtonSearch))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel8)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -358,15 +389,20 @@ public class Transaction extends javax.swing.JInternalFrame {
                                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(603, 603, 603)
+                                        .addComponent(jButtonAdd)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButtonSave)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButtonCancel)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                                    .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -402,7 +438,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                     .addComponent(jButtonSearch)
                     .addComponent(jButtonCancel)
                     .addComponent(jButtonSave))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -523,8 +559,69 @@ public class Transaction extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_jTable1KeyReleased
 
+    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+        // TODO add your handling code here:    
+        headModel = new Journal();
+        RequiredValidator voucherNoVal = new RequiredValidator(null, jTextFieldVoucherNo, "The field voucher number is required !");
+        IsValidValidator isValid = new IsValidValidator(null, jTextFieldVoucherNo, "The voucher number is already !", headModel.isValid(jTextFieldVoucherNo.getText()));
+        RequiredValidator descriptionVal = new RequiredValidator(null, jTextFieldDescription, "The field description is required !");
+        RequiredValidator tdebetVal = new RequiredValidator(null, jTextFieldTDebet, "The field debet is required !");
+        RequiredValidator tcreditVal = new RequiredValidator(null, jTextFieldTCredit, "The field credit is required !");
+        RequiredValidator tbalancedVal = new RequiredValidator(null, jTextFieldTBalanced, "The field balanced is required !");
+        ValueRequiredValidator isTBalancedValue = new ValueRequiredValidator(null, jTextFieldTBalanced, "The balanced must be .00 !",".00");
+        
+        Boolean isNumberFill = voucherNoVal.verify(jTextFieldVoucherNo);
+        Boolean isValidFill = isValid.verify(jTextFieldVoucherNo);
+        Boolean isDescFill = descriptionVal.verify(jTextFieldDescription);
+        Boolean isTDebitFill = tdebetVal.verify(jTextFieldTDebet);
+        Boolean isTCreditFill = tcreditVal.verify(jTextFieldTCredit);
+        Boolean isTBalancedFill = tbalancedVal.verify(jTextFieldTBalanced);
+        Boolean isValueTBalancedFill =isTBalancedValue.verify(jTextFieldTBalanced);
+        
+        if (isNumberFill && isValidFill && isDescFill && isTDebitFill && isTCreditFill && isTBalancedFill) {
+            String number = jTextFieldVoucherNo.getText();
+            String dateVal = Format.dateToString(dateChooserComboDate.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
+            String type = jComboBoxType.getSelectedItem().toString();
+            String description = jTextFieldDescription.getText();
+            String qcGiro = jTextFieldGiroQc.getText();
+            Double tdebet = Format.stringToDouble(jTextFieldTDebet.getText());
+            Double tcredit = Format.stringToDouble(jTextFieldTCredit.getText());
+            Journal jModel = new Journal();
+            jModel.setNumber(number);
+            jModel.setDate(Format.stringToDate(dateVal,"yyyy-MM-dd"));
+            jModel.setType(type);
+            jModel.setDescription(description);
+            jModel.setOther(qcGiro);
+            jModel.setDebet(tdebet);
+            jModel.setCredit(tcredit);
+            //jModel.save(jTable1);
+            Integer JournalId = jModel.getInsertId();
+            
+            Integer totalRowTable = this.jTable1.getRowCount();
+            if(totalRowTable > 0) {
+                for(Integer i=0;i<totalRowTable;i++) {
+                    //set account id
+                    Account accModel = new Account();
+                    Accounts acc = accModel.getRowByAccountNo(jTable1.getValueAt(i, 1).toString());
+                    JournalDetail jd = new JournalDetail();
+                    jd.setJournalId(JournalId);
+                    jd.setPos(i + 1);
+                    jd.setAccountId(acc != null ? acc.getId() : 0 );
+                    jd.setAccountNo(jTable1.getValueAt(i, 1).toString());
+                    jd.setDescription(jTable1.getValueAt(i, 2).toString());
+                    jd.setDebet(Format.stringToDouble(jTable1.getValueAt(i, 3).toString()));
+                    jd.setCredit(Format.stringToDouble(jTable1.getValueAt(i, 4).toString()));
+                    jd.save();
+                }
+            }
+            
+            JOptionPane.showMessageDialog(null, "Successfully store to database !", "Store DB", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonSaveActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private datechooser.beans.DateChooserCombo dateChooserComboDate;
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonAddRow;
     private javax.swing.JButton jButtonBottomRow;
@@ -537,8 +634,7 @@ public class Transaction extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonSave;
     private javax.swing.JButton jButtonSearch;
     private javax.swing.JButton jButtonUpRow;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JFormattedTextField jFormattedTextField1;
+    private javax.swing.JComboBox<String> jComboBoxType;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -550,15 +646,13 @@ public class Transaction extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldDescription;
+    private javax.swing.JTextField jTextFieldGiroQc;
     private javax.swing.JTextField jTextFieldTBalanced;
     private javax.swing.JTextField jTextFieldTCredit;
     private javax.swing.JTextField jTextFieldTDebet;
+    private javax.swing.JTextField jTextFieldVoucherNo;
     // End of variables declaration//GEN-END:variables
 
-    public void begin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 }

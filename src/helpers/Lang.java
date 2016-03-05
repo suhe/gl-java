@@ -5,6 +5,7 @@
  */
 package helpers;
 
+import static helpers.Config.getString;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -38,6 +39,11 @@ public class Lang {
             StrLang = Args;
         }
         return StrLang;
+    }
+    
+    public static String[] getArray(String Args) {
+        String [] var = getString(Args).split(";");
+        return var;
     }
     
    

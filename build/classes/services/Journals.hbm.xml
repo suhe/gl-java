@@ -18,10 +18,23 @@
             <column name="description" />
         </property>
         <property name="type" type="string">
-            <column name="type" length="45" />
+            <column name="type" length="100" />
         </property>
         <property name="checkNumber" type="string">
-            <column name="check_number" length="45" />
+            <column name="check_number" length="100" />
         </property>
+        <property name="debet" type="double">
+            <column name="debet" length="18" not-null="false" />
+        </property>
+        <property name="credit" type="double">
+            <column name="credit" length="18" not-null="false" />
+        </property>
+        
+        <!--<set name="jd" inverse="true" cascade="all">
+            <key column="journal_id" not-null="true" />
+            <one-to-many class="services.JournalDetails"/>
+        </set>-->
+       
+        
     </class>
 </hibernate-mapping>
