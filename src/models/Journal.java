@@ -6,11 +6,16 @@
 package models;
 
 import config.DatabaseUtil;
+import helpers.Lang;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import services.Journals;
@@ -27,6 +32,14 @@ public class Journal {
     private String other;
     private Double debet;
     private Double credit;
+    
+    //search
+    private Integer id_;
+    private String number_;
+    String[] TABLE_COLUMN_NAME = {Lang.getString("App.no"),
+        Lang.getString("App.number"), Lang.getString("App.date"),Lang.getString("App.type"),
+        Lang.getString("App.description"), Lang.getString("App.check_giro"),
+        Lang.getString("App.debet"),Lang.getString("App.credit"),"#"};
    
     
     public String getNumber() {
@@ -85,6 +98,22 @@ public class Journal {
     public void setCredit(Double var) {
         this.credit = var;
     }
+    
+    public Integer getId_() {
+        return this.id_;
+    }
+    
+    public void setId_(Integer var) {
+        this.id_ = var;
+    }
+    
+    public String getNumber_() {
+        return number_;
+    }
+    
+    public void setNumber_(String var) {
+        this.number_ = var;
+    }
             
     public Boolean isValid(String No) {
         Boolean status = true;
@@ -113,6 +142,28 @@ public class Journal {
         }
 
         return count;
+    }
+    
+    public Journals getRowById(Integer id) {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Journals jn = null;
+        try {
+            tx = (Transaction) session.getTransaction();
+            tx.begin();
+            Criteria criteria = session.createCriteria(Journals.class);
+            criteria.add(Restrictions.eq("id",id));
+            criteria.setMaxResults(1);
+            jn = (Journals) criteria.uniqueResult();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return jn;
     }
     
     public Integer getInsertId() {
@@ -145,5 +196,182 @@ public class Journal {
         }
         return Id;
     }
+    
+    public DefaultTableModel getList(Integer offset, final Integer limit) {
+
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public String getColumnName(int column) {
+                return TABLE_COLUMN_NAME[column];
+            }
+
+            @Override
+            public int getColumnCount() {
+                return TABLE_COLUMN_NAME.length;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; //To change body of generated methods, choose Tools | Templates.
+            }
+
+        };
+
+        //set to list all data
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            Integer i = (limit * (offset - 1));
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Journals.class)
+                    .setFirstResult(i)
+                    .setMaxResults(limit + i);
+            if (!this.getNumber_().equals("")) {
+                criteria.add(Restrictions.like("number", "%" + getNumber_() + "%"));
+            }
+            List list = criteria.list();
+            i++;
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Journals jn = (Journals) iterator.next();
+                model.addRow(new Object[]{
+                    i,
+                    jn.getNumber(),
+                    jn.getDate(),
+                    jn.getType(),
+                    jn.getDescription(),
+                    jn.getCheckNumber(),
+                    jn.getDebet(),
+                    jn.getCredit(),
+                    jn.getId()
+                });
+                i++;
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return model;
+    }
+    
+    public Integer getCount() {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Integer count = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Journals.class);
+            count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return count;
+    }
+    
+    public Journals getFirstRow() {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Journals jn = null;
+        try {
+            tx = (Transaction) session.getTransaction();
+            tx.begin();
+            Criteria criteria = session.createCriteria(Journals.class);
+            criteria.addOrder(Order.asc("id"));
+            criteria.setMaxResults(1);
+            jn = (Journals) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return jn;
+    }
+    
+    public Journals getPreviousRow(Integer id) {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Journals jn = null;
+        try {
+            tx = (Transaction) session.getTransaction();
+            tx.begin();
+            Criteria criteria = session.createCriteria(Journals.class);
+            criteria.add(Restrictions.lt("id",id));
+            criteria.addOrder(Order.desc("id"));
+            criteria.setMaxResults(1);
+            jn = (Journals) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return jn;
+    }
+    
+    public Journals getNextRow(Integer id) {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Journals jn = null;
+        try {
+            tx = (Transaction) session.getTransaction();
+            tx.begin();
+            Criteria criteria = session.createCriteria(Journals.class);
+            criteria.add(Restrictions.gt("id",id));
+            criteria.addOrder(Order.asc("id"));
+            criteria.setMaxResults(1);
+            jn = (Journals) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return jn;
+    }
+    
+    public Journals getLastRow() {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Journals jn = null;
+        try {
+            tx = (Transaction) session.getTransaction();
+            tx.begin();
+            Criteria criteria = session.createCriteria(Journals.class);
+            criteria.addOrder(Order.desc("id"));
+            criteria.setMaxResults(1);
+            jn = (Journals) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return jn;
+    }
+    
     
 }

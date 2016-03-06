@@ -72,5 +72,5 @@ public class Format {
         }
         return date;
     }
-    
+
 }

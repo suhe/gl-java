@@ -8,11 +8,17 @@ package models;
 import config.DatabaseUtil;
 import helpers.Format;
 import helpers.Lang;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import services.Accounts;
 import services.JournalDetails;
 
 
@@ -90,7 +96,7 @@ public class JournalDetail {
         this.credit = var;
     }
     
-    public DefaultTableModel getList(Integer offset, final Integer limit) {
+    public DefaultTableModel getList(Integer id,Integer offset, final Integer limit) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public String getColumnName(int column) {
@@ -108,6 +114,36 @@ public class JournalDetail {
             }
 
         };
+        
+        if (id != null) {
+            Session session = DatabaseUtil.getSessionFactory().openSession();
+            Transaction tx = null;
+            try {
+                tx = session.beginTransaction();
+                Criteria criteria = session.createCriteria(JournalDetails.class);
+                criteria.add(Restrictions.eq("journalId", id));
+                criteria.addOrder(Order.asc("position"));
+                List list = criteria.list();
+                for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                    JournalDetails jd = (JournalDetails) iterator.next();
+                    model.addRow(new Object[]{
+                        jd.getPosition(),
+                        jd.getAccountNo(),
+                        jd.getDescription(),
+                        Format.currency(jd.getDebet(), 2),
+                        Format.currency(jd.getCredit(), 2),});
+                }
+                tx.commit();
+            } catch (HibernateException e) {
+                System.out.println(e.getMessage());
+                if (tx != null) {
+                    tx.rollback();
+                }
+            } finally {
+                session.close();
+            }
+        }
+        
         return model;
     }
 

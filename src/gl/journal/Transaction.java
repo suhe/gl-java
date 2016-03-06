@@ -10,7 +10,10 @@ import helpers.Lang;
 import helpers.Validator.IsValidValidator;
 import helpers.Validator.RequiredValidator;
 import helpers.Validator.ValueRequiredValidator;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Objects;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -20,17 +23,19 @@ import models.Account;
 import models.Journal;
 import models.JournalDetail;
 import services.Accounts;
+import services.Journals;
 
 /**
  *
  * @author suhe
  */
 public class Transaction extends javax.swing.JInternalFrame {
-    public JTable table = new JTable();
+    //public JTable table = new JTable();
     public JDesktopPane JP = new JDesktopPane();
     public String AccountNo;
     Journal headModel; 
     JournalDetail detailModel;
+    Integer id;
     
      
     /**
@@ -42,13 +47,24 @@ public class Transaction extends javax.swing.JInternalFrame {
         initTable();
         initComboType();
         initDatePicker();
-        
     }
     
     private void initForm() {
         jTextFieldTDebet.setEditable(false);
         jTextFieldTCredit.setEditable(false);
         jTextFieldTBalanced.setEditable(false);
+        if(this.id == null) { 
+            this.setEnabledPaginationButton(false);
+        }else {
+            this.setEnabledPaginationButton(true);
+        }
+    }
+    
+    private void setEnabledPaginationButton(Boolean status){
+        jButtonFirst.setEnabled(status);
+        jButtonPrev.setEnabled(status);
+        jButtonNext.setEnabled(status);
+        jButtonLast.setEnabled(status);
     }
     
     private void initComboType() {
@@ -60,29 +76,45 @@ public class Transaction extends javax.swing.JInternalFrame {
                 jComboBoxType.addItem(typeList[i]);
             }
         }
-        
     }
     
     private void initDatePicker() {
         dateChooserComboDate.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
     }
     
-    public String getAccountNo() {  
-        return AccountNo;  
-    }  
+    public void initExistData(Integer Id) {
+        headModel = new Journal();
+        Journals jn = headModel.getRowById(Id);
+        if(jn != null) {
+            jButtonSave.setText(Lang.getString("App.update"));
+            jTextFieldVoucherNo.setText(jn.getNumber());
+            jTextFieldDescription.setText(jn.getDescription());
+            dateChooserComboDate.setText(Format.dateToString(jn.getDate().toString(),"yyyy-MM-dd", "dd/MM/yyyy"));
+            jTextFieldGiroQc.setText(jn.getCheckNumber());
+            jTextFieldTDebet.setText(Format.currency(jn.getDebet() == null ? 0.00 : jn.getDebet(),2));
+            jTextFieldTCredit.setText(Format.currency(jn.getCredit() == null ? 0.00 : jn.getCredit(),2));
+            Double tbalanced = (jn.getDebet() == null ? 0.00 : jn.getDebet()) - (jn.getCredit() == null ? 0.00 : jn.getCredit());
+            jTextFieldTBalanced.setText(Format.currency(tbalanced,2));
+            this.id = Id; 
+            
+        } else {
+            jButtonSave.setText(Lang.getString("App.save"));
+            jTextFieldVoucherNo.setText("");
+            jTextFieldDescription.setText("");
+            jTextFieldGiroQc.setText("");
+            jTextFieldTDebet.setText("");
+            jTextFieldTCredit.setText("");
+            jTextFieldTBalanced.setText("");
+            this.id = null; 
+        }
+        
+        this.initForm();
+        this.initTable();
+    }
     
-    public void itemTerpilih(){  
-        //CoaForm frmCoa = new CoaForm();
-        //JP.add(frmCoa);
-        //frmCoa.frmTransaction = this;  
-        //jTextFieldTBalanced.setText(AccountNo);  
-         
-}  
-
-  
     private void initTable() {
         detailModel = new JournalDetail();
-        jTable1.setModel(detailModel.getList(0, 0));
+        jTable1.setModel(detailModel.getList(this.id,0, 1000));
         TableColumnModel table = jTable1.getColumnModel();
         table.getColumn(0).setPreferredWidth(30);
         table.getColumn(1).setPreferredWidth(160);
@@ -115,22 +147,6 @@ public class Transaction extends javax.swing.JInternalFrame {
         jTable1.setValueAt("144", 1, 0);
     }
     
-    public javax.swing.JTable getTable() {
-        return jTable1;
-    }
-    
-    public void setTable(javax.swing.JTable table) {
-        this.jTable1 = table;
-    }
-    
-    public javax.swing.JTextField getText() {
-        return jTextFieldTBalanced;
-    }
-    
-    public void setText(javax.swing.JTextField var) {
-        this.jTextFieldTBalanced = var;
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -173,6 +189,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         jButtonBottomRow = new javax.swing.JButton();
 
         setClosable(true);
+        setName("Transaction"); // NOI18N
 
         jLabel1.setText("No");
 
@@ -187,7 +204,8 @@ public class Transaction extends javax.swing.JInternalFrame {
         jLabel5.setText("Description");
 
         dateChooserComboDate.setFormat(1);
-        dateChooserComboDate.setWeekStyle(datechooser.view.WeekDaysStyle.FULL);
+        dateChooserComboDate.setLocale(new java.util.Locale("in", "", ""));
+        dateChooserComboDate.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -257,14 +275,6 @@ public class Transaction extends javax.swing.JInternalFrame {
                 jTable1MousePressed(evt);
             }
         });
-        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTable1KeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTable1KeyReleased(evt);
-            }
-        });
         jScrollPane1.setViewportView(jTable1);
 
         jButtonFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_first_16x16.png"))); // NOI18N
@@ -301,9 +311,19 @@ public class Transaction extends javax.swing.JInternalFrame {
 
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
         jButtonAdd.setText("Add");
+        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddActionPerformed(evt);
+            }
+        });
 
-        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pagination_last_16x16.png"))); // NOI18N
+        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
         jButtonSearch.setText("Search");
+        jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSearchActionPerformed(evt);
+            }
+        });
 
         jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonCancel.setText("Cancel");
@@ -445,19 +465,61 @@ public class Transaction extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
-       
+        headModel = new Journal();
+        Journals jn  =  headModel.getFirstRow();
+        Integer xid = jn != null ? jn.getId() : 0; 
+        initExistData(xid);
+        jButtonFirst.setEnabled(false);
+        jButtonPrev.setEnabled(false);
+        jButtonNext.setEnabled(true);
+        jButtonLast.setEnabled(true);
     }//GEN-LAST:event_jButtonFirstActionPerformed
 
     private void jButtonPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevActionPerformed
-        
+        headModel = new Journal();
+        Journals jfirst =  headModel.getFirstRow();
+        Journals jprev  =  headModel.getPreviousRow(this.id);
+        Integer xfid = jfirst != null ? jfirst.getId() : 0;
+        Integer xpid = jprev != null ? jprev.getId() : 0;
+       
+        initExistData(xpid);
+        if(Objects.equals(xfid, xpid)) {
+            jButtonFirst.setEnabled(false);
+            jButtonPrev.setEnabled(false);
+        }else {
+            jButtonFirst.setEnabled(true);
+            jButtonPrev.setEnabled(true);
+        }
     }//GEN-LAST:event_jButtonPrevActionPerformed
 
     private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
-        
+        headModel = new Journal();
+        Journals jnext  =  headModel.getNextRow(this.id);
+        Journals jlast =  headModel.getLastRow();
+        //Journals jlast  =  headModel.getLastRow();
+       
+        Integer xnid = jnext != null ? jnext.getId() : 0;
+        Integer xlid = jnext != null ? jlast.getId() : 0;
+         
+        initExistData(xnid);
+        if(Objects.equals(xnid, xlid)) {
+            jButtonLast.setEnabled(false);
+            jButtonNext.setEnabled(false);
+        }else {
+            jButtonLast.setEnabled(true);
+            jButtonNext.setEnabled(true);
+        }
     }//GEN-LAST:event_jButtonNextActionPerformed
 
     private void jButtonLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLastActionPerformed
-       
+        headModel = new Journal();
+        Journals jn  =  headModel.getLastRow();
+        Integer xid = jn != null ? jn.getId() : 0; 
+        initExistData(xid);
+        jButtonFirst.setEnabled(true);
+        jButtonPrev.setEnabled(true);
+        jButtonNext.setEnabled(false);
+        jButtonLast.setEnabled(false);
     }//GEN-LAST:event_jButtonLastActionPerformed
 
     private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
@@ -481,57 +543,6 @@ public class Transaction extends javax.swing.JInternalFrame {
          }
     }//GEN-LAST:event_jTable1MousePressed
 
-    private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
-        // TODO add your handling code here:
-        JTable source = (JTable)evt.getSource();
-        int row = source.getSelectedRow();
-        int col = source.getSelectedColumn();
-        
-        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER && col == 0) {
-            //JOptionPane.showMessageDialog(null, "Enter Row ","Test Enter",JOptionPane.INFORMATION_MESSAGE);
-            //CoaForm frmCoa = new CoaForm();
-            //JP.add(frmCoa);
-            //frmCoa.frmTransaction = this;
-            //frmCoa.setFormName("Transaction");
-            //frmCoa.rowTarget = row;
-            //frmCoa.colTarget = col;
-            //this.table = jTable1;
-           // frmCoa.setVisible(true);
-        }
-        
-        
-        
-        //if(colx == 2) {
-           //Object selectedObject = (Object) jTable1.getModel().getValueAt(rowx, colx);
-            //if(selectedObject.toString() != "//^[1-9]\\d*(\\.\\d+)?$") {
-                //(Object) jTable1.getModel().setValueAt("0",rowx, colx);
-            //}
-            //^[1-9]\d*(\.\d+)?$
-        //}
-        
-        
-        
-        /*if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-            JTable target = (JTable)evt.getSource();
-            int row = target.getSelectedRow();
-            int column = target.getSelectedColumn();
-            int totalcol = jTable1.getColumnCount() - 1;
-            
-            //col 3  total 4
-            if(column < totalcol) {
-                column += 1;
-            }else{
-                column = 0;
-            }
-            // do some action if appropriate
-            jTable1.requestFocus();
-            //jTable1.editCellAt(row,column);
-            jTable1.changeSelection(row-1, column, false, false);
-            JOptionPane.showMessageDialog(null, "Enter Row : " + row + " Total Col :" + totalcol,"Test Enter",JOptionPane.INFORMATION_MESSAGE);*/
-           
-       // }
-    }//GEN-LAST:event_jTable1KeyPressed
-
     private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
         ((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
@@ -552,12 +563,6 @@ public class Transaction extends javax.swing.JInternalFrame {
         model.moveRow(rows[0],rows[rows.length-1],rows[0]+1);
         jTable1.setRowSelectionInterval(rows[0]+1, rows[rows.length-1]+1);
     }//GEN-LAST:event_jButtonBottomRowActionPerformed
-
-    private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
-        // TODO add your handling code here:
-        //JOptionPane.showMessageDialog(null, "Enter Row ","Test Enter",JOptionPane.INFORMATION_MESSAGE);
-        
-    }//GEN-LAST:event_jTable1KeyReleased
 
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
         // TODO add your handling code here:    
@@ -616,8 +621,26 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
             
             JOptionPane.showMessageDialog(null, "Successfully store to database !", "Store DB", JOptionPane.INFORMATION_MESSAGE);
+            this.initExistData(JournalId);
         }
     }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Form : " + this.getName());
+        TransactionShared shared = new TransactionShared(this,false);
+        shared.setLocationRelativeTo(this);
+        shared.pack();
+        shared.transaction = this;
+        shared.formName = this.getName();
+        shared.setVisible(true);
+    }//GEN-LAST:event_jButtonSearchActionPerformed
+
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
+        // TODO add your handling code here:
+         initExistData(null);
+         jTextFieldVoucherNo.requestFocus();
+    }//GEN-LAST:event_jButtonAddActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
