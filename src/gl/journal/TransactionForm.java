@@ -7,9 +7,9 @@ package gl.journal;
 
 import com.mxrck.autocompleter.TextAutoCompleter;
 import helpers.Format;
+import helpers.Lang;
 import helpers.Validator.IsValidValidator;
 import helpers.Validator.RequiredValidator;
-import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JInternalFrame;
@@ -24,10 +24,20 @@ import services.Accounts;
  */
 public class TransactionForm extends javax.swing.JDialog {
 
-    public Transaction list;
+    public Transaction list = new Transaction();
     public JTable table;
-    JournalDetail journalDetail;
-
+    public Integer row;
+    JournalDetail model;
+    private String accountNo;
+    
+    public String getAccountNo(){
+        return accountNo;
+    }
+    
+    public void setAccountNo(String var) {
+        accountNo = var;
+    }
+    
     /**
      * Creates new form TransactionForm
      *
@@ -37,6 +47,25 @@ public class TransactionForm extends javax.swing.JDialog {
     public TransactionForm(JInternalFrame parent, boolean modal) {
         //super(parent, modal);
         initComponents();
+        initForm();
+    }
+    
+    private void initForm() {
+        model = new JournalDetail();
+        if (model.getIsEdit() != true) {
+            jTextFieldAccountNo.setText("");
+            jTextFieldDescription.setText("");
+            jTextFieldDebet.setText("0.00");
+            jTextFieldCredit.setText("0.00");
+            jButtonAdd.setText(Lang.getString("App.add"));
+        }else {
+            jTextFieldAccountNo.setText(model.getAccountNo_());
+            jTextFieldDescription.setText(model.getDescription_());
+            jTextFieldDebet.setText(Format.currency(model.getDebet_(),2));
+            jTextFieldCredit.setText(Format.currency(model.getCredit_(),2));
+            jButtonAdd.setText(Lang.getString("App.update"));
+        }
+        
     }
 
     /**
@@ -187,25 +216,32 @@ public class TransactionForm extends javax.swing.JDialog {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here:
-        Account model = new Account();
+        Account accountModel = new Account();
         RequiredValidator accountNoVal = new RequiredValidator(this, jTextFieldAccountNo, "The field account no is required !");
-        IsValidValidator isExists = new IsValidValidator(this, jTextFieldAccountNo, "The field account no is no exists !",model.isExists(jTextFieldAccountNo.getText()));
+        IsValidValidator isExists = new IsValidValidator(this, jTextFieldAccountNo, "The field account no is no exists !",accountModel.isExists(jTextFieldAccountNo.getText()));
         RequiredValidator descriptionVal = new RequiredValidator(this, jTextFieldDescription, "The field description is required !");
         RequiredValidator debetVal = new RequiredValidator(this, jTextFieldDebet, "The field debet is required !");
         RequiredValidator creditVal = new RequiredValidator(this, jTextFieldCredit, "The field credit name is required !");
 
         if ((accountNoVal.verify(jTextFieldAccountNo)) && (isExists.verify(jTextFieldAccountNo) ) && (descriptionVal.verify(jTextFieldDescription)) && (debetVal.verify(jTextFieldDebet)) && (creditVal.verify(jTextFieldCredit))) {
-            String accountNo = jTextFieldAccountNo.getText();
-            String description = jTextFieldDescription.getText();
-            Double debet = Format.stringToDouble(jTextFieldDebet.getText());
-            Double credit = Format.stringToDouble(jTextFieldCredit.getText());
-            journalDetail = new JournalDetail();
-            journalDetail.setPos(table.getRowCount() + 1);
-            journalDetail.setAccountNo(accountNo);
-            journalDetail.setDescription(description);
-            journalDetail.setDebet(debet);
-            journalDetail.setCredit(credit);
-            journalDetail.addTableRow(table);
+            String xaccountNo = jTextFieldAccountNo.getText();
+            String xdescription = jTextFieldDescription.getText();
+            Double xdebet = Format.stringToDouble(jTextFieldDebet.getText());
+            Double xcredit = Format.stringToDouble(jTextFieldCredit.getText());
+            model = new JournalDetail();
+            if(model.getIsEdit() ==  false) {
+                model.setPos(table.getRowCount() + 1);
+                model.setAccountNo(xaccountNo);
+                model.setDescription(xdescription);
+                model.setDebet(xdebet);
+                model.setCredit(xcredit);
+                model.addTableRow(table);
+            } else {
+                table.setValueAt(jTextFieldAccountNo.getText(),row, 1);
+                table.setValueAt(jTextFieldDescription.getText(),row, 2);
+                table.setValueAt(jTextFieldDebet.getText(),row, 3);
+                table.setValueAt(jTextFieldCredit.getText(),row, 4);
+            }
             list.initCalculation();
             this.dispose();
         }
@@ -248,7 +284,7 @@ public class TransactionForm extends javax.swing.JDialog {
                 Accounts  acc = model.getRowByAccountName(o.toString());
                 if(acc != null) 
                     str = acc.getNo();
-                else str = "x";
+                else str = "0";
                 this.getTextComponent().setText(str);
             }
 

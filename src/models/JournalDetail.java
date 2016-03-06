@@ -14,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -38,6 +39,13 @@ public class JournalDetail {
     private String description;
     private Double debet;
     private Double credit;
+    
+    private static Boolean isEdit = false;
+    private static String accountNo_;
+    private static String description_;
+    private static Double debet_;
+    private static Double credit_;
+    
     
     public Integer getJournalId() {
         return this.journalId;
@@ -94,6 +102,46 @@ public class JournalDetail {
     
     public void setCredit(Double var) {
         this.credit = var;
+    }
+    
+    public Boolean getIsEdit() {
+        return isEdit;
+    }
+    
+    public void setIsEdit(Boolean status) {
+        isEdit = status;
+    }
+    
+    public String getAccountNo_(){
+        return accountNo_;
+    }
+    
+    public void setAccountNo_(String var) {
+        accountNo_ = var;
+    }
+    
+    public String getDescription_(){
+        return description_;
+    }
+    
+    public void setDescription_(String var) {
+        description_ = var;
+    }
+    
+    public Double getDebet_() {
+        return debet_;
+    }
+    
+    public void setDebet_(Double var) {
+        debet_ = var;
+    }
+    
+    public Double getCredit_() {
+        return credit_;
+    }
+    
+    public void setCredit_(Double var) {
+        credit_ = var;
     }
     
     public DefaultTableModel getList(Integer id,Integer offset, final Integer limit) {
@@ -177,6 +225,28 @@ public class JournalDetail {
             tx.commit();
             
         }catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+    }
+    
+    public void delete(Integer Key) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String hql = "delete from JournalDetails where journalId = :jid";
+            Query query = session.createQuery(hql);
+            query.setInteger("jid", Key);
+            System.out.println(query.executeUpdate());
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
             if (tx != null) {
                 tx.rollback();
             }

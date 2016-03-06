@@ -6,9 +6,12 @@
 package gl.journal;
 
 import helpers.Config;
+import helpers.Format;
 import helpers.Lang;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -25,6 +28,9 @@ public class TransactionShared extends javax.swing.JDialog {
     Integer totalPage = 1;
     Integer totalRow = 0;
     String number = "";
+    Boolean isSearchDate = false;
+    String dateFrom = "";
+    String dateTo = "";
     Journal model;
     public Transaction transaction;
     public String formName;
@@ -37,8 +43,16 @@ public class TransactionShared extends javax.swing.JDialog {
     public TransactionShared(JInternalFrame parent, boolean modal) {
         //super(parent, modal);
         initComponents();
+        initForm();
         initComboItem();
         initTable();
+    }
+    
+    private void initForm() {
+        dateChooserComboDateFrom.setEnabled(false);
+        dateChooserComboDateFrom.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+        dateChooserComboDateTo.setEnabled(false);
+        dateChooserComboDateTo.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
     }
     
     private void initComboItem() {
@@ -63,6 +77,11 @@ public class TransactionShared extends javax.swing.JDialog {
     private void initTable() {
         model = new Journal();
         model.setNumber_(number);
+        model.setIsSearchDate__(isSearchDate);
+        if (!this.dateFrom.equals("") && !this.dateTo.equals("")) {
+            model.setDateFrom_(Format.dateToString(dateChooserComboDateFrom.getText(), "dd/MM/yyyy", "yyyy-MM-dd"));
+            model.setDateTo_(Format.dateToString(dateChooserComboDateTo.getText(), "dd/MM/yyyy", "yyyy-MM-dd"));
+        }
         totalRow = model.getCount();
         totalRowPerPage = Integer.valueOf(jComboBoxTotalRows.getSelectedItem().toString());
         Double totalPageDouble = Math.ceil(totalRow.doubleValue() / totalRowPerPage.doubleValue());
@@ -87,6 +106,20 @@ public class TransactionShared extends javax.swing.JDialog {
         table.getColumn(4).setPreferredWidth(50);
         jLabelSummary.setText(Lang.getString("App.page") + " : " + pageNumber + " / " + totalPage + Lang.getString("App.total") + " : " + totalRow);
     }
+    
+    private void getSelectedRow() {
+        Integer row = jTable1.getSelectedRow();
+        Integer col = 8;
+        Integer result = Integer.parseInt(jTable1.getValueAt(row, col).toString());
+        switch (formName) {
+            case "Transaction":
+                transaction.initExistData(result);
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "no choice form !", "App Shared", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -104,17 +137,17 @@ public class TransactionShared extends javax.swing.JDialog {
         jButtonNext = new javax.swing.JButton();
         jButtonLast = new javax.swing.JButton();
         jTextFieldVoucherNo = new javax.swing.JTextField();
-        dateChooserComboDate = new datechooser.beans.DateChooserCombo();
+        dateChooserComboDateFrom = new datechooser.beans.DateChooserCombo();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        dateChooserComboDate1 = new datechooser.beans.DateChooserCombo();
+        jCheckBoxSetDate = new javax.swing.JCheckBox();
         jButtonSearch = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jButtonCancel = new javax.swing.JButton();
         jButtonSelect = new javax.swing.JButton();
         jLabelSummary = new javax.swing.JLabel();
         jComboBoxTotalRows = new javax.swing.JComboBox<>();
+        dateChooserComboDateTo = new datechooser.beans.DateChooserCombo();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -168,109 +201,133 @@ public class TransactionShared extends javax.swing.JDialog {
             }
         });
 
-        dateChooserComboDate.setFormat(1);
-        dateChooserComboDate.setWeekStyle(datechooser.view.WeekDaysStyle.FULL);
+        dateChooserComboDateFrom.setFormat(1);
+        try {
+            dateChooserComboDateFrom.setDefaultPeriods(new datechooser.model.multiple.PeriodSet(new datechooser.model.multiple.Period(new java.util.GregorianCalendar(2016, 2, 7),
+                new java.util.GregorianCalendar(2016, 2, 7))));
+    } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
+        e1.printStackTrace();
+    }
+    dateChooserComboDateFrom.setLocale(new java.util.Locale("in", "ID", ""));
+    dateChooserComboDateFrom.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
 
-        jLabel1.setText("Number :");
+    jLabel1.setText("Number :");
 
-        jLabel2.setText("Date :");
+    jLabel2.setText("Date :");
 
-        dateChooserComboDate1.setFormat(1);
-        dateChooserComboDate1.setWeekStyle(datechooser.view.WeekDaysStyle.FULL);
+    jCheckBoxSetDate.addItemListener(new java.awt.event.ItemListener() {
+        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            jCheckBoxSetDateItemStateChanged(evt);
+        }
+    });
 
-        jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
-        jButtonSearch.setText("Search");
-        jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSearchActionPerformed(evt);
-            }
-        });
+    jButtonSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/search_16x16.png"))); // NOI18N
+    jButtonSearch.setText("Search");
+    jButtonSearch.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButtonSearchActionPerformed(evt);
+        }
+    });
 
-        jLabel3.setText("-");
+    jLabel3.setText("-");
 
-        jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/cancel_16X16.png"))); // NOI18N
-        jButtonCancel.setText("Cancel");
+    jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/cancel_16X16.png"))); // NOI18N
+    jButtonCancel.setText("Cancel");
+    jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButtonCancelActionPerformed(evt);
+        }
+    });
 
-        jButtonSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
-        jButtonSelect.setText("Select");
+    jButtonSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/plus_16X16.png"))); // NOI18N
+    jButtonSelect.setText("Select");
+    jButtonSelect.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButtonSelectActionPerformed(evt);
+        }
+    });
 
-        jLabelSummary.setText("jLabel1");
+    jLabelSummary.setText("jLabel1");
 
-        jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    jComboBoxTotalRows.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonFirst)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonPrev)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonNext)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonLast)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabelSummary, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSelect)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonCancel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)
-                        .addComponent(dateChooserComboDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonSearch)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonSearch)
-                    .addComponent(dateChooserComboDate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jCheckBox1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+    dateChooserComboDateTo.setFormat(1);
+    dateChooserComboDateTo.setLocale(new java.util.Locale("in", "", ""));
+    dateChooserComboDateTo.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1)
+                .addGroup(layout.createSequentialGroup()
                     .addComponent(jButtonFirst)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jButtonPrev)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jButtonNext)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jButtonLast)
-                    .addComponent(jButtonCancel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabelSummary, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jButtonSelect)
-                    .addComponent(jLabelSummary)
-                    .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButtonCancel))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jCheckBoxSetDate)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(dateChooserComboDateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(1, 1, 1)
+                    .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jButtonSearch)))
+            .addContainerGap())
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(dateChooserComboDateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonSearch)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jCheckBoxSetDate)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jTextFieldVoucherNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)))
+                .addComponent(jLabel3)
+                .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jButtonFirst)
+                .addComponent(jButtonPrev)
+                .addComponent(jButtonNext)
+                .addComponent(jButtonLast)
+                .addComponent(jButtonCancel)
+                .addComponent(jButtonSelect)
+                .addComponent(jLabelSummary)
+                .addComponent(jComboBoxTotalRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
 
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirstActionPerformed
@@ -300,27 +357,46 @@ public class TransactionShared extends javax.swing.JDialog {
     private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed
         // TODO add your handling code here:
         this.pageNumber = 1;
-        this.number = jTextFieldVoucherNo.getText(); 
+        this.number = jTextFieldVoucherNo.getText();
+        this.dateFrom =dateChooserComboDateFrom.getText();
+        this.dateTo = dateChooserComboDateTo.getText();
         initTable();
     }//GEN-LAST:event_jButtonSearchActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         if(evt.getClickCount() == 2) {
-            Integer row = jTable1.getSelectedRow();
-            Integer col = 8;
-            Integer result = Integer.parseInt(jTable1.getValueAt(row,col).toString());
-            switch(formName) {
-                case "Transaction" : 
-                    transaction.initExistData(result);
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null, "no choice form !", "App Shared", JOptionPane.ERROR_MESSAGE);
-                    break;
-            }
+            this.getSelectedRow();
             this.dispose();
         }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jCheckBoxSetDateItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSetDateItemStateChanged
+        // TODO add your handling code here:
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            // the checkbox was just selected
+            this.isSearchDate = true;
+            dateChooserComboDateFrom.setEnabled(true);
+            dateChooserComboDateTo.setEnabled(true);
+            
+        } else {
+            this.isSearchDate = false;
+            // the checkbox was just deselected
+            dateChooserComboDateFrom.setEnabled(false);
+            dateChooserComboDateTo.setEnabled(false);
+        }
+    }//GEN-LAST:event_jCheckBoxSetDateItemStateChanged
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
+    private void jButtonSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelectActionPerformed
+        // TODO add your handling code here:
+       this.getSelectedRow();
+       this.dispose();
+    }//GEN-LAST:event_jButtonSelectActionPerformed
 
     /**
      * @param args the command line arguments
@@ -366,8 +442,8 @@ public class TransactionShared extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private datechooser.beans.DateChooserCombo dateChooserComboDate;
-    private datechooser.beans.DateChooserCombo dateChooserComboDate1;
+    private datechooser.beans.DateChooserCombo dateChooserComboDateFrom;
+    private datechooser.beans.DateChooserCombo dateChooserComboDateTo;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonFirst;
     private javax.swing.JButton jButtonLast;
@@ -375,7 +451,7 @@ public class TransactionShared extends javax.swing.JDialog {
     private javax.swing.JButton jButtonPrev;
     private javax.swing.JButton jButtonSearch;
     private javax.swing.JButton jButtonSelect;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBoxSetDate;
     private javax.swing.JComboBox<String> jComboBoxTotalRows;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

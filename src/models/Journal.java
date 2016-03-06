@@ -6,10 +6,12 @@
 package models;
 
 import config.DatabaseUtil;
+import helpers.Format;
 import helpers.Lang;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -36,6 +38,10 @@ public class Journal {
     //search
     private Integer id_;
     private String number_;
+    private Boolean isSearchDate_;
+    private String dateFrom_;
+    private String dateTo_;
+    
     String[] TABLE_COLUMN_NAME = {Lang.getString("App.no"),
         Lang.getString("App.number"), Lang.getString("App.date"),Lang.getString("App.type"),
         Lang.getString("App.description"), Lang.getString("App.check_giro"),
@@ -114,11 +120,48 @@ public class Journal {
     public void setNumber_(String var) {
         this.number_ = var;
     }
+    
+    public Boolean getIsSearchDate_() {
+        return isSearchDate_;
+    }
+    
+    public void setIsSearchDate__(Boolean status) {
+        this.isSearchDate_ = status;
+    }
+    
+    public String getDateFrom_() {
+        return dateFrom_;
+    }
+    
+    public void setDateFrom_(String var) {
+        this.dateFrom_ = var;
+    }
+    
+    public String getDateTo_() {
+        return dateTo_;
+    }
+    
+    public void setDateTo_(String var) {
+        this.dateTo_ = var;
+    }
             
     public Boolean isValid(String No) {
-        Boolean status = true;
+        /*Boolean status = true;
         Integer count = getCountByNumber(No);
         if( count > 0) status = false;
+        return status;*/
+        Boolean status = true;
+        Integer countRow;
+        Journals rowId;
+        countRow = getCountByNumber(No);
+        rowId =  getRowById(this.getId_());
+        if((getId_() == null) && (countRow != 0)) {
+            status = false;
+        } else if((getId_() != null) && (rowId != null) ) {
+            if((!rowId.getNumber().equals(No)) && (countRow != 0)) {
+                status = false;
+            }
+        } 
         return status;
     }
     
@@ -197,6 +240,37 @@ public class Journal {
         return Id;
     }
     
+    public Integer getUpdateId(Integer Key) {
+        Integer Id;
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Journals master = (Journals) session.get(Journals.class, Key);
+            master.setNumber(this.getNumber());
+            master.setDate(this.getDate());
+            master.setType(this.getType());
+            master.setDescription(this.getDescription());
+            master.setCheckNumber(this.getOther());
+            master.setDebet(this.getDebet());
+            master.setCredit(this.getCredit());
+            session.update(master);
+            session.flush();
+            Id = master.getId();
+            tx.commit();
+            
+        }catch (HibernateException ex) {
+            Id = 0;
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return Id;
+    }
+    
     public DefaultTableModel getList(Integer offset, final Integer limit) {
 
         DefaultTableModel model = new DefaultTableModel() {
@@ -229,6 +303,12 @@ public class Journal {
             if (!this.getNumber_().equals("")) {
                 criteria.add(Restrictions.like("number", "%" + getNumber_() + "%"));
             }
+            
+            if(this.getIsSearchDate_() == true) {
+                criteria.add(Restrictions.ge("date",Format.stringToDate(getDateFrom_(), "yyyy-MM-dd") ));
+                criteria.add(Restrictions.le("date",Format.stringToDate(getDateTo_(), "yyyy-MM-dd") ));
+            }
+            
             List list = criteria.list();
             i++;
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
@@ -372,6 +452,5 @@ public class Journal {
         }
         return jn;
     }
-    
-    
+   
 }

@@ -6,11 +6,12 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/gl?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password"></property>
+    <property name="hibernate.connection.password"/>
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
     <property name="use_sql_comments">false</property>
-    <property name="hibernate.query.factory_class">org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory</property>
+    <!--<property name="hibernate.query.factory_class">org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory</property>-->
+    <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
     <mapping class="services.Users" package="gl" resource="services/Users.hbm.xml"/>
     <mapping class="services.Accounts" package="gl" resource="services/Accounts.hbm.xml"/>
     <mapping class="services.BeginningBalances" package="gl" resource="services/BeginningBalances.hbm.xml"/>

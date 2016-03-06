@@ -30,12 +30,12 @@ import services.Journals;
  * @author suhe
  */
 public class Transaction extends javax.swing.JInternalFrame {
-    //public JTable table = new JTable();
     public JDesktopPane JP = new JDesktopPane();
     public String AccountNo;
     Journal headModel; 
     JournalDetail detailModel;
     Integer id;
+    TransactionForm form;
     
      
     /**
@@ -271,8 +271,8 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         ));
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTable1MousePressed(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -414,7 +414,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                                         .addComponent(jButtonAdd)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jButtonSave)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                                         .addComponent(jButtonCancel)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,7 +422,7 @@ public class Transaction extends javax.swing.JInternalFrame {
                                     .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(15, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -524,7 +524,13 @@ public class Transaction extends javax.swing.JInternalFrame {
 
     private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
         // TODO add your handling code here
-        TransactionForm form = new TransactionForm(this,false);
+        detailModel = new JournalDetail();
+        detailModel.setIsEdit(false);
+        detailModel.setAccountNo_("");
+        detailModel.setDescription_("");
+        detailModel.setDebet_(0.00);
+        detailModel.setCredit_(0.00);
+        form = new TransactionForm(this,false);        
         form.setLocationRelativeTo(this);
         form.pack();
         form.list = this;
@@ -532,20 +538,14 @@ public class Transaction extends javax.swing.JInternalFrame {
         form.setVisible(true);
     }//GEN-LAST:event_jButtonAddRowActionPerformed
 
-    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
-        // TODO add your handling code here:
-        if (evt.getClickCount() == 2) {
-            JTable target = (JTable)evt.getSource();
-            int row = target.getSelectedRow();
-            int column = target.getSelectedColumn();
-            // do some action if appropriate column
-            //JOptionPane.showMessageDialog(null, "Row : " + row + " Coloumn :" + column,"Test Mouse",JOptionPane.INFORMATION_MESSAGE);
-         }
-    }//GEN-LAST:event_jTable1MousePressed
-
     private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
         ((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+        int numRows = jTable1.getSelectedRows().length;
+        for(int i=0; i<numRows ; i++ ) {
+            ((DefaultTableModel) jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+            //m_tableModel.removeRow(table.getSelectedRow());
+        }
     }//GEN-LAST:event_jButtonDelRowActionPerformed
 
     private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
@@ -566,7 +566,16 @@ public class Transaction extends javax.swing.JInternalFrame {
 
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
         // TODO add your handling code here:    
+        if(this.id != null) {
+            int dialogButton = JOptionPane.YES_NO_OPTION;
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure want to replace data", "On Update", dialogButton);
+            if(dialogResult == JOptionPane.NO_OPTION) {
+              return;
+            } 
+        }
+
         headModel = new Journal();
+        headModel.setId_(id);
         RequiredValidator voucherNoVal = new RequiredValidator(null, jTextFieldVoucherNo, "The field voucher number is required !");
         IsValidValidator isValid = new IsValidValidator(null, jTextFieldVoucherNo, "The voucher number is already !", headModel.isValid(jTextFieldVoucherNo.getText()));
         RequiredValidator descriptionVal = new RequiredValidator(null, jTextFieldDescription, "The field description is required !");
@@ -584,6 +593,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         Boolean isValueTBalancedFill =isTBalancedValue.verify(jTextFieldTBalanced);
         
         if (isNumberFill && isValidFill && isDescFill && isTDebitFill && isTCreditFill && isTBalancedFill) {
+            Integer JournalId;
             String number = jTextFieldVoucherNo.getText();
             String dateVal = Format.dateToString(dateChooserComboDate.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
             String type = jComboBoxType.getSelectedItem().toString();
@@ -599,8 +609,13 @@ public class Transaction extends javax.swing.JInternalFrame {
             jModel.setOther(qcGiro);
             jModel.setDebet(tdebet);
             jModel.setCredit(tcredit);
-            //jModel.save(jTable1);
-            Integer JournalId = jModel.getInsertId();
+            if(this.id == null) {
+                JournalId = jModel.getInsertId();
+            } else {
+               JournalId = jModel.getUpdateId(this.id);
+               JournalDetail jds = new JournalDetail();
+               jds.delete(JournalId);
+            }
             
             Integer totalRowTable = this.jTable1.getRowCount();
             if(totalRowTable > 0) {
@@ -641,6 +656,28 @@ public class Transaction extends javax.swing.JInternalFrame {
          initExistData(null);
          jTextFieldVoucherNo.requestFocus();
     }//GEN-LAST:event_jButtonAddActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            detailModel = new JournalDetail();
+            int row = jTable1.getSelectedRow();
+            detailModel.setIsEdit(true);
+            detailModel.setAccountNo_(jTable1.getValueAt(row, 1).toString());
+            detailModel.setDescription_(jTable1.getValueAt(row, 2).toString());
+            detailModel.setDebet_(Format.stringToDouble(jTable1.getValueAt(row, 3).toString()) );
+            detailModel.setCredit_(Format.stringToDouble(jTable1.getValueAt(row, 4).toString()));
+            TransactionForm formx = new TransactionForm(this,false);
+            formx.setLocationRelativeTo(this);
+            formx.pack();
+            formx.list = this;
+            formx.table = this.jTable1;
+            formx.row = row;
+            formx.setAccountNo("112");
+            formx.setVisible(true);
+            
+         }
+    }//GEN-LAST:event_jTable1MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
