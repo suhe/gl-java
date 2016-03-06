@@ -40,6 +40,8 @@ public class Account {
     public static Integer Id;
     public static String _accountNo = "";
     public static String _accountName = "";
+    public static String query_ = "";
+    public static String type_ = "";
     public JProgressBar jProgressBarStatus = new JProgressBar(0, 100);
 
     public Account() {
@@ -76,6 +78,22 @@ public class Account {
 
     public void setAccountName(String var) {
         _accountName = var;
+    }
+    
+    public String getQuery_() {
+        return query_;
+    }
+
+    public void setQuery_(String var) {
+        query_ = var;
+    }
+    
+    public String getType_() {
+        return type_;
+    }
+
+    public void setType_(String var) {
+        type_ = var;
     }
 
     public Boolean isValid(String No) {
@@ -380,5 +398,98 @@ public class Account {
         } finally {
             session.close();
         }
+    }
+    
+    public Integer getCountShared() {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Integer count = null;
+
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+
+            if (!getQuery_().equals("")) {
+                criteria.add(Restrictions.like("accountName", "%" + getQuery_()+ "%"));
+            }
+
+            if (!getType_().equals("")) {
+                criteria.add(Restrictions.like("type", "%" + getType_() + "%"));
+            }
+
+            count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return count;
+    }
+    
+    public DefaultTableModel getListShared(Integer offset, final Integer limit) {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public String getColumnName(int column) {
+                return TABLE_COLUMN_NAME[column];
+            }
+
+            @Override
+            public int getColumnCount() {
+                return TABLE_COLUMN_NAME.length;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; //To change body of generated methods, choose Tools | Templates.
+            }
+
+        };
+
+        //set to list all data
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            Integer i = (limit * (offset - 1));
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class)
+                    .setFirstResult(i)
+                    .setMaxResults(limit + i);
+
+            if (!getQuery_().equals("")) {
+                criteria.add(Restrictions.like("accountName", "%" + getQuery_()+ "%"));
+            }
+
+            if (!getType_().equals("")) {
+                criteria.add(Restrictions.like("type", "%" + getType_() + "%"));
+            }
+
+            List list = criteria.list();
+            i++;
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Accounts acc = (Accounts) iterator.next();
+                model.addRow(new Object[]{
+                    i,
+                    acc.getNo(),
+                    acc.getName(),
+                    acc.getType(),
+                    acc.getId()
+                });
+                i++;
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return model;
     }
 }

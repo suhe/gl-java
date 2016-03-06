@@ -6,6 +6,7 @@
 package gl.journal;
 
 import com.mxrck.autocompleter.TextAutoCompleter;
+import gl.accounts.CoaShared;
 import helpers.Format;
 import helpers.Lang;
 import helpers.Validator.IsValidValidator;
@@ -67,6 +68,10 @@ public class TransactionForm extends javax.swing.JDialog {
         }
         
     }
+    
+    public void getItemSelected(String no) {
+        jTextFieldAccountNo.setText(no);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,6 +95,7 @@ public class TransactionForm extends javax.swing.JDialog {
         jButtonSearchAccount = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setName("TransactionForm"); // NOI18N
 
         jLabelAccountNo.setText("Account No");
 
@@ -256,6 +262,12 @@ public class TransactionForm extends javax.swing.JDialog {
 
     private void jButtonSearchAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchAccountActionPerformed
         // TODO add your handling code here:
+        CoaShared shared = new CoaShared(this,false);
+        shared.setLocationRelativeTo(this);
+        shared.pack();
+        shared.transactionForm = this;
+        shared.formName = this.getName();
+        shared.setVisible(true);
     }//GEN-LAST:event_jButtonSearchAccountActionPerformed
 
     private void jTextFieldDebetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDebetKeyTyped

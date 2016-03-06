@@ -72,6 +72,8 @@ public class Main extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         jButtonDatabaseConnect = new javax.swing.JButton();
         jButtonCoa = new javax.swing.JButton();
+        jButtonBeginBalance = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabelStatusConnected = new javax.swing.JLabel();
         jProgressBarStatus = new javax.swing.JProgressBar();
@@ -125,6 +127,25 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButtonCoa);
+
+        jButtonBeginBalance.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/balance_28X28.png"))); // NOI18N
+        jButtonBeginBalance.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonBeginBalance.setFocusable(false);
+        jButtonBeginBalance.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonBeginBalance.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonBeginBalance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBeginBalanceActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButtonBeginBalance);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/gl_28x28.png"))); // NOI18N
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton1);
 
         JP.setLayer(jToolBar1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -400,6 +421,11 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemBalanceActionPerformed
 
+    private void jButtonBeginBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBeginBalanceActionPerformed
+        // TODO add your handling code here:
+        this.jMenuItemBalanceActionPerformed(evt);
+    }//GEN-LAST:event_jButtonBeginBalanceActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -420,6 +446,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem JMenuItemCoa;
     private javax.swing.JMenuItem JMenuItemConnect;
     private javax.swing.JDesktopPane JP;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonBeginBalance;
     private javax.swing.JButton jButtonCoa;
     private javax.swing.JButton jButtonDatabaseConnect;
     private javax.swing.JLabel jLabelStatusConnected;
