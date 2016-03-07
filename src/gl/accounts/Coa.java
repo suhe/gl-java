@@ -5,10 +5,14 @@
  */
 package gl.accounts;
 
+import config.DatabaseUtil;
 import helpers.Config;
+import helpers.Format;
 import helpers.Lang;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -16,6 +20,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
+import models.JournalDetail;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+import services.Accounts;
+import services.Journals;
 
 /**
  *
@@ -303,6 +315,29 @@ public class Coa extends javax.swing.JInternalFrame {
         form.pack();
         form.list = this;
         form.setVisible(true);
+        
+        //set to list all data
+        /*Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Journals.class);
+            List list = criteria.list();
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Journals jn = (Journals) iterator.next();
+                JournalDetail model = new JournalDetail();
+                model.update(jn.getId(), jn.getNumber());
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }*/
+        
 
     }//GEN-LAST:event_jButtonAddActionPerformed
 

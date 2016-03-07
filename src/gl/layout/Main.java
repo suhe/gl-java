@@ -9,6 +9,7 @@ import config.Database;
 import database.Connect;
 import gl.accounts.BeginBalance;
 import gl.accounts.Coa;
+import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -87,8 +88,7 @@ public class Main extends javax.swing.JFrame {
         jMenuItemTransaction = new javax.swing.JMenuItem();
         jMenuReport = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItemProfitLossStandard = new javax.swing.JMenuItem();
         jMenuAccount = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -238,11 +238,13 @@ public class Main extends javax.swing.JFrame {
 
         jMenu1.setText("Profit & Lost");
 
-        jMenuItem3.setText("Profit & Lost Summary");
-        jMenu1.add(jMenuItem3);
-
-        jMenuItem4.setText("Profit & Lost Details");
-        jMenu1.add(jMenuItem4);
+        jMenuItemProfitLossStandard.setText("Profit & Lost Standard");
+        jMenuItemProfitLossStandard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemProfitLossStandardActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItemProfitLossStandard);
 
         jMenuReport.add(jMenu1);
 
@@ -426,6 +428,34 @@ public class Main extends javax.swing.JFrame {
         this.jMenuItemBalanceActionPerformed(evt);
     }//GEN-LAST:event_jButtonBeginBalanceActionPerformed
 
+    private void jMenuItemProfitLossStandardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemProfitLossStandardActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Profit & Loss Standard")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                ProfitLossStandard pl = new ProfitLossStandard();
+                JP.add(pl);
+                //pl.JP = JP;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = pl.getSize();
+                pl.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                pl.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemProfitLossStandardActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -458,13 +488,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemBalance;
+    private javax.swing.JMenuItem jMenuItemProfitLossStandard;
     private javax.swing.JMenuItem jMenuItemTransaction;
     private javax.swing.JMenu jMenuJournal;
     private javax.swing.JMenu jMenuReport;

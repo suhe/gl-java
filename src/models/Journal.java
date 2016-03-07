@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -309,6 +310,8 @@ public class Journal {
                 criteria.add(Restrictions.le("date",Format.stringToDate(getDateTo_(), "yyyy-MM-dd") ));
             }
             
+            criteria.addOrder(Order.asc("date"));
+            
             List list = criteria.list();
             i++;
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
@@ -346,6 +349,14 @@ public class Journal {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Journals.class);
+            if (!this.getNumber_().equals("")) {
+                criteria.add(Restrictions.like("number", "%" + getNumber_() + "%"));
+            }
+            
+            if(this.getIsSearchDate_() == true) {
+                criteria.add(Restrictions.ge("date",Format.stringToDate(getDateFrom_(), "yyyy-MM-dd") ));
+                criteria.add(Restrictions.le("date",Format.stringToDate(getDateTo_(), "yyyy-MM-dd") ));
+            }
             count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             tx.commit();
         } catch (HibernateException ex) {
@@ -451,6 +462,28 @@ public class Journal {
             session.close();
         }
         return jn;
+    }
+    
+    public void delete(Integer Key) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String hql = "delete from Journals where id = :id";
+            Query query = session.createQuery(hql);
+            query.setInteger("id", Key);
+            System.out.println(query.executeUpdate());
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
     }
    
 }

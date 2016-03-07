@@ -14,13 +14,14 @@ public class JournalDetails implements java.io.Serializable {
     private String description;
     private Double debet;
     private Double credit;
+    private String number;
     //private Journals jh;
     
     public JournalDetails() {
         
     }
 
-    public JournalDetails(Integer journalId,Integer order, Integer accountId, String accountNo, String description, Double debet, Double credit) {
+    public JournalDetails(Integer journalId,Integer order, Integer accountId, String accountNo, String description, Double debet, Double credit,String number) {
         this.journalId = journalId;
         this.position = position;
         this.accountId = accountId;
@@ -28,6 +29,7 @@ public class JournalDetails implements java.io.Serializable {
         this.description = description;
         this.debet = debet;
         this.credit = credit;
+        this.number = number;
         //this.jh = jh;
     }
 
@@ -93,6 +95,14 @@ public class JournalDetails implements java.io.Serializable {
 
     public void setCredit(Double credit) {
         this.credit = credit;
+    }
+    
+    public String getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
     
     /*public Journals getJh() {

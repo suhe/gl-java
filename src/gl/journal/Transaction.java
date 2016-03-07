@@ -54,8 +54,10 @@ public class Transaction extends javax.swing.JInternalFrame {
         jTextFieldTCredit.setEditable(false);
         jTextFieldTBalanced.setEditable(false);
         if(this.id == null) { 
+            jButtonDelete.setEnabled(false);
             this.setEnabledPaginationButton(false);
         }else {
+            jButtonDelete.setEnabled(true);
             this.setEnabledPaginationButton(true);
         }
     }
@@ -87,6 +89,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         Journals jn = headModel.getRowById(Id);
         if(jn != null) {
             jButtonSave.setText(Lang.getString("App.update"));
+            jButtonDelete.setEnabled(true);
             jTextFieldVoucherNo.setText(jn.getNumber());
             jTextFieldDescription.setText(jn.getDescription());
             dateChooserComboDate.setText(Format.dateToString(jn.getDate().toString(),"yyyy-MM-dd", "dd/MM/yyyy"));
@@ -99,6 +102,7 @@ public class Transaction extends javax.swing.JInternalFrame {
             
         } else {
             jButtonSave.setText(Lang.getString("App.save"));
+            jButtonDelete.setEnabled(false);
             jTextFieldVoucherNo.setText("");
             jTextFieldDescription.setText("");
             jTextFieldGiroQc.setText("");
@@ -110,6 +114,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         
         this.initForm();
         this.initTable();
+        this.initCalculation();
     }
     
     private void initTable() {
@@ -187,6 +192,7 @@ public class Transaction extends javax.swing.JInternalFrame {
         jButtonDelRow = new javax.swing.JButton();
         jButtonUpRow = new javax.swing.JButton();
         jButtonBottomRow = new javax.swing.JButton();
+        jButtonDelete = new javax.swing.JButton();
 
         setClosable(true);
         setName("Transaction"); // NOI18N
@@ -325,7 +331,7 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
+        jButtonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/cancel_16X16.png"))); // NOI18N
         jButtonCancel.setText("Cancel");
 
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
@@ -374,6 +380,14 @@ public class Transaction extends javax.swing.JInternalFrame {
             }
         });
 
+        jButtonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/trash_16X16.png"))); // NOI18N
+        jButtonDelete.setText("Delete");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -383,7 +397,20 @@ public class Transaction extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTDebet, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButtonFirst)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -393,36 +420,22 @@ public class Transaction extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLast)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonSearch))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextFieldTDebet, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextFieldTCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextFieldTBalanced, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGap(603, 603, 603)
-                                        .addComponent(jButtonAdd)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jButtonSave)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                                        .addComponent(jButtonCancel)))
+                                .addComponent(jButtonSearch)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(15, Short.MAX_VALUE))))
+                                .addComponent(jButtonDelete)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                                .addComponent(jButtonAdd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonSave)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                                .addComponent(jButtonCancel)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonDelRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonUpRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonBottomRow, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(18, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -457,8 +470,9 @@ public class Transaction extends javax.swing.JInternalFrame {
                     .addComponent(jButtonFirst)
                     .addComponent(jButtonSearch)
                     .addComponent(jButtonCancel)
-                    .addComponent(jButtonSave))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(jButtonSave)
+                    .addComponent(jButtonDelete))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -679,6 +693,23 @@ public class Transaction extends javax.swing.JInternalFrame {
          }
     }//GEN-LAST:event_jTable1MouseClicked
 
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        // TODO add your handling code here:
+        if(this.id != null) {
+            int dialogButton = JOptionPane.YES_NO_OPTION;
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure want to delete data", "On Delete", dialogButton);
+            if(dialogResult == JOptionPane.NO_OPTION) {
+                
+            }else {
+                headModel = new Journal();
+                detailModel = new JournalDetail();
+                headModel.delete(this.id);
+                detailModel.delete(this.id);
+                JOptionPane.showMessageDialog(null,"The data has been removed cannot be undo !", "On Delete",JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private datechooser.beans.DateChooserCombo dateChooserComboDate;
@@ -687,6 +718,7 @@ public class Transaction extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonBottomRow;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonDelRow;
+    private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonFirst;
     private javax.swing.JButton jButtonLast;
     private javax.swing.JButton jButtonNext;

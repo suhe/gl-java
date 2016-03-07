@@ -21,13 +21,16 @@
             <column name="account_no" length="45" />
         </property>
         <property name="description" type="string">
-            <column name="description" length="45" />
+            <column name="description" length="255" />
         </property>
         <property name="debet" type="java.lang.Double">
             <column name="debet" precision="22" scale="0" />
         </property>
         <property name="credit" type="java.lang.Double">
             <column name="credit" precision="22" scale="0" />
+        </property>
+        <property name="number" type="string">
+            <column name="number" length="45" />
         </property>
         
         <!--<many-to-one name="jh" class="services.Journals"

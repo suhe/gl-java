@@ -78,15 +78,13 @@
                 <Property name="text" type="java.lang.String" value="Profit &amp; Lost"/>
               </Properties>
               <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItemProfitLossStandard">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Profit &amp; Lost Summary"/>
+                    <Property name="text" type="java.lang.String" value="Profit &amp; Lost Standard"/>
                   </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Profit &amp; Lost Details"/>
-                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemProfitLossStandardActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>

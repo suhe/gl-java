@@ -233,6 +233,29 @@ public class JournalDetail {
         }
     }
     
+    public void update(Integer key,String number) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String hql = "update JournalDetails set journalId = :jid  where number = :number";
+            Query query = session.createQuery(hql);
+            query.setInteger("jid", key);
+            query.setString("number", number);
+            System.out.println(query.executeUpdate());
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+    }
+    
     public void delete(Integer Key) {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
