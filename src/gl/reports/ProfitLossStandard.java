@@ -5,13 +5,47 @@
  */
 package gl.reports;
 
+import config.DatabaseUtil;
 import helpers.Lang;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import models.TProfitLoss;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.swing.JRViewer;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import static org.hibernate.internal.util.ConfigHelper.getResourceAsStream;
+import services.TplProfitLoss;
 
 /**
  *
  * @author suhe
  */
 public class ProfitLossStandard extends javax.swing.JInternalFrame {
+    public JDesktopPane JP;
+    public JProgressBar jProgressBarStatus = new JProgressBar();
+    TProfitLoss tplModel;
+    Integer totalRow;
+    
 
     /**
      * Creates new form ProfitLoss
@@ -20,20 +54,43 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
         initComponents();
         initForm();
     }
-    
+
     private void initForm() {
         jComboBoxType.removeAllItems();
         jComboBoxType.addItem("Standard Summary");
         jComboBoxType.addItem("Standard Details");
-        
+
         jComboBoxMonth.removeAllItems();
         String[] monthList = Lang.getArray("App.month_list");
-        if(0 > monthList.length) {
+        if (0 > monthList.length) {
         } else {
-            for(Short i=0;i<monthList.length;i++) {
+            for (Short i = 0; i < monthList.length; i++) {
                 jComboBoxMonth.addItem(monthList[i]);
             }
         }
+    }
+
+    private void initProcess() {
+        Runnable doProgress;
+        doProgress = new Runnable() {
+            @Override
+            public void run() {
+                tplModel = new TProfitLoss();
+                totalRow = tplModel.getCount();
+                List list = tplModel.getRowList();
+                jProgressBarStatus.setMinimum(0);
+                jProgressBarStatus.setMaximum(totalRow);
+
+                Integer i = jProgressBarStatus.getMinimum();
+                for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                    i++;
+                    TplProfitLoss tpl = (TplProfitLoss) iterator.next();
+                    jProgressBarStatus.setValue(i);
+                }
+
+            }
+        };
+        SwingUtilities.invokeLater(doProgress);
     }
 
     /**
@@ -70,6 +127,11 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/printer_16X16.png"))); // NOI18N
         jButton1.setText("Preview");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/cancel_16X16.png"))); // NOI18N
         jButton2.setText("Close");
@@ -127,6 +189,40 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        initProcess();
+        try {
+            Session session = DatabaseUtil.getSessionFactory().openSession();
+            Transaction tx = null;
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(TplProfitLoss.class);
+            List list = criteria.list();
+            JRBeanCollectionDataSource beanCollection = new JRBeanCollectionDataSource(list);
+            Map<String, Object> map = new HashMap<>();
+            map.put("PERIODE", jComboBoxMonth.getSelectedItem().toString() + " " + jTextFieldYear.getText());
+            InputStream input = getResourceAsStream("/reports/ProfitLossStandardSummary.jrxml");
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, map, beanCollection);
+            jasperPrint.setName("Laporan ");
+            JRViewer jv = new JRViewer(jasperPrint);
+            JInternalFrame preview = new JInternalFrame();
+            JP.add(preview);
+            Container c = preview.getContentPane();
+            c.setLayout(new BorderLayout());
+            Component add = c.add(jv);
+            preview.setSize(1024, 700);
+            preview.setMaximizable(true);
+            Dimension desktopSize = JP.getSize();
+            Dimension jInternalFrameSize = this.getSize();
+            setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
+            preview.setVisible(true);
+        } catch (JRException ex) {
+            System.out.println(ex.getMessage());
+
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

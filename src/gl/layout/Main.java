@@ -444,7 +444,8 @@ public class Main extends javax.swing.JFrame {
             if (status == false) {
                 ProfitLossStandard pl = new ProfitLossStandard();
                 JP.add(pl);
-                //pl.JP = JP;
+                pl.JP = JP;
+                pl.jProgressBarStatus = this.jProgressBarStatus;
                 Dimension desktopSize = JP.getSize();
                 Dimension jInternalFrameSize = pl.getSize();
                 pl.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);

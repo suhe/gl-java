@@ -11,7 +11,6 @@ import helpers.Lang;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;

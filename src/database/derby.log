@@ -1,0 +1,33 @@
+Tue Mar 08 19:40:55 ICT 2016 : Apache Derby Network Server - 10.8.3.2 - (1557835) started and ready to accept connections on port 1527
+----------------------------------------------------------------
+Tue Mar 08 19:40:56 ICT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.3.2 - (1557835): instance a816c00e-0153-563e-96f2-ffffecd029c2 
+on database directory D:\xjava\Gl\src\database\Gl  with class loader sun.misc.Launcher$AppClassLoader@927e4be 
+Loaded from file:/C:/Program%20Files/Java/jdk1.7.0_79/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_79-b15
+user.dir=C:\Program Files\Java\jdk1.7.0_79\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=D:\xjava\Gl\src\database
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue Mar 08 19:41:02 ICT 2016:
+Shutting down instance a816c00e-0153-563e-96f2-ffffecd029c2 on database directory D:\xjava\Gl\src\database\Gl with class loader sun.misc.Launcher$AppClassLoader@927e4be 
+Tue Mar 08 19:41:02 ICT 2016 Thread[DRDAConnThread_3,5,main] (DATABASE = Gl), (DRDAID = {2}), Database 'Gl' shutdown.
+----------------------------------------------------------------
+Tue Mar 08 19:45:44 ICT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.3.2 - (1557835): instance 6c44409f-0153-563e-96f2-ffffecd029c2 
+on database directory D:\xjava\Gl\src\database\Gl  with class loader sun.misc.Launcher$AppClassLoader@927e4be 
+Loaded from file:/C:/Program%20Files/Java/jdk1.7.0_79/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_79-b15
+user.dir=C:\Program Files\Java\jdk1.7.0_79\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=D:\xjava\Gl\src\database
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue Mar 08 21:49:32 ICT 2016: Shutting down Derby engine

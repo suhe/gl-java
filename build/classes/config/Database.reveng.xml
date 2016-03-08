@@ -7,4 +7,5 @@
   <table-filter match-name="journals"/>
   <table-filter match-name="journal_details"/>
   <table-filter match-name="users"/>
+  <table-filter match-name="tpl_profit_loss"/>
 </hibernate-reverse-engineering>

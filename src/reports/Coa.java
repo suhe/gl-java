@@ -6,6 +6,7 @@
 package reports;
 
 import config.Database;
+import gl.layout.Preview;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -128,7 +129,8 @@ public class Coa extends javax.swing.JInternalFrame {
                 JasPri = JasperFillManager.fillReport(JasRep, param,db.connection);
                 //JasperViewer.viewReport(JasPri,false);
                 JRViewer viewer = new JRViewer(JasPri); 
-                Container c = getContentPane(); 
+                Preview preview = new Preview();
+                Container c = this.getContentPane(); 
                 c.setLayout(new BorderLayout()); 
                 Component add = c.add(viewer);
                 setSize(1024,700);

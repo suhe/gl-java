@@ -5,19 +5,16 @@
             <url>src/gl/accounts/Coa.java</url>
             <bookmark id="1">
                 <name/>
-                <line>306</line>
+                <line>294</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/xjava/Gl/src/gl/journal/Transaction.java</file>
+            <file>file:/D:/xjava/Gl/src/models/TProfitLoss.java</file>
+            <file>file:/D:/xjava/Gl/src/models/Account.java</file>
             <file>file:/D:/xjava/Gl/src/gl/reports/ProfitLossStandard.java</file>
-            <file>file:/D:/xjava/Gl/src/gl/journal/TransactionForm.java</file>
-            <file>file:/D:/xjava/Gl/src/gl/layout/Main.java</file>
-            <file>file:/D:/xjava/Gl/src/jasper-reports/report1.jrxml</file>
-            <file>file:/D:/xjava/Gl/src/resources/languages/en/App.properties</file>
         </group>
     </open-files>
 </project-private>
