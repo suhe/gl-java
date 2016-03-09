@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="gl" name="services.ProfitLossStandardSummaries" optimistic-lock="version" table="profit_loss_standard_summaries">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property name="description" type="string">
+            <column length="225" name="description" not-null="true"/>
+        </property>
+        <property name="ref" type="integer">
+            <column name="ref"  not-null="true" />
+        </property>
+        
+        <property name="type" type="string">
+            <column length="100" name="type" not-null="true"/>
+        </property>
+        <property name="totalThisMonth" type="double">
+            <column length="18" name="total_this_month" not-null="false"/>
+        </property>
+        <property name="totalUntilMonth" type="double">
+            <column length="18" name="total_until_month" not-null="false"/>
+        </property>
+    </class>
+</hibernate-mapping>

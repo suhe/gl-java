@@ -10,9 +10,7 @@ package gl;
  * @author suhe
  */
 
-import helpers.Lang;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import helpers.Formula;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -23,6 +21,8 @@ public class Gl {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        //String formula = Formula.field("sum(100:100)");
+        //System.out.println(formula);
         try {
             UIManager.setLookAndFeel("de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {

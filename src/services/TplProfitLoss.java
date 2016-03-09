@@ -11,12 +11,18 @@ package services;
 public class TplProfitLoss implements java.io.Serializable {
     private Integer id;
     private String description;
+    private String type;
+    private String accountNo;
+    private Integer ref;
+    private String formula;
     
     public TplProfitLoss() {
     }
     
-    public TplProfitLoss(String description) {
+    public TplProfitLoss(String description,String type,String accountNo) {
         this.description = description;
+        this.type = type;
+        this.accountNo = accountNo;
     }
     
     public Integer getId() {
@@ -33,5 +39,37 @@ public class TplProfitLoss implements java.io.Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
+    public String getAccountNo() {
+        return this.accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+    
+    public Integer getRef() {
+        return this.ref;
+    }
+
+    public void setRef(Integer ref) {
+        this.ref = ref;
+    }
+    
+    public String getFormula() {
+        return this.formula;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
     }
 }

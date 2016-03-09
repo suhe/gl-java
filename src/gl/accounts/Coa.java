@@ -9,6 +9,7 @@ import helpers.Config;
 import helpers.Lang;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Iterator;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -16,6 +17,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
+import models.JournalDetail;
+import services.Journals;
+
+import config.DatabaseUtil;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -296,26 +306,25 @@ public class Coa extends javax.swing.JInternalFrame {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here
-        model = new Account();
+        /*model = new Account();
         model.setIsEdit(false);
         CoaForm form = new CoaForm(this, false);
         form.setLocationRelativeTo(this);
         form.pack();
         form.list = this;
-        form.setVisible(true);
+        form.setVisible(true);*/
         
         //set to list all data
-        /*Session session = DatabaseUtil.getSessionFactory().openSession();
+        Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
-            
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Journals.class);
             List list = criteria.list();
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
                 Journals jn = (Journals) iterator.next();
-                JournalDetail model = new JournalDetail();
-                model.update(jn.getId(), jn.getNumber());
+                JournalDetail model2 = new JournalDetail();
+                model2.update(jn.getId(), jn.getNumber(),jn.getDate());
             }
             tx.commit();
         } catch (HibernateException e) {
@@ -324,7 +333,7 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         } finally {
             session.close();
-        }*/
+        }
         
 
     }//GEN-LAST:event_jButtonAddActionPerformed

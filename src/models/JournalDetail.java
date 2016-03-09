@@ -8,6 +8,7 @@ package models;
 import config.DatabaseUtil;
 import helpers.Format;
 import helpers.Lang;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JTable;
@@ -15,11 +16,12 @@ import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import services.Accounts;
 import services.JournalDetails;
 
 
@@ -233,16 +235,17 @@ public class JournalDetail {
         }
     }
     
-    public void update(Integer key,String number) {
+    public void update(Integer key,String number,Date date) {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String hql = "update JournalDetails set journalId = :jid  where number = :number";
+            String hql = "update JournalDetails set journalId = :jid where number = :number and date = :date";
             Query query = session.createQuery(hql);
             query.setInteger("jid", key);
             query.setString("number", number);
+            query.setDate("date", date);
             System.out.println(query.executeUpdate());
             session.flush();
             tx.commit();
@@ -277,5 +280,63 @@ public class JournalDetail {
             session.close();
         }
     }
+    
+    public Double getSumByThisMonth(String year,String month,String[] accountNo){
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double total = 0.00;
+        try {
+            tx = session.beginTransaction();
+            //String[] tags = {"11-151-003", "11-170-004"};
+            String sql = "select sum(jd.credit - jd.debet) from Journal_details jd inner join journals j on j.id = jd.journal_id  "
+                    + " where month(j.date) = :month and year(j.date) = :year and jd.account_no in(:no) ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("month", month);
+            query.setParameter("year", year);
+            query.setParameterList("no",accountNo);
+            List list = query.list();
+            total = Double.parseDouble(list.get(0).toString());
+            tx.commit();
+        } catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+            
+        } finally {
+            session.close();
+        }
+        return total;
+    }
+    
+    public Double getSumByUntilMonth(String year,String month,String[] accountNo){
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double total = 0.00;
+        try {
+            tx = session.beginTransaction();
+            //String[] tags = {"11-151-003", "11-170-004"};
+            String sql = "select sum(jd.credit - jd.debet) from Journal_details jd inner join journals j on j.id = jd.journal_id  "
+                    + " where month(j.date) <= :month and year(j.date) = :year and jd.account_no in(:no) ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("month", month);
+            query.setParameter("year", year);
+            query.setParameterList("no",accountNo);
+            List list = query.list();
+            total = Double.parseDouble(list.get(0).toString());
+            tx.commit();
+        } catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+            
+        } finally {
+            session.close();
+        }
+        return total;
+    }
+    
+    
     
 }

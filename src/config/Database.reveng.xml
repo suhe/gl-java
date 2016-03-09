@@ -8,4 +8,5 @@
   <table-filter match-name="journal_details"/>
   <table-filter match-name="users"/>
   <table-filter match-name="tpl_profit_loss"/>
+  <table-filter match-name="profit_loss_standard_summaries"/>
 </hibernate-reverse-engineering>

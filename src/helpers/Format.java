@@ -5,12 +5,17 @@
  */
 package helpers;
 
+import static helpers.Lang.getString;
+import static helpers.Lang.locale;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -71,5 +76,20 @@ public class Format {
         }
         return date;
     }
+    
+    public static String[] getArray(String Args,String separator) {
+        String [] var;
+        try {
+            var = Args.split(separator);
+            System.out.println("Data" + Arrays.toString(var));
+        } catch(Exception e) {
+            var = null;
+            System.out.println(e.getMessage());
+        }
+        return var;
+    }
+    
+    
+    
 
 }

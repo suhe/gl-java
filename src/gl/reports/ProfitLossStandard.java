@@ -6,6 +6,7 @@
 package gl.reports;
 
 import config.DatabaseUtil;
+import helpers.Format;
 import helpers.Lang;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -20,6 +21,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import models.JournalDetail;
+import models.ProfitLossStandardSummary;
 import models.TProfitLoss;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -34,6 +37,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import static org.hibernate.internal.util.ConfigHelper.getResourceAsStream;
+import services.ProfitLossStandardSummaries;
 import services.TplProfitLoss;
 
 /**
@@ -44,6 +48,8 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
     public JDesktopPane JP;
     public JProgressBar jProgressBarStatus = new JProgressBar();
     TProfitLoss tplModel;
+    //ProfitLossStandardSummary plModel;
+    JournalDetail jdModel;
     Integer totalRow;
     
 
@@ -80,11 +86,48 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                 List list = tplModel.getRowList();
                 jProgressBarStatus.setMinimum(0);
                 jProgressBarStatus.setMaximum(totalRow);
-
+                String month = jComboBoxMonth.getSelectedItem().toString().substring(0,2);
+                String year = jTextFieldYear.getText();
+                //delete all profit loss summaries template 
+                ProfitLossStandardSummary pl = new ProfitLossStandardSummary();
+                pl.deleteAll();
                 Integer i = jProgressBarStatus.getMinimum();
+                String description,type;
+                Double totalThisMonth;
+                Double totalUntilMonth;
                 for (Iterator iterator = list.iterator(); iterator.hasNext();) {
                     i++;
                     TplProfitLoss tpl = (TplProfitLoss) iterator.next();
+                    description = tpl.getDescription();
+                    type = tpl.getType();
+                    switch(tpl.getType()) {
+                        case "Field" :
+                            jdModel = new JournalDetail();
+                            String[] accountNo = Format.getArray(tpl.getAccountNo().trim(),"\\,");
+                            totalThisMonth = jdModel.getSumByThisMonth(year, month,accountNo);
+                            totalUntilMonth = jdModel.getSumByUntilMonth(year, month,accountNo);
+                            break;
+                        case "Total" :
+                            ProfitLossStandardSummary plxModel = new ProfitLossStandardSummary();
+                            Double Total[] = plxModel.GetSummary(tpl.getFormula());
+                            totalThisMonth = Total[0];
+                            totalUntilMonth = Total[1];
+                            plxModel.update(tpl.getRef(), totalThisMonth, totalUntilMonth);
+                            break;    
+                        default : 
+                            totalThisMonth = null;
+                            totalUntilMonth = null;
+                            break;
+                    }
+                    
+                    ProfitLossStandardSummary plModel = new ProfitLossStandardSummary();
+                    plModel.setDescription(tpl.getDescription()); //save to description
+                    plModel.setType(tpl.getType()); //save to type
+                    plModel.setRef(tpl.getRef()); //save to ref
+                    plModel.setTotalThisMonth(totalThisMonth);
+                    plModel.setTotalUntilMonth(totalUntilMonth);
+                    plModel.save();
+                    //progress bar counter +1
                     jProgressBarStatus.setValue(i);
                 }
 
@@ -196,7 +239,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
             Session session = DatabaseUtil.getSessionFactory().openSession();
             Transaction tx = null;
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(TplProfitLoss.class);
+            Criteria criteria = session.createCriteria(ProfitLossStandardSummaries.class);
             List list = criteria.list();
             JRBeanCollectionDataSource beanCollection = new JRBeanCollectionDataSource(list);
             Map<String, Object> map = new HashMap<>();

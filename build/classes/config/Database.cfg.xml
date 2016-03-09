@@ -18,5 +18,6 @@
     <mapping class="services.Journals" package="gl" resource="services/Journals.hbm.xml"/>
     <mapping class="services.JournalDetails" package="gl" resource="services/JournalDetails.hbm.xml"/>
     <mapping class="services.TplProfitLoss" package="gl" resource="services/TplProfitLoss.hbm.xml"/>
+    <mapping class="services.ProfitLossStandardSummaries" package="gl" resource="services/ProfitLossStandardSummaries.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

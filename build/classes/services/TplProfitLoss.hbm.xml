@@ -9,6 +9,20 @@
         <property name="description" type="string">
             <column name="description" length="225" not-null="true" />
         </property>
+        <property name="type" type="string">
+            <column name="type" length="100" not-null="true" />
+        </property>
+        <property name="accountNo" type="text">
+            <column name="account_no"  not-null="true" />
+        </property>
+        
+        <property name="ref" type="integer">
+            <column name="ref"  not-null="true" />
+        </property>
+        
+        <property name="formula" type="string">
+            <column name="formula"  not-null="true" />
+        </property>
   </class>
 </hibernate-mapping>
 
