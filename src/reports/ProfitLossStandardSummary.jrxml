@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="82c24fa4-5b96-4b9a-a415-1c2639f5f149">
-	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="1351"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="44"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="PERIODE" class="java.lang.String"/>
 	<queryString language="hql">
 		<![CDATA[FROM ProfitLossStandardSummaries]]>
@@ -67,7 +67,7 @@
 				<textElement>
 					<font fontName="Arial Narrow"/>
 				</textElement>
-				<text><![CDATA[Keterangan]]></text>
+				<text><![CDATA[Description]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="312" y="5" width="122" height="20" uuid="bcc6042c-5794-4af4-9005-46d32c68dafa"/>
@@ -89,11 +89,11 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch">
+		<band height="11" splitType="Stretch">
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="0" width="295" height="21" uuid="5abfaee1-b010-4600-8c34-64131b14fd15"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="0" width="295" height="10" uuid="5abfaee1-b010-4600-8c34-64131b14fd15"/>
 				<textElement>
-					<font fontName="Arial Narrow" isUnderline="false" isStrikeThrough="false"/>
+					<font fontName="Arial Narrow" size="8" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
@@ -103,36 +103,36 @@
 				</reportElement>
 			</line>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="312" y="1" width="122" height="20" uuid="70560ecf-3f59-47d8-915a-77078d92e8e2"/>
+				<reportElement stretchType="RelativeToBandHeight" x="312" y="1" width="122" height="10" uuid="70560ecf-3f59-47d8-915a-77078d92e8e2"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial Narrow"/>
+					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{totalThisMonth}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="434" y="1" width="108" height="20" uuid="8dd47d6c-7976-4fae-bd83-87a655472c3a"/>
+				<reportElement stretchType="RelativeToBandHeight" x="434" y="1" width="108" height="10" uuid="8dd47d6c-7976-4fae-bd83-87a655472c3a"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial Narrow"/>
+					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{totalUntilMonth}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="19" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="20" splitType="Stretch">
+		<band height="10" splitType="Stretch">
 			<textField>
-				<reportElement x="235" y="0" width="100" height="20" uuid="7bc51453-64b0-4444-87da-fdff05a7f003"/>
+				<reportElement x="236" y="0" width="64" height="10" uuid="7bc51453-64b0-4444-87da-fdff05a7f003"/>
 				<textElement>
-					<font fontName="Arial Narrow" isBold="true"/>
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>

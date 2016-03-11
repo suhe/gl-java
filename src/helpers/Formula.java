@@ -11,7 +11,7 @@ package helpers;
  */
 public class Formula {
     public static String main(String args) {
-        String[] FORMULA = {"SUM","sum","AVG","avg"};
+        String[] FORMULA = {"SUM","sum","AVG","avg",""};
         String Formula = null;
         for(Short i = 0;i < FORMULA.length;i++) {
             if(args.contains(FORMULA[i])) {
@@ -19,11 +19,12 @@ public class Formula {
                 break;
             } 
         }
+        
         return Formula;
     }
     
     public static String separator(String args) {
-        String[] SEPARATOR = {"+",":","-","*"};
+        String[] SEPARATOR = {"+",":","-"};
         String Separator = null;
         for(Short i = 0;i < SEPARATOR.length;i++) {
             if(args.contains(SEPARATOR[i])) {
@@ -50,9 +51,6 @@ public class Formula {
                 refInt[i] = Integer.parseInt(arg.trim());
              }
         }
-        
-        //System.out.println("ref 0 :" + refInt[0]);
-        //System.out.println("ref 1 :" + refInt[1]);
         
         return refInt;
     }

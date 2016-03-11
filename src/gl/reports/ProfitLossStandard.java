@@ -47,9 +47,9 @@ import services.TplProfitLoss;
 public class ProfitLossStandard extends javax.swing.JInternalFrame {
     public JDesktopPane JP;
     public JProgressBar jProgressBarStatus = new JProgressBar();
-    TProfitLoss tplModel;
+    //TProfitLoss tplModel;
     //ProfitLossStandardSummary plModel;
-    JournalDetail jdModel;
+    //JournalDetail jdModel;
     Integer totalRow;
     
 
@@ -81,7 +81,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
         doProgress = new Runnable() {
             @Override
             public void run() {
-                tplModel = new TProfitLoss();
+                TProfitLoss tplModel = new TProfitLoss();
                 totalRow = tplModel.getCount();
                 List list = tplModel.getRowList();
                 jProgressBarStatus.setMinimum(0);
@@ -102,7 +102,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                     type = tpl.getType();
                     switch(tpl.getType()) {
                         case "Field" :
-                            jdModel = new JournalDetail();
+                            JournalDetail jdModel = new JournalDetail();
                             String[] accountNo = Format.getArray(tpl.getAccountNo().trim(),"\\,");
                             totalThisMonth = jdModel.getSumByThisMonth(year, month,accountNo);
                             totalUntilMonth = jdModel.getSumByUntilMonth(year, month,accountNo);
@@ -178,6 +178,11 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/cancel_16X16.png"))); // NOI18N
         jButton2.setText("Close");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -237,7 +242,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
         initProcess();
         try {
             Session session = DatabaseUtil.getSessionFactory().openSession();
-            Transaction tx = null;
+            Transaction tx;
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(ProfitLossStandardSummaries.class);
             List list = criteria.list();
@@ -251,6 +256,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
             jasperPrint.setName("Laporan ");
             JRViewer jv = new JRViewer(jasperPrint);
             JInternalFrame preview = new JInternalFrame();
+            preview.setClosable(true);
             JP.add(preview);
             Container c = preview.getContentPane();
             c.setLayout(new BorderLayout());
@@ -261,11 +267,19 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
             Dimension jInternalFrameSize = this.getSize();
             setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
             preview.setVisible(true);
+            session.flush();
+            tx.commit();
         } catch (JRException ex) {
             System.out.println(ex.getMessage());
 
         }
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

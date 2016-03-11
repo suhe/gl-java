@@ -295,7 +295,8 @@ public class JournalDetail {
             query.setParameter("year", year);
             query.setParameterList("no",accountNo);
             List list = query.list();
-            total = Double.parseDouble(list.get(0).toString());
+            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+            session.flush();
             tx.commit();
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
@@ -323,8 +324,9 @@ public class JournalDetail {
             query.setParameter("year", year);
             query.setParameterList("no",accountNo);
             List list = query.list();
-            total = Double.parseDouble(list.get(0).toString());
-            tx.commit();
+            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+            session.flush();
+            tx.commit(); 
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
             if (tx != null) {
