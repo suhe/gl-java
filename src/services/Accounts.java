@@ -1,9 +1,6 @@
 package services;
 // Generated Feb 25, 2016 9:15:53 PM by Hibernate Tools 4.3.1
 
-import javax.persistence.Column;
-import org.hibernate.annotations.Formula;
-
 
 
 /**
@@ -16,7 +13,7 @@ public class Accounts implements java.io.Serializable {
     private String name;
     private String accountName;
     private String type;
-    private BeginningBalances beginningBalances;
+    //private BeginningBalances beginningBalances;
     
 
     public Accounts() {
@@ -68,11 +65,11 @@ public class Accounts implements java.io.Serializable {
         this.accountName = accountName;
     } 
     
-    public BeginningBalances getBeginningBalances() {
+    /*public BeginningBalances getBeginningBalances() {
         return beginningBalances;
     }
 
     public void setBeginningBalances(BeginningBalances beginningBalances) {
         this.beginningBalances = beginningBalances;
-    }
+    }*/
 }

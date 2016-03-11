@@ -12,9 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -253,5 +253,56 @@ public class BeginningBalance {
         } finally {
             session.close();
         }
+    }
+    
+    public void update2(String key,Integer id) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String hql = "update BeginningBalances set accountId = :id where accountNo = :key";
+            Query query = session.createQuery(hql);
+            query.setInteger("id", id);
+            query.setString("key", key);
+            System.out.println(query.executeUpdate());
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+    }
+    
+    public Double getSumBalance(String year,String[] accountNo,String calc){
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double total = 0.00;
+        String calcSelect = "Debet - Credit".equals(calc) ? "debet - credit" : "credit - debet";
+        try {
+            tx = session.beginTransaction();
+            String sql = "select sum(" + calcSelect + ") from beginning_balances bb "
+                    + " where bb.year = :year and bb.account_no in(:no) ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("year", year);
+            query.setParameterList("no",accountNo);
+            List list = query.list();
+            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+            
+        } finally {
+            session.close();
+        }
+        return total;
     }
 }

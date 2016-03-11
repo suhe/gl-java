@@ -21,7 +21,6 @@ import services.ProfitLossStandardSummaries;
  * @author suhe
  */
 public class ProfitLossStandardSummary {
-
     private String description;
     private String type;
     private Integer ref;

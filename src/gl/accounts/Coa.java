@@ -22,10 +22,12 @@ import services.Journals;
 
 import config.DatabaseUtil;
 import java.util.List;
+import models.BeginningBalance;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import services.Accounts;
 
 /**
  *
@@ -306,16 +308,16 @@ public class Coa extends javax.swing.JInternalFrame {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here
-        /*model = new Account();
+        model = new Account();
         model.setIsEdit(false);
         CoaForm form = new CoaForm(this, false);
         form.setLocationRelativeTo(this);
         form.pack();
         form.list = this;
-        form.setVisible(true);*/
+        form.setVisible(true);
         
         //set to list all data
-        Session session = DatabaseUtil.getSessionFactory().openSession();
+        /*Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -333,8 +335,27 @@ public class Coa extends javax.swing.JInternalFrame {
             }
         } finally {
             session.close();
-        }
+        }*/
         
+        /*Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+            List list = criteria.list();
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Accounts acc = (Accounts) iterator.next();
+                BeginningBalance model2 = new BeginningBalance();
+                model2.update2(acc.getNo(),acc.getId());
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }*/
 
     }//GEN-LAST:event_jButtonAddActionPerformed
 

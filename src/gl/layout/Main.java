@@ -9,6 +9,7 @@ import config.Database;
 import database.Connect;
 import gl.accounts.BeginBalance;
 import gl.accounts.Coa;
+import gl.reports.BalanceSheetStandard;
 import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -94,7 +95,7 @@ public class Main extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItemBalanceSheetStandard = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
 
@@ -264,8 +265,13 @@ public class Main extends javax.swing.JFrame {
         jMenuItem5.setText("Trial Balance");
         jMenu2.add(jMenuItem5);
 
-        jMenuItem6.setText("Balance Sheet Summary");
-        jMenu2.add(jMenuItem6);
+        jMenuItemBalanceSheetStandard.setText("Balance Sheet Standard");
+        jMenuItemBalanceSheetStandard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemBalanceSheetStandardActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItemBalanceSheetStandard);
 
         jMenuItem7.setText("Balance Sheet Details");
         jMenu2.add(jMenuItem7);
@@ -457,6 +463,35 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemProfitLossStandardActionPerformed
 
+    private void jMenuItemBalanceSheetStandardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemBalanceSheetStandardActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Balance sheet standard")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                BalanceSheetStandard bs = new BalanceSheetStandard();
+                JP.add(bs);
+                bs.JP = JP;
+                bs.jProgressBarStatus = this.jProgressBarStatus;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = bs.getSize();
+                bs.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                bs.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemBalanceSheetStandardActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -490,10 +525,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemBalance;
+    private javax.swing.JMenuItem jMenuItemBalanceSheetStandard;
     private javax.swing.JMenuItem jMenuItemProfitLossStandard;
     private javax.swing.JMenuItem jMenuItemTransaction;
     private javax.swing.JMenu jMenuJournal;

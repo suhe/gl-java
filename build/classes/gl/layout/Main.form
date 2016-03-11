@@ -118,10 +118,13 @@
                     <Property name="text" type="java.lang.String" value="Trial Balance"/>
                   </Properties>
                 </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBalanceSheetStandard">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Balance Sheet Summary"/>
+                    <Property name="text" type="java.lang.String" value="Balance Sheet Standard"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemBalanceSheetStandardActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem7">
                   <Properties>

@@ -84,7 +84,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                 TProfitLoss tplModel = new TProfitLoss();
                 totalRow = tplModel.getCount();
                 List list = tplModel.getRowList();
-                jProgressBarStatus.setMinimum(0);
+                jProgressBarStatus.setMinimum(1);
                 jProgressBarStatus.setMaximum(totalRow);
                 String month = jComboBoxMonth.getSelectedItem().toString().substring(0,2);
                 String year = jTextFieldYear.getText();
@@ -96,7 +96,6 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                 Double totalThisMonth;
                 Double totalUntilMonth;
                 for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                    i++;
                     TplProfitLoss tpl = (TplProfitLoss) iterator.next();
                     description = tpl.getDescription();
                     type = tpl.getType();
@@ -129,6 +128,7 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                     plModel.save();
                     //progress bar counter +1
                     jProgressBarStatus.setValue(i);
+                    i++;
                 }
 
             }

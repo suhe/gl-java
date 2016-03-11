@@ -20,7 +20,6 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import services.JournalDetails;
 
@@ -339,6 +338,33 @@ public class JournalDetail {
         return total;
     }
     
-    
+    public Double getBalanceSheetSummary(Date periode,String year,String[] accountNo,String calc){
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double total = 0.00;
+        String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
+        try {
+            tx = session.beginTransaction();
+            String sql = "select sum(" + calcSelect + ") from journal_details jd inner join journals j on j.id = jd.journal_id  "
+                    + " where j.date <= :date and year(j.date) = :year and jd.account_no in(:no) ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("date", periode);
+            query.setParameter("year", year);
+            query.setParameterList("no",accountNo);
+            List list = query.list();
+            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+            
+        } finally {
+            session.close();
+        }
+        return total;
+    }
     
 }
