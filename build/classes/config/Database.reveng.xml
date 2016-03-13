@@ -11,4 +11,5 @@
   <table-filter match-name="profit_loss_standard_summaries"/>
   <table-filter match-name="tpl_balances"/>
   <table-filter match-name="balance_sheet_summaries"/>
+  <table-filter match-name="roles"/>
 </hibernate-reverse-engineering>

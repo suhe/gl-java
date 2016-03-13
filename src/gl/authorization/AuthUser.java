@@ -40,7 +40,7 @@ public class AuthUser extends javax.swing.JInternalFrame {
         initTable();
     }
 
-    public void getAuthRole() {
+    public void getAuthUser() {
         initTable();
     }
     
@@ -296,29 +296,29 @@ public class AuthUser extends javax.swing.JInternalFrame {
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         // TODO add your handling code here
-        /*model = new User();
+        model = new User();
         model.setIsEdit(false);
-        AuthRoleForm form = new AuthRoleForm(this, false);
+        AuthUserForm form = new AuthUserForm(this, false);
         form.setLocationRelativeTo(this);
         form.pack();
         form.list = this;
-        form.setVisible(true);*/
+        form.setVisible(true);
 
     }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonDelRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelRowActionPerformed
         // TODO add your handling code here:
-        /*Integer row = jTable.getSelectedRow();
+        Integer row = jTable.getSelectedRow();
         Integer col = 3;
         if (row > 0) {
             Integer key = Integer.parseInt(jTable.getValueAt(row, col).toString());
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure want to delete with name : " + jTable.getValueAt(row,1).toString()  + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure want to delete with username : " + jTable.getValueAt(row,1).toString()  + " ?", "Warning", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
-                model = new Role();
+                model = new User();
                 model.delete(key);
                 initTable();
             }
-        }*/
+        }
     }//GEN-LAST:event_jButtonDelRowActionPerformed
 
     private void jButtonUpRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpRowActionPerformed
@@ -371,19 +371,19 @@ public class AuthUser extends javax.swing.JInternalFrame {
 
     private void jTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableMouseClicked
         // TODO add your handling code here:
-        /*if (evt.getClickCount() == 2) {
+        if (evt.getClickCount() == 2) {
             int row = jTable.getSelectedRow();
             int col = 3;
             Integer key = Integer.parseInt(jTable.getValueAt(row, col).toString());
-            model = new Role();
+            model = new User();
             model.setIsEdit(true);
             model.setId(key);
-            AuthRoleForm form = new AuthRoleForm(this, false);
+            AuthUserForm form = new AuthUserForm(this, false);
             form.setLocationRelativeTo(this);
             form.pack();
             form.list = this;
             form.setVisible(true);
-        }*/
+        }
     }//GEN-LAST:event_jTableMouseClicked
 
     private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchActionPerformed

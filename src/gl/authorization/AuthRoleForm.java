@@ -35,8 +35,8 @@ public class AuthRoleForm extends javax.swing.JDialog {
     }
     
     private void setParameterLanguage() {
-        jLabelAccountNo.setText(Lang.getString("App.account_no"));
-        jLabelAccountName.setText(Lang.getString("App.account_name"));
+        jLabelName.setText(Lang.getString("App.name"));
+        jLabelDescription.setText(Lang.getString("App.description"));
         jButtonSave.setText(Lang.getString("App.save"));
         jButtonCancel.setText(Lang.getString("App.cancel"));
     }
@@ -62,18 +62,18 @@ public class AuthRoleForm extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabelAccountNo = new javax.swing.JLabel();
+        jLabelName = new javax.swing.JLabel();
         jTextFieldName = new javax.swing.JTextField();
-        jLabelAccountName = new javax.swing.JLabel();
+        jLabelDescription = new javax.swing.JLabel();
         jTextFieldDescription = new javax.swing.JTextField();
         jButtonSave = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabelAccountNo.setText("Name");
+        jLabelName.setText("Name");
 
-        jLabelAccountName.setText("Description");
+        jLabelDescription.setText("Description");
 
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/save_16X16.png"))); // NOI18N
         jButtonSave.setText("Save");
@@ -98,8 +98,8 @@ public class AuthRoleForm extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabelAccountNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelAccountName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -120,11 +120,11 @@ public class AuthRoleForm extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelAccountNo)
+                    .addComponent(jLabelName)
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelAccountName)
+                    .addComponent(jLabelDescription)
                     .addComponent(jTextFieldDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -207,8 +207,8 @@ public class AuthRoleForm extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
-    private javax.swing.JLabel jLabelAccountName;
-    private javax.swing.JLabel jLabelAccountNo;
+    private javax.swing.JLabel jLabelDescription;
+    private javax.swing.JLabel jLabelName;
     private javax.swing.JTextField jTextFieldDescription;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables

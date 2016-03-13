@@ -26,8 +26,8 @@
           <Group type="102" attributes="0">
               <EmptySpace min="23" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabelAccountNo" max="32767" attributes="0"/>
-                  <Component id="jLabelAccountName" max="32767" attributes="0"/>
+                  <Component id="jLabelName" max="32767" attributes="0"/>
+                  <Component id="jLabelDescription" max="32767" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -55,12 +55,12 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabelAccountNo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelName" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldName" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabelAccountName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelDescription" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldDescription" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -74,14 +74,14 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabelAccountNo">
+    <Component class="javax.swing.JLabel" name="jLabelName">
       <Properties>
         <Property name="text" type="java.lang.String" value="Name"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldName">
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabelAccountName">
+    <Component class="javax.swing.JLabel" name="jLabelDescription">
       <Properties>
         <Property name="text" type="java.lang.String" value="Description"/>
       </Properties>

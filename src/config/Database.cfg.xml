@@ -10,6 +10,7 @@
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
     <property name="use_sql_comments">false</property>
+    <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <!--<property name="hibernate.query.factory_class">org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory</property>-->
     <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
     <mapping class="services.Users" package="gl" resource="services/Users.hbm.xml"/>

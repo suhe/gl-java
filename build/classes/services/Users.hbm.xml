@@ -8,11 +8,15 @@
             <column name="id" />
             <generator class="identity" />
         </id>
+         <many-to-one name="roles" class="services.Roles" cascade="save-update">
+            <column name="role_id" not-null="true" />
+        </many-to-one>
+        
         <property name="username" type="string">
             <column name="username" length="200" not-null="true" />
         </property>
         <property name="password" type="string">
-            <column name="password" length="30" not-null="true" />
+            <column name="password" length="30" not-null="false" />
         </property>
     </class>
 </hibernate-mapping>

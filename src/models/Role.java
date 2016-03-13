@@ -18,7 +18,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import services.Accounts;
 import services.Roles;
 
 /**
@@ -213,14 +212,35 @@ public class Role {
         return role;
     }
     
+    public Roles getSingleRowByName(String name) {
+        Roles role = null;
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Roles.class)
+                    .add(Restrictions.eq("name", name));
+            role = (Roles) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return role;
+    }
+    
     public List getRowList() {
-        //set to list all data
         List list;
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(Accounts.class);
+            Criteria criteria = session.createCriteria(Roles.class);
             criteria.addOrder(Order.asc("name")); 
             list = criteria.list(); 
             tx.commit();
@@ -235,29 +255,6 @@ public class Role {
         return list;
     }
 
-    public Roles getSingleRowByName(String name) {
-        Roles role = null;
-        Session session;
-        session = DatabaseUtil.getSessionFactory().openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(Roles.class)
-                    .add(Restrictions.eq("name", name));
-            
-            role = (Roles) criteria.uniqueResult();
-            tx.commit();
-        } catch (HibernateException ex) {
-            if (tx != null) {
-                tx.rollback();
-            }
-        } finally {
-            session.close();
-        }
-
-        return role;
-    }
-    
     public void saveOrUpdate() {
         if (getIsEdit() == true) {
             this.update();

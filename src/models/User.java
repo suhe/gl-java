@@ -30,6 +30,7 @@ public class User {
     
     private static Integer id = null;
     private static String username = "";
+    private static String password = "";
     private static Integer roleId = null;
     private static String roleName = "";
     private static Boolean isEdit = false;
@@ -61,6 +62,14 @@ public class User {
 
     public void setUsername(String value) {
         username = value;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String value) {
+        password = value;
     }
     
     public Integer getRoleId() {
@@ -236,6 +245,7 @@ public class User {
             
             users = (Users) criteria.uniqueResult();
             tx.commit();
+            session.flush();
         } catch (HibernateException ex) {
             if (tx != null) {
                 tx.rollback();
@@ -270,7 +280,7 @@ public class User {
             this.save();
         }
     }
-
+    
     public void save() {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
@@ -278,12 +288,18 @@ public class User {
         try {
             tx = session.beginTransaction();
             Users users = new Users();
+            //Roles roles = (Roles) session.get(Roles.class, 1); 
+            Criteria criteria = session.createCriteria(Roles.class)
+                    .add(Restrictions.eq("name", getRoleName()));
+            Roles roles = (Roles) criteria.uniqueResult();
             users.setUsername(getUsername());
-            users.setRoleId(1);
+            users.setPassword(getPassword());
+            users.setRoles(roles);
             session.save(users);
             session.flush();
             tx.commit();
         } catch (HibernateException ex) {
+            System.out.println("SQL :" + ex.getMessage());
             if (tx != null) {
                 tx.rollback();
             }
@@ -299,8 +315,13 @@ public class User {
         try {
             tx = session.beginTransaction();
             Users users = (Users) session.get(Users.class, getId());//1
+            Criteria criteria = session.createCriteria(Roles.class)
+                    .add(Restrictions.eq("name", getRoleName()));
+            Roles roles = (Roles) criteria.uniqueResult();
             users.setUsername(getUsername());
-            users.setRoleId(1);
+            users.setUsername(getUsername());
+            if(!"".equals(getPassword())) users.setPassword(getPassword());
+            users.setRoles(roles);
             session.update(users);
             session.flush();
             tx.commit();

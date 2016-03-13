@@ -8,10 +8,13 @@ package gl.authorization;
 import helpers.Lang;
 import helpers.Validator.IsValidValidator;
 import helpers.Validator.RequiredValidator;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import models.Role;
 import models.User;
+import services.Roles;
 import services.Users;
 
 /**
@@ -45,13 +48,26 @@ public class AuthUserForm extends javax.swing.JDialog {
 
     private void initForm() {
         model = new User();
+        Role roleModel = new Role();
+        jComboBoxRole.removeAllItems();
+        List listRole = roleModel.getRowList();
+        for (Iterator iterator = listRole.iterator(); iterator.hasNext();) {
+            Roles role = (Roles) iterator.next();
+            jComboBoxRole.addItem(role.getName());
+        }
+        
         if (model.getIsEdit() != true) {
             jTextFieldUsername.setText("");
-            jTextFieldRole.setText("");
+            jPasswordField.setText("");
+            jPasswordField.setEnabled(true);
+            jCheckBoxChangePassword.setVisible(false);
+            
         } else {
             Users row = model.getSingleRow(model.getId());
             jTextFieldUsername.setText(row.getUsername());
-            jTextFieldRole.setText(row.getRoles().getName());
+            jComboBoxRole.setSelectedItem(row.getRoles().getName());
+            jPasswordField.setEnabled(false);
+            jCheckBoxChangePassword.setVisible(true);
         }
     }
 
@@ -67,11 +83,12 @@ public class AuthUserForm extends javax.swing.JDialog {
         jLabelName = new javax.swing.JLabel();
         jTextFieldUsername = new javax.swing.JTextField();
         jLabelRole = new javax.swing.JLabel();
-        jTextFieldRole = new javax.swing.JTextField();
         jButtonSave = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
         jLabelPassword = new javax.swing.JLabel();
         jPasswordField = new javax.swing.JPasswordField();
+        jComboBoxRole = new javax.swing.JComboBox<>();
+        jCheckBoxChangePassword = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -97,30 +114,40 @@ public class AuthUserForm extends javax.swing.JDialog {
 
         jLabelPassword.setText("Password");
 
-        jPasswordField.setText("jPasswordField1");
+        jComboBoxRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jCheckBoxChangePassword.setText("Change Password");
+        jCheckBoxChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxChangePasswordActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabelName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelRole, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldRole, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonSave)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonCancel)
-                .addGap(38, 38, 38))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButtonSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonCancel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelRole, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextFieldUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBoxChangePassword))
+                            .addComponent(jComboBoxRole, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,16 +159,17 @@ public class AuthUserForm extends javax.swing.JDialog {
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelRole)
-                    .addComponent(jTextFieldRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelPassword)
-                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBoxChangePassword))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSave)
                     .addComponent(jButtonCancel))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -156,17 +184,46 @@ public class AuthUserForm extends javax.swing.JDialog {
         // TODO add your handling code here:
         model = new User();
         RequiredValidator usernameVal = new RequiredValidator(this, jTextFieldUsername, "The field username is required !");
+        RequiredValidator passwordVal = new RequiredValidator(this, jPasswordField, "The field password is required !");
         IsValidValidator isValid = new IsValidValidator(this, jTextFieldUsername, "The username is already !", model.isValid(jTextFieldUsername.getText()));
-
-        if (usernameVal.verify(jTextFieldUsername) && isValid.verify(jTextFieldUsername)) {
-            model.setUsername(jTextFieldUsername.getText());
-            model.setRoleName(jTextFieldRole.getText());
-            model.saveOrUpdate();
-            JOptionPane.showMessageDialog(null, "Successfully store to database !", "Store DB", JOptionPane.INFORMATION_MESSAGE);
-            list.getAuthRole();
-            this.dispose();
+        
+        if(model.getIsEdit() == false) {
+            if (usernameVal.verify(jTextFieldUsername) && isValid.verify(jTextFieldUsername) && passwordVal.verify(jPasswordField) ) {
+                model.setUsername(jTextFieldUsername.getText());
+                model.setRoleName(jComboBoxRole.getSelectedItem().toString());
+                model.setPassword(jPasswordField.getText());
+                model.save();
+            }
+        } else if(model.getIsEdit() == true && jCheckBoxChangePassword.isSelected() == true ) {
+            if (usernameVal.verify(jTextFieldUsername) && isValid.verify(jTextFieldUsername) && passwordVal.verify(jPasswordField) ) {
+                model.setUsername(jTextFieldUsername.getText());
+                model.setRoleName(jComboBoxRole.getSelectedItem().toString());
+                model.setPassword(jPasswordField.getText());
+                model.update();
+            }
+        } else {
+            if (usernameVal.verify(jTextFieldUsername) && isValid.verify(jTextFieldUsername)) {
+                model.setUsername(jTextFieldUsername.getText());
+                model.setRoleName(jComboBoxRole.getSelectedItem().toString());
+                model.setPassword("");
+                model.update();
+            }
         }
+        
+        JOptionPane.showMessageDialog(null, "Successfully store to database !", "Store DB", JOptionPane.INFORMATION_MESSAGE);
+        list.getAuthUser();
+        this.dispose();
+        
     }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jCheckBoxChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxChangePasswordActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBoxChangePassword.isSelected() == true) {
+            jPasswordField.setEnabled(true);
+        } else {
+            jPasswordField.setEnabled(false);
+        }
+    }//GEN-LAST:event_jCheckBoxChangePasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -198,8 +255,6 @@ public class AuthUserForm extends javax.swing.JDialog {
         //</editor-fold>
         //</editor-fold>
         
-        
-
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -220,11 +275,12 @@ public class AuthUserForm extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
+    private javax.swing.JCheckBox jCheckBoxChangePassword;
+    private javax.swing.JComboBox<String> jComboBoxRole;
     private javax.swing.JLabel jLabelName;
     private javax.swing.JLabel jLabelPassword;
     private javax.swing.JLabel jLabelRole;
     private javax.swing.JPasswordField jPasswordField;
-    private javax.swing.JTextField jTextFieldRole;
     private javax.swing.JTextField jTextFieldUsername;
     // End of variables declaration//GEN-END:variables
 }
