@@ -8,6 +8,12 @@
             <column name="id" />
             <generator class="identity" />
         </id>
+         <many-to-one name="roles" class="services.Roles" cascade="all">
+            <column name="role_id" not-null="true" />
+        </many-to-one>
+        <property name="roleId" type="java.lang.Integer">
+            <column name="role_id" length="11" not-null="true" />
+        </property>
         <property name="username" type="string">
             <column name="username" length="200" not-null="true" />
         </property>

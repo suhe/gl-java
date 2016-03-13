@@ -9,14 +9,17 @@ public class Users implements java.io.Serializable {
     private Integer id;
     private String username;
     private String password;
+    private Integer roleId;
+    private Roles roles;
 
     public Users() {
     }
 
-    public Users(String username, String password) {
+    public Users(String username, String password,Integer roleId) {
 
         this.username = username;
         this.password = password;
+        this.roleId = roleId;
     }
 
     public Integer getId() {
@@ -41,6 +44,22 @@ public class Users implements java.io.Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public Integer getRoleId() {
+        return this.roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+    
+    public Roles getRoles() {
+        return roles;
+    }
+    
+    public void setRoles(Roles roles) {
+        this.roles = roles;
     }
 
 }

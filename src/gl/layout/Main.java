@@ -10,6 +10,7 @@ import database.Connect;
 import gl.accounts.BeginBalance;
 import gl.accounts.Coa;
 import gl.authorization.AuthRole;
+import gl.authorization.AuthUser;
 import gl.reports.BalanceSheetStandard;
 import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
@@ -294,6 +295,11 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItemUsers.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemUsers.setText("Users");
+        jMenuItemUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemUsersActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItemUsers);
 
         jMenuItemRoles.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
@@ -545,6 +551,34 @@ public class Main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemRolesActionPerformed
+
+    private void jMenuItemUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemUsersActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Roles")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                AuthUser authUser = new AuthUser();
+                JP.add(authUser);
+                //authRole.JP = JP;
+                authUser.jProgressBarStatus = this.jProgressBarStatus;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = authUser.getSize();
+                authUser.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                authUser.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemUsersActionPerformed
 
     /**
      * @param args the command line arguments
