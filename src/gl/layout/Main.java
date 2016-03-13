@@ -9,6 +9,7 @@ import config.Database;
 import database.Connect;
 import gl.accounts.BeginBalance;
 import gl.accounts.Coa;
+import gl.authorization.AuthRole;
 import gl.reports.BalanceSheetStandard;
 import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
@@ -98,6 +99,10 @@ public class Main extends javax.swing.JFrame {
         jMenuItemBalanceSheetStandard = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItemUsers = new javax.swing.JMenuItem();
+        jMenuItemRoles = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Main Menu");
@@ -282,6 +287,27 @@ public class Main extends javax.swing.JFrame {
         jMenuReport.add(jMenuItem8);
 
         jMenuBar1.add(jMenuReport);
+
+        jMenu3.setText("Administration");
+
+        jMenu4.setText("Authorization");
+
+        jMenuItemUsers.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemUsers.setText("Users");
+        jMenu4.add(jMenuItemUsers);
+
+        jMenuItemRoles.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemRoles.setText("Roles");
+        jMenuItemRoles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRolesActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItemRoles);
+
+        jMenu3.add(jMenu4);
+
+        jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
 
@@ -492,6 +518,34 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemBalanceSheetStandardActionPerformed
 
+    private void jMenuItemRolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRolesActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("Roles")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                AuthRole authRole = new AuthRole();
+                JP.add(authRole);
+                //authRole.JP = JP;
+                authRole.jProgressBarStatus = this.jProgressBarStatus;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = authRole.getSize();
+                authRole.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                authRole.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemRolesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -520,6 +574,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenuAccount;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -530,7 +586,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemBalance;
     private javax.swing.JMenuItem jMenuItemBalanceSheetStandard;
     private javax.swing.JMenuItem jMenuItemProfitLossStandard;
+    private javax.swing.JMenuItem jMenuItemRoles;
     private javax.swing.JMenuItem jMenuItemTransaction;
+    private javax.swing.JMenuItem jMenuItemUsers;
     private javax.swing.JMenu jMenuJournal;
     private javax.swing.JMenu jMenuReport;
     private javax.swing.JPanel jPanel1;

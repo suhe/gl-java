@@ -21,5 +21,6 @@
     <mapping class="services.ProfitLossStandardSummaries" package="gl" resource="services/ProfitLossStandardSummaries.hbm.xml"/>
     <mapping class="services.TplBalances" package="gl" resource="services/TplBalances.hbm.xml"/>
     <mapping class="services.BalanceSheetSummaries" package="gl" resource="services/BalanceSheetSummaries.hbm.xml"/>
+    <mapping class="services.Roles" package="gl" resource="services/Roles.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
