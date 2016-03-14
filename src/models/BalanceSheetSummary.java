@@ -15,7 +15,6 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import services.BalanceSheetSummaries;
-import services.ProfitLossStandardSummaries;
 
 /**
  *
@@ -110,25 +109,49 @@ public class BalanceSheetSummary {
             tx = session.beginTransaction();
             String sql;
             SQLQuery query;
+            Integer[] arg;
             switch (formula.toLowerCase().trim()) {
-                case "sum":
+                case "sum" :
                     sql = "select " + formula + "(total) from balance_sheet_summaries"
                             + " where ref >= :arg1 and ref <= :arg2";
                     query = session.createSQLQuery(sql);
-                    Integer[] arg = Formula.ref(args);
+                    arg = Formula.ref(args);
                     query.setParameter("arg1", arg[0].toString());
                     query.setParameter("arg2", arg[1].toString());
-                    break;
-                default:
-                    sql = "select " + formula + "(total) from profit_loss_standard_summaries"
-                            + " where ref in(:arg) ";
+                    xtotal = (Double) query.uniqueResult();
+                    break;   
+                case "avg" :
+                    sql = "select " + formula + "(total) from balance_sheet_summaries"
+                            + " where ref >= :arg1 and ref <= :arg2";
                     query = session.createSQLQuery(sql);
-                    query.setParameterList("arg", Formula.ref(args));
+                    arg = Formula.ref(args);
+                    query.setParameter("arg1", arg[0].toString());
+                    query.setParameter("arg2", arg[1].toString());
+                    xtotal =(Double) query.uniqueResult();
+                    break;       
+                default:
+                    arg = Formula.ref(args);
+                    Double subtotal = 0.00;
+                    if(arg.length > 0)  {
+                        for(Integer i=0;i<arg.length;i++) {
+                            sql = "select total from balance_sheet_summaries"
+                            + " where ref = :arg ";
+                            query = session.createSQLQuery(sql);
+                            query.setParameter("arg", arg[i]);
+                            if("+".equals(Formula.separator(args))) {
+                                subtotal+=(Double) query.uniqueResult();
+                            } else {
+                                subtotal-=(Double) query.uniqueResult();
+                            }
+                            System.out.println("Arg ke " + i + ":"  + arg[i]);
+                            System.out.println("Hasil ke " + i + " : " + (Double) query.uniqueResult());
+                            xtotal = subtotal;
+                        }
+                    }
                     break;
 
             }
-            List list = query.list();
-            xtotal = Double.parseDouble(list.get(0).toString());
+          
             tx.commit();
         } catch (HibernateException e) {
             System.out.println(e.getMessage());

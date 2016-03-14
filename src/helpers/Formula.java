@@ -42,8 +42,6 @@ public class Formula {
         args = args.replaceAll("\\(","").trim();
         args = args.replaceAll("\\)","").trim();
         String[] ref = Format.getArray(args, "\\" + separator(args));
-        //System.out.println("ref 0 :" + ref[0]);
-        //System.out.println("ref 1 :" + ref[1]);
         Integer[] refInt = new Integer[ref.length];
         if(ref.length > 0 ){
             for (int i = 0; i < ref.length; i++) {
@@ -51,7 +49,6 @@ public class Formula {
                 refInt[i] = Integer.parseInt(arg.trim());
              }
         }
-        
         return refInt;
     }
     
