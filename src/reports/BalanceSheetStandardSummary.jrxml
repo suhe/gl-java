@@ -76,18 +76,19 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
+                        <line>
+				<reportElement x="434" y="0" width="121" height="1" uuid="2a498e96-e42f-4b60-be97-858a366c889a">
+					<printWhenExpression><![CDATA[$F{type}.equals("Total")]]></printWhenExpression>
+				</reportElement>
+			</line>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="434" y="0" width="121" height="10" uuid="495fde9b-07b4-4f26-80b4-ad1f93920136"/>
+				<reportElement x="434" y="1" width="121" height="10" uuid="495fde9b-07b4-4f26-80b4-ad1f93920136"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="434" y="10" width="121" height="1" uuid="2a498e96-e42f-4b60-be97-858a366c889a">
-					<printWhenExpression><![CDATA[$F{type}.equals("Total")]]></printWhenExpression>
-				</reportElement>
-			</line>
+			
 		</band>
 	</detail>
 	<columnFooter>
