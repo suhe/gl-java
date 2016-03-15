@@ -85,19 +85,24 @@ public class BalanceSheetStandard extends javax.swing.JInternalFrame {
                 String description,type;
                 Double total;
                 Double balance;
+                jProgressBarStatus.setValue(1);
                 for (Iterator iterator = list.iterator(); iterator.hasNext();) {
                     TplBalances tpl = (TplBalances) iterator.next();
                     description = tpl.getDescription();
                     type = tpl.getType();
+                    JournalDetail jdModel;
                     switch(tpl.getType()) {
                         case "Field" :
-                            JournalDetail jdModel = new JournalDetail();
+                            jdModel = new JournalDetail();
                             BeginningBalance bModel = new BeginningBalance();
-                            String[] accountNo = Format.getArray(tpl.getAccountNo().trim(),"\\,");
-                            total = jdModel.getBalanceSheetSummary(periode,year,accountNo,tpl.getCalc().trim());
-                            balance = bModel.getSumBalance(year,accountNo,tpl.getCalc().trim());
-                            total+=balance;
+                            total = jdModel.getBalanceSheetSummary(periode,year,tpl.getAccountNo(),tpl.getCalc());
+                            balance = bModel.getSumBalance(year,tpl.getAccountNo(),tpl.getCalc().trim());
+                            total = total + balance;
                             break;
+                        case "P/L" :
+                            jdModel = new JournalDetail();
+                            total = jdModel.getBalanceSheetSummary(periode,year,tpl.getAccountNo(),tpl.getCalc());
+                            break;    
                         case "Total":
                             BalanceSheetSummary bssModel = new  BalanceSheetSummary();
                             total = bssModel.GetSummary(tpl.getFormula());

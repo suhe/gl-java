@@ -7,6 +7,7 @@ package models;
 
 import config.DatabaseUtil;
 import helpers.Format;
+import helpers.Formula;
 import helpers.Lang;
 import java.util.Date;
 import java.util.Iterator;
@@ -280,14 +281,15 @@ public class JournalDetail {
         }
     }
     
-    public Double getSumByThisMonth(String year,String month,String[] accountNo){
+    public Double getSumByThisMonth(String year,String month,String[] accountNo,String calc){
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         Double total = 0.00;
+        String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
         try {
             tx = session.beginTransaction();
             //String[] tags = {"11-151-003", "11-170-004"};
-            String sql = "select sum(jd.credit - jd.debet) from Journal_details jd inner join journals j on j.id = jd.journal_id  "
+            String sql = "select sum(" + calcSelect + ") from Journal_details jd inner join journals j on j.id = jd.journal_id  "
                     + " where month(j.date) = :month and year(j.date) = :year and jd.account_no in(:no) ";
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter("month", month);
@@ -309,14 +311,15 @@ public class JournalDetail {
         return total;
     }
     
-    public Double getSumByUntilMonth(String year,String month,String[] accountNo){
+    public Double getSumByUntilMonth(String year,String month,String[] accountNo,String calc){
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         Double total = 0.00;
+        String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
         try {
             tx = session.beginTransaction();
             //String[] tags = {"11-151-003", "11-170-004"};
-            String sql = "select sum(jd.credit - jd.debet) from Journal_details jd inner join journals j on j.id = jd.journal_id  "
+            String sql = "select sum(" + calcSelect + ") from Journal_details jd inner join journals j on j.id = jd.journal_id  "
                     + " where month(j.date) <= :month and year(j.date) = :year and jd.account_no in(:no) ";
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter("month", month);
@@ -338,24 +341,49 @@ public class JournalDetail {
         return total;
     }
     
-    public Double getBalanceSheetSummary(Date periode,String year,String[] accountNo,String calc){
+    public Double getBalanceSheetSummary(Date periode,String year,String accountNo,String calc){
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
-        Double total = 0.00;
-        String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
+        Double total = null;
+        String[] args;
+        accountNo = accountNo.trim();
+        String calcSelect = "Debet - Credit".equals(calc.trim()) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
+        String sql;
+        SQLQuery query;
         try {
             tx = session.beginTransaction();
-            String sql = "select sum(" + calcSelect + ") from journal_details jd inner join journals j on j.id = jd.journal_id  "
+            System.out.println("Account Data : " + accountNo);
+            if (accountNo.contains("to")){
+                args = Formula.args(accountNo.trim(),"to");
+                String arg1 = args[0].trim();
+                String arg2 = args[1].trim();
+                System.out.println("Data ke 0 : " + args[0]);
+                System.out.println("Data ke 1 : " + arg1);
+                
+                sql= "select sum(" + calcSelect + ") from journal_details jd inner join journals j on j.id = jd.journal_id  "
+                    + " where j.date <= :date and year(j.date) = :year and jd.account_no BETWEEN :arg0 and :arg1 ";
+                query = session.createSQLQuery(sql);
+                query.setParameter("date", periode);
+                query.setParameter("year", year);
+                query.setParameter("arg0", arg1);
+                query.setParameter("arg1", arg2);
+                total = (Double) query.uniqueResult();
+                
+            } else {
+                args = Formula.args(accountNo.trim(),"\\,");
+                sql= "select sum(" + calcSelect + ") from journal_details jd inner join journals j on j.id = jd.journal_id  "
                     + " where j.date <= :date and year(j.date) = :year and jd.account_no in(:no) ";
-            SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter("date", periode);
-            query.setParameter("year", year);
-            query.setParameterList("no",accountNo);
-            List list = query.list();
-            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+                query = session.createSQLQuery(sql);
+                query.setParameter("date", periode);
+                query.setParameter("year", year);
+                query.setParameterList("no",args);
+                total = (Double) query.uniqueResult();
+            }
+            
             session.flush();
             tx.commit();
         } catch (HibernateException e) {
+            total = 0.00;
             System.out.println(e.getMessage());
             if (tx != null) {
                 tx.rollback();
@@ -364,7 +392,11 @@ public class JournalDetail {
         } finally {
             session.close();
         }
+        
+        if(total == null) {
+            total = 0.00;
+        }
+        
         return total;
     }
-    
 }

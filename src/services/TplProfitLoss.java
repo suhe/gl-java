@@ -12,6 +12,7 @@ public class TplProfitLoss implements java.io.Serializable {
     private Integer id;
     private String description;
     private String type;
+    private String calc;
     private String accountNo;
     private Integer ref;
     private String formula;
@@ -47,6 +48,14 @@ public class TplProfitLoss implements java.io.Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+    
+    public String getCalc() {
+        return this.calc;
+    }
+
+    public void setCalc(String calc) {
+        this.calc = calc;
     }
     
     public String getAccountNo() {

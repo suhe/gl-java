@@ -12,6 +12,9 @@
         <property name="type" type="string">
             <column name="type" length="100" not-null="true" />
         </property>
+        <property name="calc" type="string">
+            <column name="calc" length="100" not-null="true" />
+        </property>
         <property name="accountNo" type="text">
             <column name="account_no"  not-null="true" />
         </property>

@@ -138,13 +138,12 @@ public class BalanceSheetSummary {
                             + " where ref = :arg ";
                             query = session.createSQLQuery(sql);
                             query.setParameter("arg", arg[i]);
-                            if("+".equals(Formula.separator(args))) {
-                                subtotal+=(Double) query.uniqueResult();
-                            } else {
+                            if(!"+".equals(Formula.separator(args))) {
                                 subtotal-=(Double) query.uniqueResult();
+                            } else {
+                                subtotal+=(Double) query.uniqueResult();
                             }
-                            System.out.println("Arg ke " + i + ":"  + arg[i]);
-                            System.out.println("Hasil ke " + i + " : " + (Double) query.uniqueResult());
+                          
                             xtotal = subtotal;
                         }
                     }

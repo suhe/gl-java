@@ -103,8 +103,8 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                         case "Field" :
                             JournalDetail jdModel = new JournalDetail();
                             String[] accountNo = Format.getArray(tpl.getAccountNo().trim(),"\\,");
-                            totalThisMonth = jdModel.getSumByThisMonth(year, month,accountNo);
-                            totalUntilMonth = jdModel.getSumByUntilMonth(year, month,accountNo);
+                            totalThisMonth = jdModel.getSumByThisMonth(year, month,accountNo,tpl.getCalc());
+                            totalUntilMonth = jdModel.getSumByUntilMonth(year, month,accountNo,tpl.getCalc());
                             break;
                         case "Total" :
                             ProfitLossStandardSummary plxModel = new ProfitLossStandardSummary();
@@ -126,7 +126,6 @@ public class ProfitLossStandard extends javax.swing.JInternalFrame {
                     plModel.setTotalThisMonth(totalThisMonth);
                     plModel.setTotalUntilMonth(totalUntilMonth);
                     plModel.save();
-                    //progress bar counter +1
                     jProgressBarStatus.setValue(i);
                     i++;
                 }

@@ -7,6 +7,7 @@ package models;
 
 import config.DatabaseUtil;
 import helpers.Format;
+import helpers.Formula;
 import helpers.Lang;
 import java.util.Iterator;
 import java.util.List;
@@ -278,30 +279,46 @@ public class BeginningBalance {
         }
     }
     
-    public Double getSumBalance(String year,String[] accountNo,String calc){
+    public Double getSumBalance(String year,String accountNo,String calc){
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
-        Double total = 0.00;
+        Double total = null;
+        accountNo = accountNo.trim();
+        String[] args;
         String calcSelect = "Debet - Credit".equals(calc) ? "debet - credit" : "credit - debet";
         try {
             tx = session.beginTransaction();
-            String sql = "select sum(" + calcSelect + ") from beginning_balances bb "
-                    + " where bb.year = :year and bb.account_no in(:no) ";
-            SQLQuery query = session.createSQLQuery(sql);
-            query.setParameter("year", year);
-            query.setParameterList("no",accountNo);
-            List list = query.list();
-            total = Double.parseDouble(list.get(0)!= null ? list.get(0).toString() : "0.00");
+            if(accountNo.contains("to")) {
+                args = Formula.args(accountNo.trim(),"to");
+                String sql = "select sum(" + calcSelect + ") from beginning_balances bb "
+                        + " where bb.year = :year and (bb.account_no >= :arg1 and bb.account_no<= :arg2) ";
+                SQLQuery query = session.createSQLQuery(sql);
+                query.setParameter("year", year);
+                query.setParameter("arg1",args[0]);
+                query.setParameter("arg2",args[1]);
+                total = (Double) query.uniqueResult();
+            } else {
+                args = Formula.args(accountNo.trim(),"\\,");
+                String sql = "select sum(" + calcSelect + ") from beginning_balances bb "
+                        + " where bb.year = :year and bb.account_no in(:no) ";
+                SQLQuery query = session.createSQLQuery(sql);
+                query.setParameter("year", year);
+                query.setParameterList("no",args);
+                total = (Double) query.uniqueResult();
+            }
             session.flush();
             tx.commit();
         } catch (HibernateException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error :" + e.getMessage());
             if (tx != null) {
                 tx.rollback();
             }
-            
         } finally {
             session.close();
+        }
+        
+        if(total == null) {
+            total = 0.00;
         }
         return total;
     }

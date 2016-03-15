@@ -12,6 +12,7 @@ import gl.accounts.Coa;
 import gl.authorization.AuthRole;
 import gl.authorization.AuthUser;
 import gl.reports.BalanceSheetStandard;
+import gl.reports.BalanceTrialStandard;
 import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -98,7 +99,6 @@ public class Main extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItemBalanceSheetStandard = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
@@ -269,6 +269,11 @@ public class Main extends javax.swing.JFrame {
         jMenu2.setText("Balance Sheet");
 
         jMenuItem5.setText("Trial Balance");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         jMenuItemBalanceSheetStandard.setText("Balance Sheet Standard");
@@ -278,9 +283,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItemBalanceSheetStandard);
-
-        jMenuItem7.setText("Balance Sheet Details");
-        jMenu2.add(jMenuItem7);
 
         jMenuReport.add(jMenu2);
 
@@ -580,6 +582,33 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemUsersActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("TrialBalances")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                BalanceTrialStandard balanceTrialStandard = new BalanceTrialStandard();
+                JP.add(balanceTrialStandard);
+                balanceTrialStandard.jProgressBarStatus = this.jProgressBarStatus;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = balanceTrialStandard.getSize();
+                balanceTrialStandard.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                balanceTrialStandard.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -615,7 +644,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemBalance;
     private javax.swing.JMenuItem jMenuItemBalanceSheetStandard;

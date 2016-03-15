@@ -24,7 +24,7 @@ public class Formula {
     }
     
     public static String separator(String args) {
-        String[] SEPARATOR = {"+",":","-"};
+        String[] SEPARATOR = {"+",":","-","to","\\,"};
         String Separator = null;
         for(Short i = 0;i < SEPARATOR.length;i++) {
             if(args.contains(SEPARATOR[i])) {
@@ -52,6 +52,9 @@ public class Formula {
         return refInt;
     }
     
+    public static String[] args(String arg,String separator) {
+        String[] arr = Format.getArray(arg,separator);
+        return arr;
+    }
    
-    
 }

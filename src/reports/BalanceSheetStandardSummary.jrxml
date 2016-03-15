@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f426398-1730-41ed-b543-625b9711ddbb">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="352"/>
+	<property name="ireport.x" value="36"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="PERIODE" class="java.lang.String"/>
 	<parameter name="Date" class="java.lang.String"/>

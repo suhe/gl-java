@@ -6,7 +6,7 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/gl?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password"></property>
+    <property name="hibernate.connection.password">mysql</property>
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
     <property name="use_sql_comments">false</property>
@@ -23,5 +23,6 @@
     <mapping class="services.TplBalances" package="gl" resource="services/TplBalances.hbm.xml"/>
     <mapping class="services.BalanceSheetSummaries" package="gl" resource="services/BalanceSheetSummaries.hbm.xml"/>
     <mapping class="services.Roles" package="gl" resource="services/Roles.hbm.xml"/>
+    <mapping class="services.TrialBalances" package="gl" resource="services/TrialBalances.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
