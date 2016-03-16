@@ -9,8 +9,13 @@ import helpers.Format;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,10 +23,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import models.Account;
 import models.BeginningBalance;
 import models.JournalDetail;
@@ -44,10 +50,47 @@ import services.BeginningBalances;
  * @author BDO-IT
  */
 public class BalanceTrialStandard extends javax.swing.JInternalFrame {
-
     public JDesktopPane JP;
-    public JProgressBar jProgressBarStatus = new JProgressBar();
+    public JProgressBar jProgressBarStatus;
     Integer totalRow;
+    private Task task;
+ 
+    
+    class Task extends SwingWorker<Void, Void> {
+        /*
+         * Main task. Executed in background thread.
+         */
+        @Override
+        public Void doInBackground() {
+            Random random = new Random();
+            int progress = 0;
+            //Initialize progress property.
+            setProgress(0);
+            while (progress < 100) {
+                //Sleep for up to one second.
+                try {
+                    Thread.sleep(random.nextInt(1000));
+                } catch (InterruptedException ignore) {}
+                //Make random progress.
+                progress += random.nextInt(10);
+                setProgress(Math.min(progress, 100));
+            }
+            return null;
+        }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            //startButton.setEnabled(true);
+            setCursor(null); //turn off the wait cursor
+            jProgressBarStatus.setValue(jProgressBarStatus.getMinimum());
+            //taskOutput.append("Done!\n");
+        }
+    }
+
 
     /**
      * Creates new form BalanceTrialStandard
@@ -55,6 +98,11 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     public BalanceTrialStandard() {
         initComponents();
         initForm();
+        jProgressBarStatus = new JProgressBar();
+        jProgressBarStatus.setMinimum(0);
+        jProgressBarStatus.setMaximum(100);
+        jProgressBarStatus.setValue(0);
+        jProgressBarStatus.setStringPainted(true);
     }
 
     private void initForm() {
@@ -88,49 +136,95 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
         jProgressBarStatus.setValue(i);
         Double bbDebet;
         Double bbCredit;
+        Double bbTotal;
         Double plDebet;
         Double plCredit;
-        Double [] plResult = new Double[2];
+        Double plTotal;
+        Double bDebet;
+        Double bCredit;
+        Double bTotal;
+        Double ebDebet;
+        Double ebCredit;
+        Double [] plResult;
         for (Iterator iterator = list.iterator(); iterator.hasNext();) {
             Accounts acc = (Accounts) iterator.next();
-            
             BeginningBalance bbModel = new BeginningBalance();
             JournalDetail jdModel = new JournalDetail();
-            
             //beginning balance
             BeginningBalances bb = bbModel.getRowByAccountNoAndYear(acc.getNo(), year);
-            if (bb != null) {
-                bbDebet = bb.getDebet();
-                bbCredit = bb.getCredit();
-            } else {
-                bbDebet = null;
-                bbCredit = null;
-            }
-            
+            //System.out.println("Hasil" + bb.getDebet());
+            bbDebet = bb != null && bb.getDebet() != null ? bb.getDebet() : 0.00;
+            bbCredit = bb != null &&  bb.getCredit()!= null ? bb.getCredit() : 0.00;
             plResult = jdModel.getSumByUntilDate(year, dateFrom, acc.getNo());
             bbDebet+= plResult[0];
             bbCredit+=plResult[1];
+            bbTotal = bbDebet - bbCredit;
             
-            if((acc.getType() == "REVENUE") || (acc.getType() == "INCOME") || (acc.getType() == "EXPENSE")) {
-                
-                plResult = jdModel.GetProfitLossSummary(acc.getNo(), dateFrom, dateTo);
-                plDebet = plResult[0];
-                plCredit = plResult[1];
-                //if(plDebet == 0.00) plDebet = null;
-                //if(plCredit == 0.00) plCredit = null;
+            if(bbTotal < 0) {
+                bbDebet = 0.00;
+                bbCredit = bbTotal * (-1);
+            } else {
+                bbDebet = bbTotal;
+                bbCredit = 0.00;
+            }
+            
+            plResult = jdModel.GetProfitLossSummary(acc.getNo(), dateFrom, dateTo);
+            if(("REVENUE".equals(acc.getType())) || ("INCOME".equals(acc.getType())) || ("EXPENSE".equals(acc.getType()))) {
+                plDebet =  plResult[0] != null ? plResult[0] : 0.00 ;
+                plCredit = plResult[1] != null ? plResult[1] : 0.00 ;
+                bDebet = 0.00;
+                bCredit = 0.00;
                 
             } else {
-                plDebet = null;
-                plCredit = null;
+                plDebet = 0.00;
+                plCredit = 0.00;
+                bDebet = plResult[0] != null ? plResult[0] : 0.00 ;
+                bCredit = plResult[1] != null ? plResult[1] : 0.00 ;
             }
+            
+            plTotal = plCredit - plDebet;
+            bTotal  = bDebet - bCredit;
+            
+            if(acc.getNo().equals("11-151-004")) {
+                System.out.println("Debet :" + bDebet);
+                System.out.println("Credit :" + bCredit);
+            }
+            
+            if(plTotal < 0) {
+                plDebet = plTotal * (-1);
+                plCredit = 0.00;
+                
+            } else {
+               plDebet = 0.00;
+               plCredit = plTotal;
+            }
+            
+            if(bTotal < 0) {
+                bDebet = 0.00;
+                bCredit = bTotal * (-1);
+            } else {
+                bDebet = bTotal;
+                bCredit = 0.00;
+            }
+            
+            if(acc.getNo().equals("11-151-004")) {
+                System.out.println("Total Debet :" + bDebet);
+                System.out.println("Total Credit :" + bCredit);
+            }
+            
+            //total All
+            ebDebet = bbDebet + plDebet + bDebet;
+            ebCredit = bbCredit + plCredit + bCredit;
             
             //put to trial balance
             TrialBalance tb = new TrialBalance();
-            tb.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit);
+            tb.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit,bDebet,bCredit,ebDebet,ebCredit);
             jProgressBarStatus.setValue(i);
             i++;
         }
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -151,6 +245,7 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         jButtonPreview = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jTextFieldAccountNoFrom.setText("10-000-000");
 
@@ -188,18 +283,21 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton1.setText("Progress");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonPreview)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonClose))
-                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelDate)
                             .addComponent(jLabelAccountNo))
@@ -217,8 +315,15 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextFieldAccountNoTo)
-                            .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
-                .addContainerGap(24, Short.MAX_VALUE))
+                            .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addComponent(jButtonPreview)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonClose)))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,7 +344,8 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonClose)
-                    .addComponent(jButtonPreview))
+                    .addComponent(jButtonPreview)
+                    .addComponent(jButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -285,9 +391,30 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        task.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if ("progress".equals(e.getPropertyName())) {
+                    int progress = (Integer) e.getNewValue();
+                    jProgressBarStatus.setValue(progress);
+                    //taskOutput.append(String.format(
+                            //"Completed %d%% of task.\n", task.getProgress()));
+                } 
+            }
+
+            
+        });
+        task.execute();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private datechooser.beans.DateChooserCombo dateChooserComboDateFrom;
     private datechooser.beans.DateChooserCombo dateChooserComboDateTo;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonPreview;
     private javax.swing.JLabel jLabel2;

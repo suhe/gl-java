@@ -13,15 +13,23 @@ public class TrialBalances implements java.io.Serializable {
     private Double beginningBalanceCredit;
     private Double profitLossDebet;
     private Double profitLossCredit;
+    private Double balanceDebet;
+    private Double balanceCredit;
+    private Double endingBalanceDebet;
+    private Double endingBalanceCredit;
 
     public TrialBalances() {
     }
 
-    public TrialBalances(String accountNo, String accountName, Double beginningBalanceDebet, Double beginningBalanceCredit) {
+    public TrialBalances(String accountNo, String accountName, Double beginningBalanceDebet, Double beginningBalanceCredit,Double balanceDebet,Double balanceCredit,Double endingBalanceDebet, Double endingBalanceCredit) {
         this.accountNo = accountNo;
         this.accountName = accountName;
         this.beginningBalanceDebet = beginningBalanceDebet;
         this.beginningBalanceCredit = beginningBalanceCredit;
+        this.balanceDebet = balanceDebet;
+        this.balanceCredit = balanceCredit;
+        this.endingBalanceDebet = endingBalanceDebet;
+        this.endingBalanceCredit = endingBalanceCredit;
     }
 
     public Integer getId() {
@@ -78,6 +86,38 @@ public class TrialBalances implements java.io.Serializable {
 
     public void setProfitLossCredit(Double profitLossCredit) {
         this.profitLossCredit = profitLossCredit;
+    }
+    
+    public Double getBalanceDebet() {
+        return this.balanceDebet;
+    }
+
+    public void setBalanceDebet(Double balanceDebet) {
+        this.balanceDebet = balanceDebet;
+    }
+
+    public Double getBalanceCredit() {
+        return this.balanceCredit;
+    }
+
+    public void setBalanceCredit(Double balanceCredit) {
+        this.balanceCredit = balanceCredit;
+    }
+    
+    public Double getEndingBalanceDebet() {
+        return this.endingBalanceDebet;
+    }
+
+    public void setEndingBalanceDebet(Double endingBalanceDebet) {
+        this.endingBalanceDebet = endingBalanceDebet;
+    }
+
+    public Double getEndingBalanceCredit() {
+        return this.endingBalanceCredit;
+    }
+
+    public void setEndingBalanceCredit(Double endingBalanceCredit) {
+        this.endingBalanceCredit = endingBalanceCredit;
     }
 
 }

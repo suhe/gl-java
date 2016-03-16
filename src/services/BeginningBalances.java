@@ -9,8 +9,8 @@ public class BeginningBalances implements java.io.Serializable {
     private Integer accountId;
     private String accountNo;
     private String year;
-    private Double debet;
-    private Double credit;
+    private Double debet = null;
+    private Double credit = null;
     
 
     public BeginningBalances() {

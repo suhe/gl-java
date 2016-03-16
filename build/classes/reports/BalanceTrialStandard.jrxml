@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BalanceTrialStandard" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641db56f-173d-442a-9275-80cb71247667">
-	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="746"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="846"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="PERIODE" class="java.lang.String"/>
 	<field name="accountNo" class="java.lang.String"/>
@@ -10,6 +10,36 @@
 	<field name="beginningBalanceCredit" class="java.lang.Double"/>
 	<field name="profitLossDebet" class="java.lang.Double"/>
 	<field name="profitLossCredit" class="java.lang.Double"/>
+	<field name="balanceDebet" class="java.lang.Double"/>
+	<field name="balanceCredit" class="java.lang.Double"/>
+	<field name="endingBalanceDebet" class="java.lang.Double"/>
+	<field name="endingBalanceCredit" class="java.lang.Double"/>
+	<!--<variable name="beginningBalanceDebetTotal" class="java.lang.String"/>-->
+	
+	<variable name="beginningBalanceCredit_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{beginningBalanceCredit}]]></variableExpression>
+	</variable>
+	<variable name="beginningBalanceCredit_2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{beginningBalanceCredit}]]></variableExpression>
+	</variable>
+        <variable name="profitLossDebet_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{profitLossDebet}]]></variableExpression>
+	</variable>
+	<variable name="profitLossCredit_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{profitLossCredit}]]></variableExpression>
+	</variable>
+	<variable name="balanceDebet_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{balanceDebet}]]></variableExpression>
+	</variable>
+	<variable name="balanceCredit_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{balanceCredit}]]></variableExpression>
+	</variable>
+	<variable name="endingBalanceDebet_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingBalanceDebet}]]></variableExpression>
+	</variable>
+	<variable name="endingBalanceCredit_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingBalanceCredit}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -119,6 +149,34 @@
 				</textElement>
 				<text><![CDATA[Credit]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="502" y="12" width="75" height="10" uuid="069320e8-6175-4b9a-9103-9c6230cb9190"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Debet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="577" y="12" width="75" height="10" uuid="da1eb656-3c50-4ec2-8ec3-35b5dd54330b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="652" y="12" width="75" height="10" uuid="43e6f8d1-17b6-40f0-adc0-31c8b7906a8e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Debet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="727" y="12" width="75" height="10" uuid="7f92f9b8-d38d-4023-9fda-fdb863c0fe20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -165,15 +223,110 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{profitLossCredit}]]></textFieldExpression>
 			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="502" y="0" width="75" height="10" uuid="9875bf27-fdf1-4a7b-8cf3-1e9ade4ac8ca"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{balanceDebet}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="577" y="0" width="75" height="10" uuid="23ae659e-5f97-48b8-8065-12481687b3d8"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{balanceCredit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="652" y="0" width="75" height="10" uuid="91b9f43a-7ccf-4758-8b81-1800035dce3d"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{endingBalanceDebet}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="727" y="0" width="75" height="10" uuid="182b9666-1aff-410b-9b9f-2d0490f4d7e6"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{endingBalanceCredit}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="7" splitType="Stretch"/>
+		<band height="22" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="8" splitType="Stretch"/>
+		<band height="12" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="5" splitType="Stretch"/>
+		<band height="14" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="802" height="1" uuid="6a2ae1de-8e1d-42ca-9c00-032d0ed8f0f3"/>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement x="352" y="2" width="75" height="10" uuid="946a9000-c295-4d60-880d-e64fae673a56"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{profitLossDebet_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="2" width="193" height="10" uuid="b1e8b5a9-3091-42bc-8264-797f3f4185b1"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement x="202" y="2" width="75" height="10" uuid="15b60e4c-a065-4e30-9380-b0fc7d4175d6"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{beginningBalanceCredit_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="277" y="2" width="75" height="10" uuid="e8b35ae4-06ed-40cf-843c-55f90b7eb9ca"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{beginningBalanceCredit_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="427" y="2" width="75" height="10" uuid="e8740a77-76a6-4daa-80b9-87542d5c7e94"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{profitLossCredit_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="502" y="2" width="75" height="10" uuid="69612056-0a76-44f2-8728-3387d5864bf2"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{balanceDebet_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="652" y="2" width="75" height="10" uuid="c635e20d-705f-455d-b6de-50075f4ae28f"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{endingBalanceDebet_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="727" y="2" width="75" height="10" uuid="f0d7867c-159f-4be9-b78b-ded7c39551a5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{endingBalanceCredit_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="577" y="2" width="75" height="10" uuid="35495d21-1f94-4cd1-a18e-b11cda286d20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{balanceCredit_1}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>

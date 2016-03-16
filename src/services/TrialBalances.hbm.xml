@@ -26,5 +26,17 @@
         <property name="profitLossCredit" type="double">
             <column name="profit_loss_credit" length="18" not-null="false" />
         </property>
+        <property name="balanceDebet" type="double">
+            <column name="balance_debet" length="18" not-null="false" />
+        </property>
+        <property name="balanceCredit" type="double">
+            <column name="balance_credit" length="18" not-null="false" />
+        </property>
+        <property name="endingBalanceDebet" type="double">
+            <column name="ending_balance_debet" length="18" not-null="false" />
+        </property>
+        <property name="endingBalanceCredit" type="double">
+            <column name="ending_balance_credit" length="18" not-null="false" />
+        </property>
     </class>
 </hibernate-mapping>

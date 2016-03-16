@@ -66,7 +66,7 @@ public class TrialBalance {
         return list;
     }
     
-    public void save(String accountNo,String accountName,Double beginningBalanceDebet,Double beginningBalanceCredit,Double profitLossDebet,Double profitLossCredit) {
+    public void save(String accountNo,String accountName,Double beginningBalanceDebet,Double beginningBalanceCredit,Double profitLossDebet,Double profitLossCredit,Double balanceDebet,Double balanceCredit,Double endingBalanceDebet,Double endingBalanceCredit) {
         Session session;
         TrialBalances tb = new TrialBalances();
         session = DatabaseUtil.getSessionFactory().openSession();
@@ -79,6 +79,10 @@ public class TrialBalance {
             tb.setBeginningBalanceCredit(beginningBalanceCredit);
             tb.setProfitLossDebet(profitLossDebet);
             tb.setProfitLossCredit(profitLossCredit);
+            tb.setBalanceDebet(balanceDebet);
+            tb.setBalanceCredit(balanceCredit);
+            tb.setEndingBalanceDebet(endingBalanceDebet);
+            tb.setEndingBalanceCredit(endingBalanceCredit);
             session.save(tb);
             session.flush();
             tx.commit();

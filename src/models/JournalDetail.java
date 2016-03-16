@@ -347,7 +347,7 @@ public class JournalDetail {
             tx = session.beginTransaction();
             String sql = "select sum(jd.debet),sum(jd.credit) from journal_details jd "
                     + "inner join journals j on j.id = jd.journal_id  "
-                    + " where j.date <= :date and year(j.date) = :year and jd.account_no = :no ";
+                    + " where j.date < :date and year(j.date) = :year and jd.account_no = :no ";
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter("date", dateTo);
             query.setParameter("year", year);
@@ -459,7 +459,7 @@ public class JournalDetail {
             SQLQuery query;
             sql = "select sum(jd.debet),sum(jd.credit) from journal_details jd "
                 + "inner join journals j on j.id = jd.journal_id "
-                + "where (j.date >= :datefrom and  j.date <=:dateto)  and jd.account_no = :account";
+                + "where (j.date >= :datefrom and  j.date <=:dateto) and jd.account_no = :account";
             query = session.createSQLQuery(sql);
             query.setParameter("account", accountNo);
             query.setParameter("datefrom", dateFrom);
