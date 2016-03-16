@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BalanceTrialStandard" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641db56f-173d-442a-9275-80cb71247667">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="746"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="PERIODE" class="java.lang.String"/>
+	<field name="accountNo" class="java.lang.String"/>
+	<field name="accountName" class="java.lang.String"/>
+	<field name="beginningBalanceDebet" class="java.lang.Double"/>
+	<field name="beginningBalanceCredit" class="java.lang.Double"/>
+	<field name="profitLossDebet" class="java.lang.Double"/>
+	<field name="profitLossCredit" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="121" height="12" uuid="293d225e-d673-460c-85fe-7d205a2e89d6"/>
+				<textElement>
+					<font fontName="Arial Narrow" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance Trial Summary Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="12" width="52" height="12" uuid="8aeb69a3-b74f-42ff-91c2-24ab96934384"/>
+				<textElement>
+					<font fontName="Arial Narrow" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Periode]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="52" y="12" width="100" height="12" uuid="927fad7c-7261-4f07-aa47-0c85b6cd004b"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PERIODE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="6" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="802" height="1" uuid="8c3fb2be-67c9-411a-ab9a-cdac6fc02cae"/>
+			</line>
+			<line>
+				<reportElement x="0" y="21" width="802" height="1" uuid="31265047-cfd1-44ac-96f2-623f13c5ee2a"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="6" width="61" height="10" uuid="7835d4f7-fc1d-42e3-a605-3ccc9a9db10c"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Account No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="6" width="141" height="10" uuid="26b3a648-1aad-4772-9030-e4792c73ed4c"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Account Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="202" y="2" width="150" height="10" uuid="b32a29ac-5145-4c37-b4cf-de0e5e3ab690"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Beginning Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="202" y="12" width="75" height="10" uuid="e414a145-3067-4fc7-abe6-b7ffdaa73368"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Debet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="12" width="75" height="10" uuid="dedcf637-81bc-421a-9c38-058f519c310d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="2" width="150" height="10" uuid="69da7cd6-74e5-47f9-ac25-90b5588aaca4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Profit & Loss]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="502" y="2" width="150" height="10" uuid="6c28e689-2290-4917-9db5-d5dbd9a7f568"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="652" y="2" width="150" height="10" uuid="de0cdb9d-7cf5-4712-b546-23e5a2edaa8f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Ending Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="11" width="75" height="10" uuid="ab14e487-34d0-49af-8026-169d7e68b45f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Debet]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="12" width="75" height="10" uuid="8337aa93-eb6f-48d6-9668-1ca139b512cb"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="11" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="61" height="10" uuid="24d85a8d-ebe0-429f-9e26-0133bf81b302"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="61" y="0" width="141" height="10" uuid="d16781a0-66e9-4a4e-8cbd-3e7dcb55a667"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="202" y="0" width="75" height="10" uuid="646f6ea6-2466-4343-948b-673ad736caf3"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beginningBalanceDebet}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="277" y="0" width="75" height="10" uuid="2ae5fd5d-71ce-45f0-844a-60891705f6a2"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beginningBalanceCredit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="352" y="0" width="75" height="10" uuid="8f31456f-b36d-4899-948d-dbba2e57c9d0"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{profitLossDebet}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="427" y="0" width="75" height="10" uuid="dbeb0359-e830-4eb7-b2ad-9b4d7f029c74"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{profitLossCredit}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="8" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>

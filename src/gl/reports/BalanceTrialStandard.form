@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
-  <Properties>
-    <Property name="defaultCloseOperation" type="int" value="2"/>
-  </Properties>
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -33,13 +29,13 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelDate" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelAccountNo" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="dateChooserComboDate" pref="0" max="32767" attributes="0"/>
-                          <Component id="jTextFieldYear" pref="100" max="32767" attributes="0"/>
+                          <Component id="dateChooserComboDateFrom" pref="0" max="32767" attributes="0"/>
+                          <Component id="jTextFieldAccountNoFrom" pref="100" max="32767" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
@@ -53,8 +49,8 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jTextFieldYear1" max="32767" attributes="0"/>
-                          <Component id="dateChooserComboDate1" pref="100" max="32767" attributes="0"/>
+                          <Component id="jTextFieldAccountNoTo" max="32767" attributes="0"/>
+                          <Component id="dateChooserComboDateTo" pref="100" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -69,40 +65,40 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="dateChooserComboDate1" min="-2" max="-2" attributes="0"/>
-                      <Component id="dateChooserComboDate" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <Component id="dateChooserComboDateTo" min="-2" max="-2" attributes="0"/>
+                      <Component id="dateChooserComboDateFrom" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelDate" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jTextFieldYear" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextFieldYear1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldAccountNoFrom" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelAccountNo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldAccountNoTo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonClose" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonPreview" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="21" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JTextField" name="jTextFieldYear">
+    <Component class="javax.swing.JTextField" name="jTextFieldAccountNoFrom">
       <Properties>
         <Property name="text" type="java.lang.String" value="10-000-000"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="jLabelDate">
       <Properties>
         <Property name="text" type="java.lang.String" value="Date"/>
       </Properties>
     </Component>
-    <Component class="datechooser.beans.DateChooserCombo" name="dateChooserComboDate">
+    <Component class="datechooser.beans.DateChooserCombo" name="dateChooserComboDateFrom">
       <Properties>
         <Property name="dch_combo_dateFormat" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="1" type="code"/>
@@ -115,7 +111,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="datechooser.beans.DateChooserCombo" name="dateChooserComboDate1">
+    <Component class="datechooser.beans.DateChooserCombo" name="dateChooserComboDateTo">
       <Properties>
         <Property name="dch_combo_dateFormat" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="1" type="code"/>
@@ -133,12 +129,12 @@
         <Property name="text" type="java.lang.String" value="to"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="jLabelAccountNo">
       <Properties>
         <Property name="text" type="java.lang.String" value="Account No"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextFieldYear1">
+    <Component class="javax.swing.JTextField" name="jTextFieldAccountNoTo">
       <Properties>
         <Property name="text" type="java.lang.String" value="99-999-999"/>
       </Properties>

@@ -5,22 +5,131 @@
  */
 package gl.reports;
 
+import helpers.Format;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import models.Account;
+import models.BeginningBalance;
+import models.JournalDetail;
+import models.TrialBalance;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.swing.JRViewer;
+import static org.hibernate.internal.util.ConfigHelper.getResourceAsStream;
+import services.Accounts;
+import services.BeginningBalances;
 
 /**
  *
  * @author BDO-IT
  */
 public class BalanceTrialStandard extends javax.swing.JInternalFrame {
+
     public JDesktopPane JP;
     public JProgressBar jProgressBarStatus = new JProgressBar();
     Integer totalRow;
+
     /**
      * Creates new form BalanceTrialStandard
      */
-    public BalanceTrialStandard(){
+    public BalanceTrialStandard() {
         initComponents();
+        initForm();
+    }
+
+    private void initForm() {
+        dateChooserComboDateFrom.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+        dateChooserComboDateTo.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+    }
+
+    private void initProcess() {
+        //list of account
+        Account accountModel = new Account();
+        totalRow = accountModel.getCount();
+        List list = accountModel.getRowsByList();
+
+        jProgressBarStatus.setMinimum(1);
+        jProgressBarStatus.setMaximum(totalRow);
+
+        String dateFromStr = Format.dateToString(dateChooserComboDateFrom.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
+        Date dateFrom = Format.stringToDate(dateFromStr, "yyyy-MM-dd");
+        String dateToStr = Format.dateToString(dateChooserComboDateTo.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
+        Date dateTo = Format.stringToDate(dateToStr, "yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateFrom);
+        int iyear = cal.get(Calendar.YEAR);
+        String year = String.valueOf(iyear);
+
+        //delete all profit loss summaries template 
+        TrialBalance trialBalance = new TrialBalance();
+        trialBalance.deleteAll();
+
+        Integer i = jProgressBarStatus.getMinimum();
+        jProgressBarStatus.setValue(i);
+        Double bbDebet;
+        Double bbCredit;
+        Double plDebet;
+        Double plCredit;
+        Double [] plResult = new Double[2];
+        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+            Accounts acc = (Accounts) iterator.next();
+            
+            BeginningBalance bbModel = new BeginningBalance();
+            JournalDetail jdModel = new JournalDetail();
+            
+            //beginning balance
+            BeginningBalances bb = bbModel.getRowByAccountNoAndYear(acc.getNo(), year);
+            if (bb != null) {
+                bbDebet = bb.getDebet();
+                bbCredit = bb.getCredit();
+            } else {
+                bbDebet = null;
+                bbCredit = null;
+            }
+            
+            plResult = jdModel.getSumByUntilDate(year, dateFrom, acc.getNo());
+            bbDebet+= plResult[0];
+            bbCredit+=plResult[1];
+            
+            if((acc.getType() == "REVENUE") || (acc.getType() == "INCOME") || (acc.getType() == "EXPENSE")) {
+                
+                plResult = jdModel.GetProfitLossSummary(acc.getNo(), dateFrom, dateTo);
+                plDebet = plResult[0];
+                plCredit = plResult[1];
+                //if(plDebet == 0.00) plDebet = null;
+                //if(plCredit == 0.00) plCredit = null;
+                
+            } else {
+                plDebet = null;
+                plCredit = null;
+            }
+            
+            //put to trial balance
+            TrialBalance tb = new TrialBalance();
+            tb.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit);
+            jProgressBarStatus.setValue(i);
+            i++;
+        }
     }
 
     /**
@@ -32,36 +141,34 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextFieldYear = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        dateChooserComboDate = new datechooser.beans.DateChooserCombo();
-        dateChooserComboDate1 = new datechooser.beans.DateChooserCombo();
+        jTextFieldAccountNoFrom = new javax.swing.JTextField();
+        jLabelDate = new javax.swing.JLabel();
+        dateChooserComboDateFrom = new datechooser.beans.DateChooserCombo();
+        dateChooserComboDateTo = new datechooser.beans.DateChooserCombo();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jTextFieldYear1 = new javax.swing.JTextField();
+        jLabelAccountNo = new javax.swing.JLabel();
+        jTextFieldAccountNoTo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButtonPreview = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        jTextFieldAccountNoFrom.setText("10-000-000");
 
-        jTextFieldYear.setText("10-000-000");
+        jLabelDate.setText("Date");
 
-        jLabel1.setText("Date");
+        dateChooserComboDateFrom.setFormat(1);
+        dateChooserComboDateFrom.setLocale(new java.util.Locale("in", "", ""));
+        dateChooserComboDateFrom.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
 
-        dateChooserComboDate.setFormat(1);
-        dateChooserComboDate.setLocale(new java.util.Locale("in", "", ""));
-        dateChooserComboDate.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
-
-        dateChooserComboDate1.setFormat(1);
-        dateChooserComboDate1.setLocale(new java.util.Locale("in", "", ""));
-        dateChooserComboDate1.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
+        dateChooserComboDateTo.setFormat(1);
+        dateChooserComboDateTo.setLocale(new java.util.Locale("in", "", ""));
+        dateChooserComboDateTo.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
 
         jLabel2.setText("to");
 
-        jLabel3.setText("Account No");
+        jLabelAccountNo.setText("Account No");
 
-        jTextFieldYear1.setText("99-999-999");
+        jTextFieldAccountNoTo.setText("99-999-999");
 
         jLabel4.setText("to");
 
@@ -94,12 +201,12 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                         .addComponent(jButtonClose))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabelDate)
+                            .addComponent(jLabelAccountNo))
                         .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jTextFieldYear, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                            .addComponent(dateChooserComboDateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jTextFieldAccountNoFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
@@ -109,8 +216,8 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldYear1)
-                            .addComponent(dateChooserComboDate1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
+                            .addComponent(jTextFieldAccountNoTo)
+                            .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -120,27 +227,56 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(dateChooserComboDate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(dateChooserComboDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
-                .addGap(18, 18, 18)
+                        .addComponent(dateChooserComboDateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateChooserComboDateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelDate)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextFieldYear1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldAccountNoFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelAccountNo)
+                    .addComponent(jTextFieldAccountNoTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonClose)
                     .addComponent(jButtonPreview))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewActionPerformed
-        
+
+        try {
+            initProcess();
+            TrialBalance trialBalance = new TrialBalance();
+            JRBeanCollectionDataSource beanCollection = new JRBeanCollectionDataSource(trialBalance.getRowsByList());
+            Map<String, Object> map = new HashMap<>();
+            map.put("PERIODE", dateChooserComboDateFrom.getText() + " - " + dateChooserComboDateTo.getText());
+            InputStream input = getResourceAsStream("/reports/BalanceTrialStandard.jrxml");
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, map, beanCollection);
+            jasperPrint.setName("Report");
+            JRViewer jv = new JRViewer(jasperPrint);
+            JInternalFrame preview = new JInternalFrame();
+            preview.setClosable(true);
+            JP.add(preview);
+            Container c = preview.getContentPane();
+            c.setLayout(new BorderLayout());
+            Component add = c.add(jv);
+            preview.setSize(1024, 700);
+            preview.setMaximizable(true);
+            Dimension desktopSize = JP.getSize();
+            Dimension jInternalFrameSize = this.getSize();
+            setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
+            preview.setVisible(true);
+        } catch (JRException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            this.dispose();
+        }
 
     }//GEN-LAST:event_jButtonPreviewActionPerformed
 
@@ -150,15 +286,15 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private datechooser.beans.DateChooserCombo dateChooserComboDate;
-    private datechooser.beans.DateChooserCombo dateChooserComboDate1;
+    private datechooser.beans.DateChooserCombo dateChooserComboDateFrom;
+    private datechooser.beans.DateChooserCombo dateChooserComboDateTo;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonPreview;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextFieldYear;
-    private javax.swing.JTextField jTextFieldYear1;
+    private javax.swing.JLabel jLabelAccountNo;
+    private javax.swing.JLabel jLabelDate;
+    private javax.swing.JTextField jTextFieldAccountNoFrom;
+    private javax.swing.JTextField jTextFieldAccountNoTo;
     // End of variables declaration//GEN-END:variables
 }

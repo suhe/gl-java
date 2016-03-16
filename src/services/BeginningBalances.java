@@ -11,7 +11,7 @@ public class BeginningBalances implements java.io.Serializable {
     private String year;
     private Double debet;
     private Double credit;
-    //private Accounts accounts;
+    
 
     public BeginningBalances() {
     }
@@ -71,14 +71,5 @@ public class BeginningBalances implements java.io.Serializable {
     public void setCredit(Double credit) {
         this.credit = credit;
     }
-    
-    
-
-    /*public Accounts getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(Accounts accounts) {
-        this.accounts = accounts;
-    }*/
+   
 }

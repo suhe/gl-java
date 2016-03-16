@@ -242,7 +242,7 @@ public class Account {
         return acc;
     }
     
-    public List getRowsByList(String Query) {
+    public List getRowsByList() {
         //set to list all data
         List list;
         Session session = DatabaseUtil.getSessionFactory().openSession();
@@ -250,20 +250,19 @@ public class Account {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Accounts.class);
-            ProjectionList projList = Projections.projectionList();
+            criteria.addOrder(Order.asc("no"));
+            /*ProjectionList projList = Projections.projectionList();
             projList.add(Projections.property("id").as("id"));
             projList.add(Projections.property("no").as("no"));
             projList.add(Projections.property("name").as("name"));
             projList.add(Projections.property("type").as("type"));
-            criteria.setProjection(projList);
-            criteria.addOrder(Order.asc("no"));
+            criteria.setProjection(projList);*/
             
-            if (!getAccountNo().equals("")) {
-                criteria.add(Restrictions.like("no", "%" + getAccountNo() + "%"));
-            }
+            //if (!getAccountNo().equals("")) {
+              //  criteria.add(Restrictions.like("no", "%" + getAccountNo() + "%"));
+            //}
             
-            criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
-            
+            //criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
             list = criteria.list(); 
             tx.commit();
         } catch (HibernateException e) {

@@ -598,6 +598,7 @@ public class Main extends javax.swing.JFrame {
             if (status == false) {
                 BalanceTrialStandard balanceTrialStandard = new BalanceTrialStandard();
                 JP.add(balanceTrialStandard);
+                balanceTrialStandard.JP = JP;
                 balanceTrialStandard.jProgressBarStatus = this.jProgressBarStatus;
                 Dimension desktopSize = JP.getSize();
                 Dimension jInternalFrameSize = balanceTrialStandard.getSize();

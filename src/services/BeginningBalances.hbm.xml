@@ -3,29 +3,25 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 25, 2016 9:15:54 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="services.TrialBalances" table="trial_balances" catalog="gl" dynamic-update="true"  optimistic-lock="version">
+    <class name="services.BeginningBalances" table="beginning_balances" catalog="gl" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="beginningBalanceDebet" type="double">
-            <column name="beginning_balance_debet" length="18" not-null="false" />
+        <property name="accountId" type="java.lang.Integer">
+            <column name="account_id" length="11" not-null="false" />
         </property>
-        <property name="beginningBalanceCredit" type="double">
-            <column name="beginning_balance_credit" length="18" not-null="false" />
+        <property name="accountNo" type="string">
+            <column name="account_no" length="30" not-null="false" />
         </property>
-        <property name="profitLossDebet" type="double">
-            <column name="profit_loss_debet" length="18" not-null="false" />
+         <property name="year" type="string">
+            <column name="year" length="4" not-null="false" />
         </property>
-        <property name="profitLossCredit" type="double">
-            <column name="profit_loss_credit" length="18" not-null="false" />
+        <property name="debet" type="java.lang.Double">
+            <column name="debet" length="18" not-null="false" />
         </property>
-        <property name="endingBalanceDebet" type="double">
-            <column name="ending_balance_debet" length="18" not-null="false" />
+        <property name="credit" type="java.lang.Double">
+            <column name="credit" length="18" not-null="false" />
         </property>
-        <property name="endingBalanceCredit" type="double">
-            <column name="ending_balance_credit" length="18" not-null="false" />
-        </property>
-        
     </class>
 </hibernate-mapping>

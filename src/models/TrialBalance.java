@@ -6,19 +6,22 @@
 package models;
 
 import config.DatabaseUtil;
+import org.hibernate.Transaction;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import services.TrialBalances;
+
 
 /**
  *
  * @author BDO-IT
  */
 public class TrialBalance {
+    
     public void deleteAll() {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
@@ -48,7 +51,9 @@ public class TrialBalance {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(TrialBalances.class);  
+            criteria.addOrder(Order.asc("accountNo"));
             list = criteria.list(); 
+            session.flush();
             tx.commit();
         } catch (HibernateException e) {
             list = null;
@@ -59,5 +64,30 @@ public class TrialBalance {
             session.close();
         }
         return list;
+    }
+    
+    public void save(String accountNo,String accountName,Double beginningBalanceDebet,Double beginningBalanceCredit,Double profitLossDebet,Double profitLossCredit) {
+        Session session;
+        TrialBalances tb = new TrialBalances();
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            tb.setAccountNo(accountNo);
+            tb.setAccountName(accountName);
+            tb.setBeginningBalanceDebet(beginningBalanceDebet);
+            tb.setBeginningBalanceCredit(beginningBalanceCredit);
+            tb.setProfitLossDebet(profitLossDebet);
+            tb.setProfitLossCredit(profitLossCredit);
+            session.save(tb);
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
     }
 }

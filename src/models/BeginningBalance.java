@@ -199,6 +199,29 @@ public class BeginningBalance {
 
         return bb;
     }
+    
+    public BeginningBalances getRowByAccountNoAndYear(String accountNo, String Year) {
+        BeginningBalances bb = null;
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(BeginningBalances.class);
+            criteria.add(Restrictions.like("year", Year));
+            criteria.add(Restrictions.eq("accountNo", accountNo));
+            bb = (BeginningBalances) criteria.uniqueResult();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return bb;
+    }
 
     public void saveOrUpdate() {
         BeginningBalances bb = this.getRowByIdAndYear(getAccountId(), getYear());

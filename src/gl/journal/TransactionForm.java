@@ -305,7 +305,7 @@ public class TransactionForm extends javax.swing.JDialog {
         String result = jTextFieldAccountNo.getText();
         if (result.length() > 0) {
             Account accountModel = new Account();
-            List listed = accountModel.getRowsByList(result);
+            List listed = accountModel.getRowsByList();
             for (Iterator iterator = listed.iterator(); iterator.hasNext();) {
                 Accounts acc = (Accounts) iterator.next();
                 autoComplete.addItem(acc.getNo() + " " + acc.getName() );

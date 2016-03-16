@@ -288,7 +288,6 @@ public class JournalDetail {
         String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
         try {
             tx = session.beginTransaction();
-            //String[] tags = {"11-151-003", "11-170-004"};
             String sql = "select sum(" + calcSelect + ") from Journal_details jd inner join journals j on j.id = jd.journal_id  "
                     + " where month(j.date) = :month and year(j.date) = :year and jd.account_no in(:no) ";
             SQLQuery query = session.createSQLQuery(sql);
@@ -318,8 +317,7 @@ public class JournalDetail {
         String calcSelect = "Debet - Credit".equals(calc) ? "jd.debet - jd.credit" : "jd.credit - jd.debet";
         try {
             tx = session.beginTransaction();
-            //String[] tags = {"11-151-003", "11-170-004"};
-            String sql = "select sum(" + calcSelect + ") from Journal_details jd inner join journals j on j.id = jd.journal_id  "
+            String sql = "select sum(" + calcSelect + ") from journal_details jd inner join journals j on j.id = jd.journal_id  "
                     + " where month(j.date) <= :month and year(j.date) = :year and jd.account_no in(:no) ";
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter("month", month);
@@ -338,6 +336,56 @@ public class JournalDetail {
         } finally {
             session.close();
         }
+        return total;
+    }
+    
+    public Double[] getSumByUntilDate(String year,Date dateTo,String accountNo){
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double[] total = new Double[2];
+        try {
+            tx = session.beginTransaction();
+            String sql = "select sum(jd.debet),sum(jd.credit) from journal_details jd "
+                    + "inner join journals j on j.id = jd.journal_id  "
+                    + " where j.date <= :date and year(j.date) = :year and jd.account_no = :no ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("date", dateTo);
+            query.setParameter("year", year);
+            query.setParameter("no",accountNo);
+            List list = query.list();
+            Iterator it = list.iterator();
+            Double total1 = 0.00;
+            Double total2 = 0.00;
+            if(it.hasNext() == true) {
+                
+                while (it.hasNext()) {
+                    Object obj[] = (Object[]) it.next();
+                    System.out.println("Result Sum  :" + obj[0]);
+                    total1 += obj[0] != null ? Double.parseDouble(obj[0].toString()) : 0.00;
+                    total2 += obj[1] != null ? Double.parseDouble(obj[1].toString()) : 0.00;
+                }
+                
+                total[0] = total1;
+                total[1] = total2;
+            } else {
+                total[0] = 0.00;
+                total[1] = 0.00;
+            }
+            
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            total[0] = 0.00;
+            total[1] = 0.00;
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+            
+        } finally {
+            session.close();
+        }
+        
         return total;
     }
     
@@ -397,6 +445,52 @@ public class JournalDetail {
             total = 0.00;
         }
         
+        return total;
+    }
+    
+    public Double[] GetProfitLossSummary(String accountNo,Date dateFrom,Date dateTo) {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Double[] total = new Double[2];
+
+        try {
+            tx = session.beginTransaction();
+            String sql;
+            SQLQuery query;
+            sql = "select sum(jd.debet),sum(jd.credit) from journal_details jd "
+                + "inner join journals j on j.id = jd.journal_id "
+                + "where (j.date >= :datefrom and  j.date <=:dateto)  and jd.account_no = :account";
+            query = session.createSQLQuery(sql);
+            query.setParameter("account", accountNo);
+            query.setParameter("datefrom", dateFrom);
+            query.setParameter("dateto", dateTo);
+            List list = query.list();
+            Iterator it = list.iterator();
+            Double total1 = 0.00;
+            Double total2 = 0.00;
+            while (it.hasNext()) {
+                Object obj[] = (Object[]) it.next();
+                try {
+                    total1 += Double.parseDouble(obj[0].toString());
+                    total2 += Double.parseDouble(obj[1].toString());
+                } catch(Exception e) {
+                    total1 = null;
+                    total2 = null;
+                }
+            }
+            total[0] = total1;
+            total[1] = total2;
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+
+        } finally {
+            session.close();
+        }
         return total;
     }
 }
