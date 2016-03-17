@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BalanceTrialStandard" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641db56f-173d-442a-9275-80cb71247667">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="762"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="PERIODE" class="java.lang.String"/>
 	<field name="accountNo" class="java.lang.String"/>
@@ -198,56 +198,56 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{beginningBalanceDebet}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{beginningBalanceDebet} == 0.00 ? null : $F{beginningBalanceDebet})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="277" y="0" width="75" height="10" uuid="2ae5fd5d-71ce-45f0-844a-60891705f6a2"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{beginningBalanceCredit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{beginningBalanceCredit} == 0.00 ? null :$F{beginningBalanceCredit})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="352" y="0" width="75" height="10" uuid="8f31456f-b36d-4899-948d-dbba2e57c9d0"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{profitLossDebet}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{profitLossDebet} == 0.00 ? null : $F{profitLossDebet})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="427" y="0" width="75" height="10" uuid="dbeb0359-e830-4eb7-b2ad-9b4d7f029c74"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{profitLossCredit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{profitLossCredit} == 0.00 ? null : $F{profitLossCredit})  ]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="502" y="0" width="75" height="10" uuid="9875bf27-fdf1-4a7b-8cf3-1e9ade4ac8ca"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{balanceDebet}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{balanceDebet} == 0.00 ? null : $F{balanceDebet})]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="577" y="0" width="75" height="10" uuid="23ae659e-5f97-48b8-8065-12481687b3d8"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{balanceCredit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{balanceCredit} == 0.00 ? null : $F{balanceCredit})]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="652" y="0" width="75" height="10" uuid="91b9f43a-7ccf-4758-8b81-1800035dce3d"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{endingBalanceDebet}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{endingBalanceDebet} == 0.00 ? null : $F{endingBalanceDebet})]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="727" y="0" width="75" height="10" uuid="182b9666-1aff-410b-9b9f-2d0490f4d7e6"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{endingBalanceCredit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{endingBalanceCredit} == 0.00 ? null : $F{endingBalanceCredit}) ]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

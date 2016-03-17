@@ -11,6 +11,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import services.TrialBalances;
@@ -28,8 +29,30 @@ public class TrialBalance {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String hql = "delete from TrialBalances where id > :id";
+            String hql = "delete from TrialBalances where id >= :id";
             Query query = session.createQuery(hql);
+            query.setInteger("id", 1);
+            System.out.println(query.executeUpdate());
+            session.flush();
+            tx.commit();
+        } catch (HibernateException ex) {
+            System.out.println(ex.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+    }
+    
+    public void resetAll() {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = "ALTER TABLE trial_balances AUTO_INCREMENT = :id";
+            SQLQuery query = session.createSQLQuery(sql);
             query.setInteger("id", 1);
             System.out.println(query.executeUpdate());
             session.flush();

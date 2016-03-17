@@ -121,6 +121,8 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                 bbCredit = 0.00;
             }
             
+            
+            
             plResult = jdModel.GetProfitLossSummary(acc.getNo(), dateFrom, dateTo);
             if(("REVENUE".equals(acc.getType())) || ("INCOME".equals(acc.getType())) || ("EXPENSE".equals(acc.getType()))) {
                 plDebet =  plResult[0] != null ? plResult[0] : 0.00 ;
@@ -337,8 +339,8 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     }
     
     private void jButtonPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewActionPerformed
-
-        try {
+        new Thread(new threadProcess()).start(); //Start the thread    
+        /*try {
             initProcess();
             TrialBalance trialBalance = new TrialBalance();
             JRBeanCollectionDataSource beanCollection = new JRBeanCollectionDataSource(trialBalance.getRowsByList());
@@ -366,7 +368,7 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
             System.out.println(ex.getMessage());
         } finally {
             this.dispose();
-        }
+        }*/
 
     }//GEN-LAST:event_jButtonPreviewActionPerformed
 
@@ -376,7 +378,7 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     
-    public class thread1 implements Runnable{
+    public class threadProcess implements Runnable{
         @Override
         public void run(){
             String accountNoFrom = jTextFieldAccountNoFrom.getText();
@@ -398,7 +400,6 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
             totalRow = accountModel.getCount(accountNoFrom,accountNoTo);
             List list = accountModel.getRowsByList(accountNoFrom,accountNoTo);
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
             jProgressBarStatus.setMaximum(totalRow);
             jProgressBarStatus.setMinimum(1);
             Integer i = 1;
@@ -415,8 +416,9 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
             Double bTotal = 0.00;
             Double ebDebet = 0.00;
             Double ebCredit = 0.00;
-            
+            Double ebTotal = 0.00;
             tbModel.deleteAll(); //delete all from old balance
+            tbModel.resetAll(); //reset auto increment to 1
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
                 Accounts acc = (Accounts) iterator.next();
                 jLabelStatus.setText("Status : processing account  :" + acc.getNo());
@@ -436,13 +438,15 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                     bbDebet = bbTotal >= 0 ? bbTotal : 0.00;
                     bbCredit = bbTotal < 0 ? bbTotal * (-1) : 0.00;
                     
+                    System.out.println("Hasil" + bbCredit);
+                    
                     // profit loss & balance
                     if(acc.getType().equals("REVENUE") || acc.getType().equals("INCOME") || acc.getType().equals("EXPENSE")) {
                         plDebet = jds != null && jds.getDebet() != null ? jds.getDebet() : 0.00;
                         plCredit = jds != null && jds.getCredit() != null ? jds.getCredit() : 0.00;
                         plTotal = plDebet - plCredit;
-                        bbCredit = plTotal >= 0 ? plTotal : 0.00;
-                        bbDebet  = plTotal < 0 ? plTotal * (-1) : 0.00;
+                        bCredit = plTotal >= 0 ? plTotal : 0.00;
+                        bDebet  = plTotal < 0 ? plTotal * (-1) : 0.00;
                         bDebet = 0.00;
                         bCredit = 0.00;
                     } else {
@@ -458,10 +462,14 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
                     //ending balance
                     ebDebet = bbDebet + plDebet + bDebet;
                     ebCredit = bbCredit + plCredit + bCredit;
+                    ebTotal = ebDebet - ebCredit;
+                    ebDebet = ebTotal >= 0 ? ebTotal : 0.00;
+                    ebCredit  = ebTotal < 0 ? ebTotal * (-1) : 0.00;
                 } 
                 catch (InterruptedException err){}
-                tbModel.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit,bDebet,bCredit,ebDebet,ebCredit);
-                
+                if(ebTotal != 0) {
+                    tbModel.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit,bDebet,bCredit,ebDebet,ebCredit);
+                }
                 i++;
             }
             
@@ -473,7 +481,7 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        new Thread(new thread1()).start(); //Start the thread
+        new Thread(new threadProcess()).start(); //Start the thread
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
