@@ -219,6 +219,30 @@ public class Account {
 
         return count;
     }
+    
+    public Integer getCount(String accountNoFrom,String accountNoTo) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Integer count = null;
+
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+            criteria.add(Restrictions.ge("no",accountNoFrom));
+            criteria.add(Restrictions.le("no",accountNoTo));
+            count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return count;
+    }
 
     public Accounts getRow(Integer Id) {
         Accounts acc = null;
@@ -263,6 +287,29 @@ public class Account {
             //}
             
             //criteria.setResultTransformer(Transformers.aliasToBean(Accounts.class));
+            list = criteria.list(); 
+            tx.commit();
+        } catch (HibernateException e) {
+            list = null;
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+    
+    public List getRowsByList(String accountNoFrom,String accountNoTo) {
+        List list;
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(Accounts.class);
+            criteria.add(Restrictions.ge("no", accountNoFrom));
+            criteria.add(Restrictions.le("no", accountNoTo));
+            criteria.addOrder(Order.asc("no"));
             list = criteria.list(); 
             tx.commit();
         } catch (HibernateException e) {

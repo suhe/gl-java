@@ -80,7 +80,7 @@ public class Main extends javax.swing.JFrame {
         jButtonBeginBalance = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jLabelStatusConnected = new javax.swing.JLabel();
+        jLabelStatus = new javax.swing.JLabel();
         jProgressBarStatus = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu = new javax.swing.JMenu();
@@ -169,7 +169,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap(525, Short.MAX_VALUE))
         );
 
-        jLabelStatusConnected.setText("Status : Not Connected");
+        jLabelStatus.setText("Status : -");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -177,8 +177,8 @@ public class Main extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabelStatusConnected)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 323, Short.MAX_VALUE)
+                .addComponent(jLabelStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 391, Short.MAX_VALUE)
                 .addComponent(jProgressBarStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -188,7 +188,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jProgressBarStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelStatusConnected))
+                    .addComponent(jLabelStatus))
                 .addContainerGap())
         );
 
@@ -357,7 +357,7 @@ public class Main extends javax.swing.JFrame {
                 Dimension jInternalFrameSize = frmConnect.getSize();
                 frmConnect.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
                 frmConnect.setVisible(true);
-                frmConnect.jLabelStatusConnected = jLabelStatusConnected;
+                frmConnect.jLabelStatusConnected = jLabelStatus;
             }
         } catch (PropertyVetoException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error",
@@ -600,6 +600,7 @@ public class Main extends javax.swing.JFrame {
                 JP.add(balanceTrialStandard);
                 balanceTrialStandard.JP = JP;
                 balanceTrialStandard.jProgressBarStatus = this.jProgressBarStatus;
+                balanceTrialStandard.jLabelStatus = jLabelStatus;
                 Dimension desktopSize = JP.getSize();
                 Dimension jInternalFrameSize = balanceTrialStandard.getSize();
                 balanceTrialStandard.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
@@ -642,7 +643,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButtonBeginBalance;
     private javax.swing.JButton jButtonCoa;
     private javax.swing.JButton jButtonDatabaseConnect;
-    private javax.swing.JLabel jLabelStatusConnected;
+    private javax.swing.JLabel jLabelStatus;
     private javax.swing.JMenu jMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BalanceTrialStandard" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641db56f-173d-442a-9275-80cb71247667">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="846"/>
+	<property name="ireport.x" value="762"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="PERIODE" class="java.lang.String"/>
 	<field name="accountNo" class="java.lang.String"/>
@@ -14,15 +14,13 @@
 	<field name="balanceCredit" class="java.lang.Double"/>
 	<field name="endingBalanceDebet" class="java.lang.Double"/>
 	<field name="endingBalanceCredit" class="java.lang.Double"/>
-	<!--<variable name="beginningBalanceDebetTotal" class="java.lang.String"/>-->
-	
+	<variable name="beginningBalanceDebet_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{beginningBalanceDebet}]]></variableExpression>
+	</variable>
 	<variable name="beginningBalanceCredit_1" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{beginningBalanceCredit}]]></variableExpression>
 	</variable>
-	<variable name="beginningBalanceCredit_2" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{beginningBalanceCredit}]]></variableExpression>
-	</variable>
-        <variable name="profitLossDebet_1" class="java.lang.Double" calculation="Sum">
+	<variable name="profitLossDebet_1" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{profitLossDebet}]]></variableExpression>
 	</variable>
 	<variable name="profitLossCredit_1" class="java.lang.Double" calculation="Sum">
@@ -283,14 +281,14 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{beginningBalanceCredit_1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{beginningBalanceDebet_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="277" y="2" width="75" height="10" uuid="e8b35ae4-06ed-40cf-843c-55f90b7eb9ca"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{beginningBalanceCredit_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{beginningBalanceCredit_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="427" y="2" width="75" height="10" uuid="e8740a77-76a6-4daa-80b9-87542d5c7e94"/>

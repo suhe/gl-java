@@ -11,11 +11,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.InputStream;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,11 +19,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingWorker;
 import models.Account;
 import models.BeginningBalance;
 import models.JournalDetail;
@@ -44,6 +39,7 @@ import net.sf.jasperreports.swing.JRViewer;
 import static org.hibernate.internal.util.ConfigHelper.getResourceAsStream;
 import services.Accounts;
 import services.BeginningBalances;
+import services.JournalDetails;
 
 /**
  *
@@ -51,58 +47,15 @@ import services.BeginningBalances;
  */
 public class BalanceTrialStandard extends javax.swing.JInternalFrame {
     public JDesktopPane JP;
-    public JProgressBar jProgressBarStatus;
+    public JProgressBar jProgressBarStatus = new JProgressBar();
+    public JLabel jLabelStatus = new JLabel();
     Integer totalRow;
-    private Task task;
- 
-    
-    class Task extends SwingWorker<Void, Void> {
-        /*
-         * Main task. Executed in background thread.
-         */
-        @Override
-        public Void doInBackground() {
-            Random random = new Random();
-            int progress = 0;
-            //Initialize progress property.
-            setProgress(0);
-            while (progress < 100) {
-                //Sleep for up to one second.
-                try {
-                    Thread.sleep(random.nextInt(1000));
-                } catch (InterruptedException ignore) {}
-                //Make random progress.
-                progress += random.nextInt(10);
-                setProgress(Math.min(progress, 100));
-            }
-            return null;
-        }
-
-        /*
-         * Executed in event dispatching thread
-         */
-        @Override
-        public void done() {
-            Toolkit.getDefaultToolkit().beep();
-            //startButton.setEnabled(true);
-            setCursor(null); //turn off the wait cursor
-            jProgressBarStatus.setValue(jProgressBarStatus.getMinimum());
-            //taskOutput.append("Done!\n");
-        }
-    }
-
-
     /**
      * Creates new form BalanceTrialStandard
      */
     public BalanceTrialStandard() {
         initComponents();
         initForm();
-        jProgressBarStatus = new JProgressBar();
-        jProgressBarStatus.setMinimum(0);
-        jProgressBarStatus.setMaximum(100);
-        jProgressBarStatus.setValue(0);
-        jProgressBarStatus.setStringPainted(true);
     }
 
     private void initForm() {
@@ -351,7 +304,38 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void preview() {
+        try {
+            TrialBalance trialBalance = new TrialBalance();
+            JRBeanCollectionDataSource beanCollection = new JRBeanCollectionDataSource(trialBalance.getRowsByList());
+            Map<String, Object> map = new HashMap<>();
+            map.put("PERIODE", dateChooserComboDateFrom.getText() + " - " + dateChooserComboDateTo.getText());
+            InputStream input = getResourceAsStream("/reports/BalanceTrialStandard.jrxml");
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, map, beanCollection);
+            jasperPrint.setName("Report");
+            JRViewer jv = new JRViewer(jasperPrint);
+            JInternalFrame preview = new JInternalFrame();
+            preview.setClosable(true);
+            JP.add(preview);
+            Container c = preview.getContentPane();
+            c.setLayout(new BorderLayout());
+            Component add = c.add(jv);
+            preview.setSize(1024, 700);
+            preview.setMaximizable(true);
+            Dimension desktopSize = JP.getSize();
+            Dimension jInternalFrameSize = this.getSize();
+            setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
+            preview.setVisible(true);
+        } catch (JRException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            this.dispose();
+        }
+    }
+    
     private void jButtonPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPreviewActionPerformed
 
         try {
@@ -391,24 +375,105 @@ public class BalanceTrialStandard extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
+    
+    public class thread1 implements Runnable{
+        @Override
+        public void run(){
+            String accountNoFrom = jTextFieldAccountNoFrom.getText();
+            String accountNoTo = jTextFieldAccountNoTo.getText();
+            String dateFromStr = Format.dateToString(dateChooserComboDateFrom.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
+            Date dateFrom = Format.stringToDate(dateFromStr, "yyyy-MM-dd");
+            String dateToStr = Format.dateToString(dateChooserComboDateTo.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
+            Date dateTo = Format.stringToDate(dateToStr, "yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateFrom);
+            int iyear = cal.get(Calendar.YEAR);
+            String year = String.valueOf(iyear);
+            
+            Account accountModel = new Account();
+            BeginningBalance bbModel = new BeginningBalance();
+            TrialBalance tbModel = new TrialBalance();
+            JournalDetail jdModel = new JournalDetail();
+            
+            totalRow = accountModel.getCount(accountNoFrom,accountNoTo);
+            List list = accountModel.getRowsByList(accountNoFrom,accountNoTo);
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            
+            jProgressBarStatus.setMaximum(totalRow);
+            jProgressBarStatus.setMinimum(1);
+            Integer i = 1;
+            Double bbDebet = 0.00;
+            Double bbCredit = 0.00;
+            Double uDebet = 0.00;
+            Double uCredit = 0.00;
+            Double bbTotal = 0.00;
+            Double plDebet = 0.00;
+            Double plCredit = 0.00;
+            Double plTotal = 0.00;
+            Double bDebet = 0.00;
+            Double bCredit = 0.00;
+            Double bTotal = 0.00;
+            Double ebDebet = 0.00;
+            Double ebCredit = 0.00;
+            
+            tbModel.deleteAll(); //delete all from old balance
+            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                Accounts acc = (Accounts) iterator.next();
+                jLabelStatus.setText("Status : processing account  :" + acc.getNo());
+                jProgressBarStatus.setValue(i);
+                jProgressBarStatus.repaint(); //Refresh graphics
+                try{
+                    Thread.sleep(50);
+                    //beginning balances
+                    BeginningBalances bb = bbModel.getRowByAccountNoAndYear(acc.getNo(), year);
+                    JournalDetails u = jdModel.getSumBalanceByUntilDate(year,dateFrom,acc.getNo());
+                    JournalDetails jds = jdModel.getSumBalanceByDate(dateFrom,dateTo,acc.getNo());
+                    bbDebet = bb != null && bb.getDebet() != null ? bb.getDebet() : 0.00;
+                    bbCredit = bb != null &&  bb.getCredit()!= null ? bb.getCredit() : 0.00;
+                    uDebet = u != null && u.getDebet() != null ? u.getDebet() : 0.00;
+                    uCredit = u != null &&  u.getCredit()!= null ? u.getCredit() : 0.00;
+                    bbTotal = (bbDebet + uDebet) - (bbCredit + uCredit);
+                    bbDebet = bbTotal >= 0 ? bbTotal : 0.00;
+                    bbCredit = bbTotal < 0 ? bbTotal * (-1) : 0.00;
+                    
+                    // profit loss & balance
+                    if(acc.getType().equals("REVENUE") || acc.getType().equals("INCOME") || acc.getType().equals("EXPENSE")) {
+                        plDebet = jds != null && jds.getDebet() != null ? jds.getDebet() : 0.00;
+                        plCredit = jds != null && jds.getCredit() != null ? jds.getCredit() : 0.00;
+                        plTotal = plDebet - plCredit;
+                        bbCredit = plTotal >= 0 ? plTotal : 0.00;
+                        bbDebet  = plTotal < 0 ? plTotal * (-1) : 0.00;
+                        bDebet = 0.00;
+                        bCredit = 0.00;
+                    } else {
+                        plDebet = 0.00;
+                        plCredit = 0.00;
+                        bDebet = jds != null && jds.getDebet() != null ? jds.getDebet() : 0.00;
+                        bCredit = jds != null && jds.getCredit() != null ? jds.getCredit() : 0.00;
+                        bTotal = bDebet - bCredit;
+                        bDebet = bTotal >= 0 ? bTotal : 0.00;
+                        bCredit  = bTotal < 0 ? bTotal * (-1) : 0.00;
+                    }
+                    
+                    //ending balance
+                    ebDebet = bbDebet + plDebet + bDebet;
+                    ebCredit = bbCredit + plCredit + bCredit;
+                } 
+                catch (InterruptedException err){}
+                tbModel.save(acc.getNo(), acc.getName(), bbDebet, bbCredit,plDebet,plCredit,bDebet,bCredit,ebDebet,ebCredit);
+                
+                i++;
+            }
+            
+            setCursor(Cursor.getDefaultCursor());
+            jLabelStatus.setText("Status : Done");
+            preview();
+        }
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        task.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                if ("progress".equals(e.getPropertyName())) {
-                    int progress = (Integer) e.getNewValue();
-                    jProgressBarStatus.setValue(progress);
-                    //taskOutput.append(String.format(
-                            //"Completed %d%% of task.\n", task.getProgress()));
-                } 
-            }
-
-            
-        });
-        task.execute();
+        new Thread(new thread1()).start(); //Start the thread
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

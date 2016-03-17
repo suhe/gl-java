@@ -22,6 +22,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import services.Accounts;
 import services.JournalDetails;
 
 
@@ -337,6 +339,68 @@ public class JournalDetail {
             session.close();
         }
         return total;
+    }
+    
+    public JournalDetails getSumBalanceByUntilDate(String year,Date date,String accountNo) {
+        JournalDetails jds = null;
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = " select sum(jd.debet) as debet,sum(jd.credit) as credit "
+                    + " from journal_details jd "
+                    + " inner join journals j on j.id = jd.journal_id "
+                    + " where j.date < :date and year(j.date) = :year and jd.account_no = :no ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("date", date);
+            query.setParameter("year", year);
+            query.setParameter("no",accountNo);
+            query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            session.flush();
+            tx.commit();
+            jds = (JournalDetails) query.uniqueResult();
+            
+        }catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        
+        return jds;
+    }
+    
+    public JournalDetails getSumBalanceByDate(Date dateFrom,Date dateTo,String accountNo) {
+        JournalDetails jds = null;
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = " select sum(jd.debet) as debet,sum(jd.credit) as credit "
+                    + " from journal_details jd "
+                    + " inner join journals j on j.id = jd.journal_id  "
+                    + " where (j.date>= :dateFrom and j.date <= :dateTo) and jd.account_no = :no ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("dateFrom", dateFrom);
+            query.setParameter("dateTo", dateFrom);
+            query.setParameter("no",accountNo);
+            query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            session.flush();
+            tx.commit();
+            jds = (JournalDetails) query.uniqueResult();
+            
+        }catch (HibernateException e) {
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        
+        return jds;
     }
     
     public Double[] getSumByUntilDate(String year,Date dateTo,String accountNo){
