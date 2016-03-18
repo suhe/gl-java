@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 25, 2016 9:15:54 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="services.Ledgers" table="ledgers" catalog="gl" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="accountNo" type="string">
+            <column name="account_no" length="30" not-null="false" />
+        </property>
+        <property name="accountName" type="string">
+            <column name="account_name" length="255" not-null="false" />
+        </property>
+        <property name="type" type="string">
+            <column name="type" length="255" not-null="false" />
+        </property>
+        <property name="date" type="date">
+            <column name="date" length="10" not-null="false" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="255" not-null="false" />
+        </property>
+        <property name="debet" type="double">
+            <column name="debet" length="18" not-null="false" />
+        </property>
+        <property name="credit" type="double">
+            <column name="credit" length="18" not-null="false" />
+        </property>
+        <property name="saldo" type="double">
+            <column name="saldo" length="18" not-null="false" />
+        </property>
+        <property name="accountDescription" type="string">
+            <column name="account_description" length="255" not-null="false" />
+        </property>
+        <property name="periodeDescription" type="string">
+            <column name="periode_description" length="255" not-null="false" />
+        </property>
+        
+        
+    </class>
+</hibernate-mapping>

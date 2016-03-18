@@ -12,11 +12,14 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/xjava/Gl/src/models/TBalance.java</file>
-            <file>file:/D:/xjava/Gl/src/gl/reports/BalanceTrialStandard.java</file>
-            <file>file:/D:/xjava/Gl/src/models/TrialBalance.java</file>
-            <file>file:/D:/xjava/Gl/src/services/TrialBalances.java</file>
-            <file>file:/D:/xjava/Gl/src/reports/BalanceTrialStandard.jrxml</file>
+            <file>file:/D:/xjava/Gl/src/models/JournalDetail.java</file>
+            <file>file:/D:/xjava/Gl/src/services/JournalDetails.hbm.xml</file>
+            <file>file:/D:/xjava/Gl/src/models/Ledger.java</file>
+            <file>file:/D:/xjava/Gl/src/services/JournalDetails.java</file>
+            <file>file:/D:/xjava/Gl/src/models/Account.java</file>
+            <file>file:/D:/xjava/Gl/src/gl/reports/LedgerStandard.java</file>
+            <file>file:/D:/xjava/Gl/src/services/Ledgers.java</file>
+            <file>file:/D:/xjava/Gl/src/services/Ledgers.hbm.xml</file>
         </group>
     </open-files>
 </project-private>

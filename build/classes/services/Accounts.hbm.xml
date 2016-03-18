@@ -8,6 +8,7 @@
             <column name="id" />
             <generator class="identity" />
         </id>
+       
         <property name="no" type="string">
             <column name="no" length="30" not-null="false" />
         </property>
@@ -20,8 +21,10 @@
         
         <property  name="accountName" formula="concat(no, ' ', name)"/>
         
-        <!--<one-to-one name="BeginningBalances" class="services.BeginningBalances"
-            cascade="save-update" />-->
+        <set name="journalDetails" cascade="all" table="journal_details">
+            <key column="account_no"/>
+            <one-to-many class="services.JournalDetails"/>
+        </set>
         
     </class>
 </hibernate-mapping>

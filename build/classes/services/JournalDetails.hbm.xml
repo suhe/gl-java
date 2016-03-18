@@ -8,18 +8,18 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="journalId" type="java.lang.Integer">
+        <!--<property name="journalId" type="java.lang.Integer">
             <column name="journal_id" length="11" />
-        </property>
+        </property>-->
         <property name="position" type="java.lang.Integer">
             <column name="position" />
         </property>
         <property name="accountId" type="java.lang.Integer">
             <column name="account_id" />
         </property>
-        <property name="accountNo" type="string">
+        <!--<property name="accountNo" type="string">
             <column name="account_no" length="45" />
-        </property>
+        </property>-->
         <property name="description" type="string">
             <column name="description" length="255" />
         </property>
@@ -40,8 +40,13 @@
             <column name="date" length="10" />
         </property>
         
-        <!--<many-to-one name="jh" class="services.Journals"
-            column="id" not-null="true"/>-->
+        <many-to-one name="accounts" class="services.Accounts" cascade="save-update">
+            <column name="account_no" not-null="true" />
+        </many-to-one>
+        
+        <many-to-one name="journals" class="services.Journals" cascade="save-update">
+            <column name="journal_id" not-null="true" />
+        </many-to-one>
         
     </class>
 </hibernate-mapping>

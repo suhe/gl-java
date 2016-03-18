@@ -24,5 +24,6 @@
     <mapping class="services.BalanceSheetSummaries" package="gl" resource="services/BalanceSheetSummaries.hbm.xml"/>
     <mapping class="services.Roles" package="gl" resource="services/Roles.hbm.xml"/>
     <mapping class="services.TrialBalances" package="gl" resource="services/TrialBalances.hbm.xml"/>
+    <mapping class="services.Ledgers" package="gl" resource="services/Ledgers.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

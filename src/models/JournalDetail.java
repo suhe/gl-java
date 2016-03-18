@@ -9,6 +9,7 @@ import config.DatabaseUtil;
 import helpers.Format;
 import helpers.Formula;
 import helpers.Lang;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -21,10 +22,11 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import services.Accounts;
 import services.JournalDetails;
+
 
 
 /**
@@ -43,7 +45,7 @@ public class JournalDetail {
     private String description;
     private Double debet;
     private Double credit;
-    
+   
     private static Boolean isEdit = false;
     private static String accountNo_;
     private static String description_;
@@ -108,9 +110,12 @@ public class JournalDetail {
         this.credit = var;
     }
     
+    
+    
     public Boolean getIsEdit() {
         return isEdit;
     }
+    
     
     public void setIsEdit(Boolean status) {
         isEdit = status;
@@ -180,7 +185,7 @@ public class JournalDetail {
                     JournalDetails jd = (JournalDetails) iterator.next();
                     model.addRow(new Object[]{
                         jd.getPosition(),
-                        jd.getAccountNo(),
+                        jd.getAccounts().getNo(),
                         jd.getDescription(),
                         Format.currency(jd.getDebet(), 2),
                         Format.currency(jd.getCredit(), 2),});
@@ -217,9 +222,9 @@ public class JournalDetail {
         try {
             tx = session.beginTransaction();
             JournalDetails details = new JournalDetails();
-            details.setJournalId(this.getJournalId());
-            details.setAccountId(this.getAccountId());
-            details.setAccountNo(this.getAccountNo());
+            //details.setJournalId(this.getJournalId());
+            //details.setAccountId(this.getAccountId());
+            //details.setAccountNo(this.getAccountNo());
             details.setDescription(this.getDescription());
             details.setPosition(this.getPos());
             details.setDebet(this.getDebet());
@@ -556,5 +561,71 @@ public class JournalDetail {
             session.close();
         }
         return total;
+    }
+    
+    public List getRowsByList(String accountNoFrom, String accountNoTo, Date dateFrom, Date dateTo) {
+        Session session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        JournalDetails jds;
+        List list = null;
+        try {
+            tx = session.beginTransaction();
+            String sql = " select jd.id,a.no,a.name,j.date,jd.description,jd.debet,jd.credit"
+                    + " from journal_details jd "
+                    + " inner join journals j on j.id = jd.journal_id "
+                    + " inner join accounts a on a.no = jd.account_no "
+                    + " where (j.date>= :dateFrom and j.date <= :dateTo) and (a.no >= :accountFrom and  a.no <= :accountTo) "
+                    + " order by a.no ASC,j.date ASC ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("dateFrom", dateFrom);
+            query.setParameter("dateTo", dateTo);
+            query.setParameter("accountFrom", accountNoFrom);
+            query.setParameter("accountTo", accountNoTo);
+            query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            list = query.list();
+            tx.commit();
+        } catch (HibernateException e) {
+            list = null;
+            System.out.println(e.getMessage());
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return list;
+    }
+    
+    public Integer getCount(String accountNoFrom, String accountNoTo, Date dateFrom, Date dateTo) {
+        Session session;
+        session = DatabaseUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        Integer count = null;
+
+        try {
+            tx = session.beginTransaction();
+            String sql = " select count(*) "
+                    + " from journal_details jd "
+                    + " inner join journals j on j.id = jd.journal_id "
+                    + " inner join accounts a on a.no = jd.account_no "
+                    + " where (j.date>= :dateFrom and j.date <= :dateTo) and (a.no >= :accountFrom and  a.no <= :accountTo) "
+                    + " order by a.no ASC,j.date ASC ";
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setParameter("dateFrom", dateFrom);
+            query.setParameter("dateTo", dateTo);
+            query.setParameter("accountFrom", accountNoFrom);
+            query.setParameter("accountTo", accountNoTo);
+            count = ((BigInteger) query.uniqueResult()).intValue();
+            tx.commit();
+        } catch (HibernateException ex) {
+            if (tx != null) {
+                tx.rollback();
+            }
+        } finally {
+            session.close();
+        }
+
+        return count;
     }
 }

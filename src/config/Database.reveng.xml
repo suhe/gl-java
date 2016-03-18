@@ -13,4 +13,5 @@
   <table-filter match-name="balance_sheet_summaries"/>
   <table-filter match-name="roles"/>
   <table-filter match-name="trial_balances"/>
+  <table-filter match-name="ledgers"/>
 </hibernate-reverse-engineering>

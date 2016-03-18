@@ -30,10 +30,10 @@
             <column name="credit" length="18" not-null="false" />
         </property>
         
-        <!--<set name="jd" inverse="true" cascade="all">
-            <key column="journal_id" not-null="true" />
+        <set name="journalDetails" cascade="all" table="journal_details">
+            <key column="journal_id"/>
             <one-to-many class="services.JournalDetails"/>
-        </set>-->
+        </set>
        
         
     </class>

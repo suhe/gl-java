@@ -17,7 +17,7 @@ public class Journals implements java.io.Serializable {
     private String checkNumber;
     private Double debet;
     private Double credit;
-    //private Set<JournalDetails> jd;
+    private Set journalDetails;
     
 
     public Journals() {
@@ -98,11 +98,11 @@ public class Journals implements java.io.Serializable {
         this.credit = credit;
     }
     
-    /*public Set getJd() {
-        return this.jd;
+    public Set getJournalDetails() {
+        return journalDetails;
     }
     
-    public void setJd(Set jd) {
-        this.jd = jd;
-    }*/
+    public void setJournalDetails(Set journalDetails) {
+        this.journalDetails = journalDetails;
+    }
 }

@@ -10,32 +10,33 @@ import java.util.Date;
 public class JournalDetails implements java.io.Serializable {
 
     private Integer id;
-    private Integer journalId;
+    //private Integer journalId;
     private Integer position;
     private Integer accountId;
-    private String accountNo;
+    //private String accountNo;
     private String description;
     private Double debet;
     private Double credit;
     private String number;
     private Double total;
     private Date date;
-    //private Journals jh;
+    private Accounts accounts;
+    private Journals journals;
+    
     
     public JournalDetails() {
         
     }
 
-    public JournalDetails(Integer journalId,Integer order, Integer accountId, String accountNo, String description, Double debet, Double credit,String number) {
-        this.journalId = journalId;
+    public JournalDetails(Integer position, Integer accountId, String description, Double debet, Double credit,String number) {
+        //this.journalId = journalId;
         this.position = position;
         this.accountId = accountId;
-        this.accountNo = accountNo;
+        //this.accountNo = accountNo;
         this.description = description;
         this.debet = debet;
         this.credit = credit;
         this.number = number;
-        //this.jh = jh;
     }
 
     public Integer getId() {
@@ -46,13 +47,13 @@ public class JournalDetails implements java.io.Serializable {
         this.id = id;
     }
     
-    public Integer getJournalId() {
+    /*public Integer getJournalId() {
         return this.journalId;
     }
 
     public void setJournalId(Integer journalId) {
         this.journalId = journalId;
-    }
+    }*/
 
     public Integer getPosition() {
         return this.position;
@@ -69,14 +70,15 @@ public class JournalDetails implements java.io.Serializable {
     public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
-
+    
+    /*
     public String getAccountNo() {
         return this.accountNo;
     }
 
     public void setAccountNo(String accountNo) {
         this.accountNo = accountNo;
-    }
+    }*/
 
     public String getDescription() {
         return this.description;
@@ -126,13 +128,20 @@ public class JournalDetails implements java.io.Serializable {
         this.date = date;
     }
     
-    /*public Journals getJh() {
-        return this.jh;
+    public Accounts getAccounts() {
+        return accounts;
     }
     
-    public void setJh(Journals jh) {
-        this.jh = jh;
-    }*/
+    public void setAccounts(Accounts accounts) {
+        this.accounts  = accounts;
+    }
     
+    public Journals getJournals() {
+        return journals;
+    }
+    
+    public void setJournals(Journals journals) {
+        this.journals = journals;
+    }
 
 }

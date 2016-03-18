@@ -13,6 +13,7 @@ import gl.authorization.AuthRole;
 import gl.authorization.AuthUser;
 import gl.reports.BalanceSheetStandard;
 import gl.reports.BalanceTrialStandard;
+import gl.reports.LedgerStandard;
 import gl.reports.ProfitLossStandard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -99,7 +100,7 @@ public class Main extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItemBalanceSheetStandard = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItemLedgerTransaction = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemUsers = new javax.swing.JMenuItem();
@@ -286,8 +287,13 @@ public class Main extends javax.swing.JFrame {
 
         jMenuReport.add(jMenu2);
 
-        jMenuItem8.setText("Ledger Transaction");
-        jMenuReport.add(jMenuItem8);
+        jMenuItemLedgerTransaction.setText("Ledger Transaction");
+        jMenuItemLedgerTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLedgerTransactionActionPerformed(evt);
+            }
+        });
+        jMenuReport.add(jMenuItemLedgerTransaction);
 
         jMenuBar1.add(jMenuReport);
 
@@ -611,6 +617,35 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItemLedgerTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLedgerTransactionActionPerformed
+        // TODO add your handling code here:
+         try {
+            boolean status = false;
+            JInternalFrame[] children;
+            children = JP.getAllFrames();
+            for (JInternalFrame f : children) {
+                if (this.getTitle().equals("TrialBalances")) {
+                    f.setSelected(true);
+                    status = true;
+                    break;
+                }
+            }
+            if (status == false) {
+                LedgerStandard ledgerStandard = new LedgerStandard();
+                JP.add(ledgerStandard);
+                ledgerStandard.JP = JP;
+                ledgerStandard.jProgressBarStatus = this.jProgressBarStatus;
+                ledgerStandard.jLabelStatus = jLabelStatus;
+                Dimension desktopSize = JP.getSize();
+                Dimension jInternalFrameSize = ledgerStandard.getSize();
+                ledgerStandard.setLocation((desktopSize.width - jInternalFrameSize.width) / 2,(desktopSize.height - jInternalFrameSize.height) / 2);
+                ledgerStandard.setVisible(true);
+            }
+        } catch (PropertyVetoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemLedgerTransactionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -654,9 +689,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemBalance;
     private javax.swing.JMenuItem jMenuItemBalanceSheetStandard;
+    private javax.swing.JMenuItem jMenuItemLedgerTransaction;
     private javax.swing.JMenuItem jMenuItemProfitLossStandard;
     private javax.swing.JMenuItem jMenuItemRoles;
     private javax.swing.JMenuItem jMenuItemTransaction;

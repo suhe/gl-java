@@ -1,6 +1,9 @@
 package services;
 // Generated Feb 25, 2016 9:15:53 PM by Hibernate Tools 4.3.1
 
+import java.util.Set;
+
+
 
 
 /**
@@ -13,8 +16,7 @@ public class Accounts implements java.io.Serializable {
     private String name;
     private String accountName;
     private String type;
-    //private BeginningBalances beginningBalances;
-    
+    private Set journalDetails;
 
     public Accounts() {
     }
@@ -65,11 +67,12 @@ public class Accounts implements java.io.Serializable {
         this.accountName = accountName;
     } 
     
-    /*public BeginningBalances getBeginningBalances() {
-        return beginningBalances;
+    public Set getJournalDetails() {
+        return journalDetails;
     }
-
-    public void setBeginningBalances(BeginningBalances beginningBalances) {
-        this.beginningBalances = beginningBalances;
-    }*/
+    
+    public void setJournalDetails(Set journalDetails) {
+        this.journalDetails = journalDetails;
+    }
+    
 }
