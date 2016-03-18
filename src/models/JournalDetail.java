@@ -581,7 +581,10 @@ public class JournalDetail {
             query.setParameter("dateTo", dateTo);
             query.setParameter("accountFrom", accountNoFrom);
             query.setParameter("accountTo", accountNoTo);
-            query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            query.addEntity("jd",JournalDetails.class);
+            query.addJoin("a","jd.accounts");
+            query.addJoin("j","j.journals");
+            //query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
             list = query.list();
             tx.commit();
         } catch (HibernateException e) {
@@ -612,10 +615,14 @@ public class JournalDetail {
                     + " where (j.date>= :dateFrom and j.date <= :dateTo) and (a.no >= :accountFrom and  a.no <= :accountTo) "
                     + " order by a.no ASC,j.date ASC ";
             SQLQuery query = session.createSQLQuery(sql);
+            //query.addJoin("entity1.entity2",""); 
             query.setParameter("dateFrom", dateFrom);
             query.setParameter("dateTo", dateTo);
             query.setParameter("accountFrom", accountNoFrom);
             query.setParameter("accountTo", accountNoTo);
+            query.addEntity("jd",JournalDetails.class);
+            query.addJoin("a","jd.accounts");
+            query.addJoin("j","j.journals");
             count = ((BigInteger) query.uniqueResult()).intValue();
             tx.commit();
         } catch (HibernateException ex) {
