@@ -9,7 +9,6 @@ import config.DatabaseUtil;
 import helpers.Format;
 import helpers.Formula;
 import helpers.Lang;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import services.JournalDetails;
@@ -242,17 +240,16 @@ public class JournalDetail {
         }
     }
     
-    public void update(Integer key,String number,Date date) {
+    public void update(String number,Integer id) {
         Session session;
         session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            String hql = "update JournalDetails set journalId = :jid where number = :number and date = :date";
+            String hql = "update JournalDetails set accountId = :id where account_no = :number";
             Query query = session.createQuery(hql);
-            query.setInteger("jid", key);
             query.setString("number", number);
-            query.setDate("date", date);
+            query.setInteger("id", id);
             System.out.println(query.executeUpdate());
             session.flush();
             tx.commit();
@@ -566,11 +563,11 @@ public class JournalDetail {
     public List getRowsByList(String accountNoFrom, String accountNoTo, Date dateFrom, Date dateTo) {
         Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;
-        JournalDetails jds;
-        List list = null;
+        //JournalDetails jds;
+        List list;
         try {
             tx = session.beginTransaction();
-            String sql = " select jd.id,a.no,a.name,j.date,jd.description,jd.debet,jd.credit"
+            /*String sql = " select jd.id,a.no,a.name,j.date,jd.description,jd.debet,jd.credit"
                     + " from journal_details jd "
                     + " inner join journals j on j.id = jd.journal_id "
                     + " inner join accounts a on a.no = jd.account_no "
@@ -583,9 +580,23 @@ public class JournalDetail {
             query.setParameter("accountTo", accountNoTo);
             query.addEntity("jd",JournalDetails.class);
             query.addJoin("a","jd.accounts");
-            query.addJoin("j","j.journals");
-            //query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            query.addJoin("j","jd.journals");
+            //query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));*/
+            //String hql = "select jd.id,a.no,a.name,j.date,jd.description,jd.debet,jd.credit "
+            //String hql = "select jd.id,a.no,a.name,j.date,jd.description,jd.debet,jd.credit "
+            String hql = " from JournalDetails jd "
+                    + " join jd.journals j "
+                    + " join jd.accounts a "
+                    + " where j.date BETWEEN :stDate AND :edDate"
+                    + " and a.no BETWEEN :stNo AND :edNo "
+                    + " order by a.no ASC, j.date ASC";
+            Query query = session.createQuery(hql);
+            query.setParameter("stDate", dateFrom);
+            query.setParameter("edDate", dateTo);
+            query.setParameter("stNo", accountNoFrom);
+            query.setParameter("edNo", accountNoTo);
             list = query.list();
+            session.flush();
             tx.commit();
         } catch (HibernateException e) {
             list = null;
@@ -608,22 +619,35 @@ public class JournalDetail {
 
         try {
             tx = session.beginTransaction();
-            String sql = " select count(*) "
+            /*String sql = " select count(*) "
                     + " from journal_details jd "
                     + " inner join journals j on j.id = jd.journal_id "
                     + " inner join accounts a on a.no = jd.account_no "
                     + " where (j.date>= :dateFrom and j.date <= :dateTo) and (a.no >= :accountFrom and  a.no <= :accountTo) "
                     + " order by a.no ASC,j.date ASC ";
             SQLQuery query = session.createSQLQuery(sql);
-            //query.addJoin("entity1.entity2",""); 
             query.setParameter("dateFrom", dateFrom);
             query.setParameter("dateTo", dateTo);
             query.setParameter("accountFrom", accountNoFrom);
             query.setParameter("accountTo", accountNoTo);
             query.addEntity("jd",JournalDetails.class);
             query.addJoin("a","jd.accounts");
-            query.addJoin("j","j.journals");
-            count = ((BigInteger) query.uniqueResult()).intValue();
+            query.addJoin("j","jd.journals");*/
+            //count = ((BigInteger) query.uniqueResult()).intValue();
+            String hql = "select count(*) "
+                    + "from JournalDetails jd "
+                    + "inner join jd.journals j "
+                    + "inner join jd.accounts a "
+                    + " where j.date BETWEEN :stDate AND :edDate"
+                    + " and a.no BETWEEN :stNo AND :edNo ";
+            
+            Query query = session.createQuery(hql);
+            query.setParameter("stDate", dateFrom);
+            query.setParameter("edDate", dateTo);
+            query.setParameter("stNo", accountNoFrom);
+            query.setParameter("edNo", accountNoTo);
+            
+            count = ((Long) query.uniqueResult()).intValue();
             tx.commit();
         } catch (HibernateException ex) {
             if (tx != null) {

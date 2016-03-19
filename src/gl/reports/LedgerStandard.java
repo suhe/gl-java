@@ -36,9 +36,10 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.swing.JRViewer;
 import static org.hibernate.internal.util.ConfigHelper.getResourceAsStream;
+import services.Accounts;
 import services.BeginningBalances;
 import services.JournalDetails;
-import services.Ledgers;
+import services.Journals;
 
 /**
  *
@@ -263,20 +264,32 @@ public class LedgerStandard extends javax.swing.JInternalFrame {
             String accountDescription = accountNoFrom + " - " + accountNoTo;
             String periodeDescription = dateFromStr + " - " + dateToStr;
             
-            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                JournalDetails jds = (JournalDetails) iterator.next();
+            //System.out.println((JournalDetails) list.get(0));
+            
+            //for(Integer j=0; i<list.size(); i++) {
+                //Object[] row = (Object[]) list.get(i);
+            //for (Iterator<JournalDetails> iterator = list.iterator(); iterator.hasNext();) {
+            Iterator iter = list.iterator();
+            while (iter.hasNext()) {
+                Object[] aRow = (Object[]) iter.next(); 
+                //for (Object[] aRow : list) {
+                //JournalDetails jds = (JournalDetails) iterator.next();
+                //JournalDetails jds = iterator.next();
+                JournalDetails jds = (JournalDetails) aRow[0];
+                Journals js = (Journals) aRow[1];
+                Accounts acc = (Accounts) aRow[2]; 
                 jLabelStatus.setText("Status : processing account  :" + jds.getAccounts().getNo());
                 jProgressBarStatus.setValue(i);
                 jProgressBarStatus.repaint(); //Refresh graphics
                 try {
                     Thread.sleep(50);
-                    //beginning balances
                     accountNo = jds.getAccounts().getNo();
                     accountName = jds.getAccounts().getName();
+                   
                     
-                    if(lgModel.getCount(jds.getAccounts().getNo(),"Beginning Balance") == null) {
-                        BeginningBalances bb = bbModel.getRowByAccountNoAndYear(jds.getAccounts().getNo(), year);
-                        JournalDetails u = jdModel.getSumBalanceByUntilDate(year,dateFrom,jds.getAccounts().getNo());
+                    if(lgModel.getCount(accountNo,"Beginning Balance") == null) {
+                        BeginningBalances bb = bbModel.getRowByAccountNoAndYear(accountNo, year);
+                        JournalDetails u = jdModel.getSumBalanceByUntilDate(year,dateFrom,accountNo);
                         bbDebet = bb != null && bb.getDebet() != null ? bb.getDebet() : 0.00;
                         bbCredit = bb != null &&  bb.getCredit()!= null ? bb.getCredit() : 0.00;
                         uDebet = u != null && u.getDebet() != null ? u.getDebet() : 0.00;
@@ -302,7 +315,7 @@ public class LedgerStandard extends javax.swing.JInternalFrame {
                     
                 } 
                 catch (InterruptedException err){}
-                if(jds.getAccounts().getNo() != null) {
+                if(jds.getAccountNo() != null) {
                     lgModel.save(accountNo, accountName, type,date,description,debet,credit,saldo,accountDescription,periodeDescription);
                 }
                 

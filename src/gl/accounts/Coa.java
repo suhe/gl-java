@@ -9,7 +9,6 @@ import helpers.Config;
 import helpers.Lang;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Iterator;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -17,17 +16,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Account;
-import models.JournalDetail;
-import services.Journals;
-
-import config.DatabaseUtil;
-import java.util.List;
-import models.BeginningBalance;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import services.Accounts;
 
 /**
  *
@@ -317,25 +305,44 @@ public class Coa extends javax.swing.JInternalFrame {
         form.setVisible(true);
         
         //set to list all data
-        /*Session session = DatabaseUtil.getSessionFactory().openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(Journals.class);
-            List list = criteria.list();
-            for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                Journals jn = (Journals) iterator.next();
-                JournalDetail model2 = new JournalDetail();
-                model2.update(jn.getId(), jn.getNumber(),jn.getDate());
-            }
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-        } finally {
-            session.close();
-        }*/
+        //Session session = DatabaseUtil.getSessionFactory().openSession();
+        //Transaction tx = null;
+        //try {
+          //  tx = session.beginTransaction();
+            //String hql = "select accountId,accountNo from JournalDetails group by accountNo order by accountNo asc";
+            //Query query = session.createQuery(hql);
+            //query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            //System.out.println("Query :" + query);
+            //query.setResultTransformer(Transformers.aliasToBean(JournalDetails.class));
+            //Criteria criteria = session.createCriteria(JournalDetails.class);
+            //criteria.addOrder(Order.asc("id"));
+            //List list = query.list();
+            //for(int i=0; i<list.size(); i++) {
+              //  Object[] row = (Object[]) list.get(i);
+            //for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                
+                //JournalDetails jn = (JournalDetails) iterator.next();
+                
+                //System.out.println("update account : " + row[1].toString());
+                
+                
+                //JournalDetail model2 = new JournalDetail();
+                //Account acc  = new Account();
+                //Accounts get = acc.getRowByAccountNo(row[1].toString());
+                //model2.update(row[1].toString(),get.getId());
+                
+                ///System.out.println("update account : " + get.getNo());
+               
+            //}
+            //session.flush();
+            //tx.commit();
+        //} catch (HibernateException e) {
+          //  if (tx != null) {
+            //    tx.rollback();
+            //}
+        //} finally {
+          //  session.close();
+        //}
         
         /*Session session = DatabaseUtil.getSessionFactory().openSession();
         Transaction tx = null;

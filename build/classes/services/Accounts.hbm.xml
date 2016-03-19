@@ -6,9 +6,8 @@
     <class name="services.Accounts" table="accounts" catalog="gl" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
-            <generator class="identity" />
+            <generator class="increment" />
         </id>
-       
         <property name="no" type="string">
             <column name="no" length="30" not-null="false" />
         </property>
@@ -18,10 +17,8 @@
         <property name="type" type="string">
             <column name="type" length="30" not-null="false" />
         </property>
-        
         <property  name="accountName" formula="concat(no, ' ', name)"/>
-        
-        <set name="journalDetails" cascade="all" table="journal_details">
+        <set name="journalDetails" cascade="all" inverse="true" table="journal_details">
             <key column="account_no"/>
             <one-to-many class="services.JournalDetails"/>
         </set>

@@ -102,7 +102,7 @@ public class Ledger {
 
         try {
             tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(Accounts.class);
+            Criteria criteria = session.createCriteria(Ledgers.class);
             criteria.add(Restrictions.eq("accountNo",accountNo));
             criteria.add(Restrictions.eq("type",type));
             count = ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();

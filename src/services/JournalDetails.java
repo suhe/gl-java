@@ -13,7 +13,7 @@ public class JournalDetails implements java.io.Serializable {
     //private Integer journalId;
     private Integer position;
     private Integer accountId;
-    //private String accountNo;
+    private String accountNo;
     private String description;
     private Double debet;
     private Double credit;
@@ -71,14 +71,14 @@ public class JournalDetails implements java.io.Serializable {
         this.accountId = accountId;
     }
     
-    /*
+    
     public String getAccountNo() {
         return this.accountNo;
     }
 
     public void setAccountNo(String accountNo) {
         this.accountNo = accountNo;
-    }*/
+    }
 
     public String getDescription() {
         return this.description;

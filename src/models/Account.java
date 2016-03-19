@@ -354,6 +354,7 @@ public class Account {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Accounts.class);
+            criteria.setMaxResults(1);
             ProjectionList projList = Projections.projectionList();
             projList.add(Projections.property("id").as("id"));
             projList.add(Projections.property("no").as("no"));
