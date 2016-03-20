@@ -79,8 +79,12 @@ public class Ledger {
         try {
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(Ledgers.class);  
+            criteria.addOrder(Order.asc("accountNo"));
             criteria.addOrder(Order.asc("date"));
-            list = criteria.list(); 
+            list = criteria.list();
+            /*String hql = "from ledgers order by account_no ASC,date ASC";
+            Query query = session.createQuery(hql);
+            list = query.list();*/
             session.flush();
             tx.commit();
         } catch (HibernateException e) {

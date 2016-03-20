@@ -223,6 +223,8 @@ public class LedgerStandard extends javax.swing.JInternalFrame {
     public class threadProcess implements Runnable{
         @Override
         public void run(){
+            //disabled button preview
+            jButtonPreview.setEnabled(false);
             String accountNoFrom = jTextFieldAccountNoFrom.getText();
             String accountNoTo = jTextFieldAccountNoTo.getText();
             String dateFromStr = Format.dateToString(dateChooserComboDateFrom.getText(), "dd/MM/yyyy", "yyyy-MM-dd");
@@ -283,11 +285,11 @@ public class LedgerStandard extends javax.swing.JInternalFrame {
                 jProgressBarStatus.repaint(); //Refresh graphics
                 try {
                     Thread.sleep(50);
-                    accountNo = jds.getAccounts().getNo();
-                    accountName = jds.getAccounts().getName();
+                    accountNo = jds.getAccounts().getNo().trim();
+                    accountName = jds.getAccounts().getName().trim();
                    
-                    
-                    if(lgModel.getCount(accountNo,"Beginning Balance") == null) {
+                    if((lgModel.getCount(accountNo,"Beginning Balance") == 0)) {
+                        jLabelStatus.setText("Status : Beginning Balance  :" + jds.getAccounts().getNo());
                         BeginningBalances bb = bbModel.getRowByAccountNoAndYear(accountNo, year);
                         JournalDetails u = jdModel.getSumBalanceByUntilDate(year,dateFrom,accountNo);
                         bbDebet = bb != null && bb.getDebet() != null ? bb.getDebet() : 0.00;
@@ -300,29 +302,34 @@ public class LedgerStandard extends javax.swing.JInternalFrame {
                         
                         type = "Beginning Balance";
                         date = dateFrom;
-                        description = "Beginning Balance Until " + dateFromStr;
+                        description = "Beginning Balance Until " + dateChooserComboDateFrom.getText();
                         debet = bbDebet;
                         credit = bbCredit;
                         saldo = debet - credit;
-                    } else {
-                        type = "Transaction";
-                        date = jds.getDate();
-                        description = jds.getDescription();
-                        debet = jds.getDebet();
-                        credit = jds.getCredit();
-                        saldo+= debet - credit;
+                        lgModel.save(accountNo, accountName, type,date,description,debet,credit,saldo,accountDescription,periodeDescription);
                     }
                     
+                    //transaction
+                    jLabelStatus.setText("Status : Transaction  :" + jds.getAccounts().getNo());
+                    type = "Transaction";
+                    date = jds.getDate();
+                    description = jds.getDescription();
+                    debet = jds.getDebet();
+                    credit = jds.getCredit();
+                    saldo+= debet - credit;
+                    lgModel.save(accountNo, accountName, type,date,description,debet,credit,saldo,accountDescription,periodeDescription);
                 } 
                 catch (InterruptedException err){}
-                if(jds.getAccountNo() != null) {
+                
+                /*if(jds.getAccounts().getNo() != null) {
                     lgModel.save(accountNo, accountName, type,date,description,debet,credit,saldo,accountDescription,periodeDescription);
-                }
+                }*/
                 
                 i++;
             }
             
             setCursor(Cursor.getDefaultCursor());
+            jButtonPreview.setEnabled(true);
             jLabelStatus.setText("Status : Done");
             preview();
         }
